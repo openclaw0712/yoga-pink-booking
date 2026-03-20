@@ -155,15 +155,14 @@
 </head>
 <body>
     <div class="header">
-        <h1>🧘 九容瑜伽</h1>
-        <p>每週五 15:00 基礎瑜伽</p>
+        <h1 style="font-size:36px">🧘 九容瑜伽</h1>
+        <p style="font-size:18px">動若雲，靜若水，身隨意，境隨心。</p>
     </div>
     
     <div class="container">
         <!-- 導航 -->
         <div class="nav" id="mainNav">
             <button class="active" data-tab="courses">課程</button>
-            <button data-tab="book">預約</button>
             <button data-tab="my">我的</button>
             <button data-tab="login">登入</button>
         </div>
@@ -176,34 +175,7 @@
             </div>
         </div>
         
-        <!-- 預約表單 -->
-        <div id="tab-book" class="tab-content hidden">
-            <div class="card">
-                <h2 style="margin-bottom:15px;color:var(--accent)">📝 預約報名</h2>
-                <div class="form-group">
-                    <label>選擇課程</label>
-                    <select id="bookCourse"></select>
-                </div>
-                <div class="form-group">
-                    <label>選擇日期</label>
-                    <select id="bookDate"></select>
-                </div>
-                <div class="form-group">
-                    <label>姓名</label>
-                    <input type="text" id="bookName" placeholder="請輸入姓名">
-                </div>
-                <div class="form-group">
-                    <label>手機</label>
-                    <input type="tel" id="bookPhone" placeholder="09xxxxxxxx">
-                </div>
-                <div class="form-group">
-                    <label>備註</label>
-                    <textarea id="bookNote" rows="2" placeholder="如有舊傷或其他需注意"></textarea>
-                </div>
-                <button class="btn-primary" onclick="submitBooking()">確認預約</button>
-                <p id="bookMsg" class="error"></p>
-            </div>
-        </div>
+        
         
         <!-- 我的預約 -->
         <div id="tab-my" class="tab-content hidden">
@@ -362,31 +334,81 @@ function switchTab(tab) {
     }
 }
 
+// 取得預設日期
+function getDefaultDate() {
+    var d = new Date();
+    while (d.getDay() !== 5) { d.setDate(d.getDate() + 1); }
+    return d.toISOString().split('T')[0];
+}
+
 // 渲染課程
 function renderCourses() {
+    var selectedDate = getDefaultDate();
     var html = '';
     courses.forEach(function(c) {
-        var booked = bookings.filter(function(b) { return b.courseId === c.id && b.status !== 'cancelled'; }).length;
+        var booked = bookings.filter(function(b) { return b.courseId === c.id && b.date === selectedDate && b.status !== 'cancelled'; }).length;
         var remain = c.capacity - booked;
         var fullClass = remain <= 0 ? 'full' : '';
+        var btnDisabled = remain <= 0 || !currentUser ? 'disabled' : '';
         
         html += '<div class="course-card">';
         html += '<div class="name">' + c.name + '</div>';
         html += '<div class="info">👩‍🏫 ' + c.teacher + ' | ⏰ ' + c.time + '</div>';
-        html += '<span class="capacity ' + fullClass + '">剩餘名額: ' + remain + '/' + c.capacity + '</span>';
-        html += '</div>';
+        html += '<div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">';
+        html += '<span class="capacity ' + fullClass + '">名額 ' + remain + '/' + c.capacity + '</span>';
+        html += '<button onclick="quickBook(' + c.id + ')" style="background:var(--accent);color:white;border:none;padding:8px 20px;border-radius:20px;cursor:pointer;font-weight:600' + (btnDisabled ? ';opacity:0.5' : '') + '" ' + btnDisabled + '>預約</button>';
+        html += '</div></div>';
     });
     document.getElementById('courseList').innerHTML = html;
+}
+
+// 快速預約
+function quickBook(courseId) {
+    if (!currentUser) {
+        alert('請先登入');
+        switchTab('login');
+        return;
+    }
     
-    // 預約表單的課程選項
-    var opt = '';
-    courses.forEach(function(c) {
-        var booked = bookings.filter(function(b) { return b.courseId === c.id && b.status !== 'cancelled'; }).length;
-        var remain = c.capacity - booked;
-        var disabled = remain <= 0 ? 'disabled' : '';
-        opt += '<option value="' + c.id + '" ' + disabled + '>' + c.name + ' - ' + c.teacher + ' (剩' + remain + '位)</option>';
+    var course = courses.find(function(c) { return c.id === courseId; });
+    var date = getDefaultDate();
+    var note = '';
+    
+    // 檢查重複
+    if (bookings.some(function(b) { 
+        return b.phone === currentUser.phone && b.courseId === courseId && b.date === date && b.status !== 'cancelled'; 
+    })) {
+        alert('您已預約過此課程');
+        return;
+    }
+    
+    // 檢查名額
+    var booked = bookings.filter(function(b) { 
+        return b.courseId === courseId && b.date === date && b.status !== 'cancelled'; 
+    }).length;
+    if (booked >= course.capacity) {
+        alert('名額已滿');
+        return;
+    }
+    
+    bookings.push({
+        id: Date.now(),
+        courseId: courseId,
+        courseName: course.name,
+        teacher: course.teacher,
+        date: date,
+        time: course.time,
+        name: currentUser.name,
+        phone: currentUser.phone,
+        note: note,
+        status: 'confirmed',
+        createdAt: new Date().toISOString()
     });
-    document.getElementById('bookCourse').innerHTML = opt;
+    saveData();
+    
+    alert('預約成功！');
+    renderCourses();
+    renderMyBookings();
 }
 
 // 渲染日期
@@ -471,7 +493,7 @@ function checkAutoLogin() {
             }
         } catch(e) {}
     }
-    switchTab('courses');
+    switchTab('login');
 }
 
 function logout() {
