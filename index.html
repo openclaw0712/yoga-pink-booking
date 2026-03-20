@@ -409,6 +409,18 @@
                 return;
             }
             
+            // 檢查重複預約
+            const existingBooking = bookings.find(b => 
+                b.userId === currentUser.id && 
+                b.courseId === courseId && 
+                b.date === date &&
+                b.status !== 'completed'
+            );
+            if (existingBooking) {
+                alert('你已預約過此時段，請勿重複預約');
+                return;
+            }
+            
             // 檢查名額
             const courseCapacity = course.capacity || 8;
             const bookedCount = bookings.filter(b => b.courseId === courseId && b.date === date && b.status !== 'completed').length;
@@ -422,14 +434,13 @@
                 userId: currentUser.id,
                 userName: currentUser.name,
                 userPhone: currentUser.phone,
-                userLine: currentUser.line,
                 courseId: courseId,
                 courseName: course.name,
                 courseTeacher: course.teacher,
                 date: date,
                 time: course.time,
                 note: note,
-                status: 'pending',
+                status: 'confirmed',
                 createdAt: new Date().toISOString()
             };
             
