@@ -222,13 +222,13 @@
                 <button id="tabRegister" onclick="switchTab('register')">註冊</button>
             </div>
             <div id="loginForm">
-                <input type="text" id="loginEmail" placeholder="電子郵件" />
+                <input type="text" id="loginEmail" placeholder="手機" />
                 <input type="password" id="loginPwd" placeholder="密碼" />
                 <button class="btn" onclick="doLogin()">登入</button>
             </div>
             <div id="registerForm" class="hidden">
                 <input type="text" id="regName" placeholder="姓名" />
-                <input type="text" id="regEmail" placeholder="電子郵件" />
+                <input type="text" id="regPhone" placeholder="手機" />
                 <input type="password" id="regPwd" placeholder="密碼" />
                 <button class="btn" onclick="doRegister()">註冊</button>
             </div>
@@ -404,10 +404,10 @@
 
         function doRegister() {
             const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
+            const email = document.getElementById('regPhone').value;
             const pwd = document.getElementById('regPwd').value;
             if (!name || !email || !pwd) return toast('請填寫所有欄位');
-            if (users.find(u => u.email === email)) return toast('此Email已註冊');
+            if (users.find(u => u.phone === email)) return toast('此Email已註冊');
             users.push({ name, email, pwd, createdAt: new Date().toLocaleDateString() });
             localStorage.setItem('yoga_users', JSON.stringify(users));
             toast('註冊成功！請登入');
@@ -417,7 +417,7 @@
         function doLogin() {
             const email = document.getElementById('loginEmail').value;
             const pwd = document.getElementById('loginPwd').value;
-            const user = users.find(u => u.email === email && u.pwd === pwd);
+            const user = users.find(u => u.phone === email && u.pwd === pwd);
             if (!user) return toast('帳號或密碼錯誤');
             currentUser = user;
             isTeacher = false;
@@ -508,11 +508,11 @@
 
         function confirmBooking() {
             if (!selectedDate) return toast('請選擇日期');
-            const existing = bookings.find(b => b.user === currentUser.email && b.courseId === selectedCourse.id && b.date === selectedDate && b.status !== 'cancelled');
+            const existing = bookings.find(b => b.user === currentUser.phone && b.courseId === selectedCourse.id && b.date === selectedDate && b.status !== 'cancelled');
             if (existing) return toast('您已預約過此課程');
             bookings.push({
                 id: Date.now(),
-                user: currentUser.email,
+                user: currentUser.phone,
                 userName: currentUser.name,
                 courseId: selectedCourse.id,
                 courseName: selectedCourse.name,
@@ -528,7 +528,7 @@
 
         // My Bookings
         function renderMyBookings() {
-            const myBookings = bookings.filter(b => b.user === currentUser.email);
+            const myBookings = bookings.filter(b => b.user === currentUser.phone);
             const list = document.getElementById('bookingList');
             if (myBookings.length === 0) {
                 list.innerHTML = '<div class="card"><p>尚無預約紀錄</p></div>';
@@ -567,7 +567,7 @@
             
             if (tab === 'members') {
                 document.getElementById('membersTable').innerHTML = users.map(u => `
-                    <tr><td>${u.name}</td><td>${u.email}</td><td>${u.createdAt}</td></tr>
+                    <tr><td>${u.name}</td><td>${u.phone}</td><td>${u.createdAt}</td></tr>
                 `).join('') || '<tr><td colspan="3">尚無會員</td></tr>';
             } else {
                 const activeBookings = bookings.filter(b => b.status === 'confirmed');
