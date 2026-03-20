@@ -278,27 +278,44 @@
         let bookings = JSON.parse(localStorage.getItem(BOOKINGS_KEY)) || [];
         
         // 初始化 - 只允許星期五
-        const today = new Date();
-        const dayOfWeek = today.getDay();
-        let minDate = new Date(today);
+        const datePicker = document.getElementById('datePicker');
         
-        // 如果今天不是星期五，找到下一個星期五
-        if (dayOfWeek !== 5) {
-            const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
-            if (daysUntilFriday === 0) daysUntilFriday = 7;
-            minDate.setDate(today.getDate() + daysUntilFriday);
+        // 設置只能選擇星期五
+        function getNextFridays(startDate, count) {
+            const fridays = [];
+            let date = new Date(startDate);
+            while (fridays.length < count) {
+                if (date.getDay() === 5) {
+                    fridays.push(date.toISOString().split('T')[0]);
+                }
+                date.setDate(date.getDate() + 1);
+            }
+            return fridays;
         }
         
-        const minDateStr = minDate.toISOString().split('T')[0];
-        document.getElementById('datePicker').setAttribute('min', minDateStr);
+        // 產生未來12週的星期五
+        const validFridays = getNextFridays(new Date(), 12);
         
-        // 日期變更時檢查是否為星期五
-        document.getElementById('datePicker').addEventListener('change', function() {
+        // 用 datalist 提供建議選項
+        const datalist = document.createElement('datalist');
+        datalist.id = 'fridayDates';
+        validFridays.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            const d = new Date(date);
+            const day = d.getDate();
+            const month = d.getMonth() + 1;
+            option.textContent = `${month}月${day}日 禮拜五`;
+            datalist.appendChild(option);
+        });
+        datePicker.appendChild(datalist);
+        datePicker.setAttribute('list', 'fridayDates');
+        
+        // 限制只能選星期五
+        datePicker.addEventListener('input', function() {
             const selected = new Date(this.value);
-            const selectedDay = selected.getDay();
-            if (selectedDay !== 5) {
-                alert('目前僅開放禮拜五預約');
-                this.value = '';
+            if (!isNaN(selected.getTime()) && selected.getDay() !== 5) {
+                this.value = validFridays[0] || '';
             }
         });
         
