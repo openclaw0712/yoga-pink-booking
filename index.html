@@ -467,7 +467,7 @@
                     <div class="info">${b.courseName} - ${b.courseTeacher}</div>
                     <div style="margin-top:8px;">
                         <span class="status ${b.status}">${b.status === 'pending' ? '待確認' : b.status === 'confirmed' ? '已確認' : '已完成'}</span>
-                        ${b.status === 'pending' ? `<button class="danger" style="width:auto;padding:5px 10px;margin-left:10px;font-size:12px;" onclick="cancelBooking(${b.id})">取消</button>` : ''}
+                        ${b.status !== 'completed' ? `<button class="danger" style="width:auto;padding:5px 10px;margin-left:10px;font-size:12px;" onclick="cancelBooking(${b.id})">取消</button>` : ''}
                     </div>
                 </div>
             `).join('');
