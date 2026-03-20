@@ -477,18 +477,38 @@ function renderTeacher() {
     }
     document.getElementById('teacherMembers').innerHTML = mhtml;
     
-    // 預約
+    // 預約 - 按課程分組
     var bhtml = '';
-    var all = bookings.filter(function(b){return b.status !== 'cancelled'}).sort(function(a,b){return new Date(b.date) - new Date(a.date)});
+    var all = bookings.filter(function(b){return b.status !== 'cancelled'});
+    
+    // 按課程+日期分組
+    var grouped = {};
+    all.forEach(function(b) {
+        var key = b.courseId + '_' + b.date;
+        if (!grouped[key]) {
+            grouped[key] = {courseName:b.courseName, teacher:b.teacher, date:b.date, time:b.time, students:[]};
+        }
+        grouped[key].students.push(b);
+    });
+    
     if (all.length === 0) {
         bhtml = '<p style="text-align:center;color:#8a6a6a">尚無預約</p>';
     } else {
-        all.forEach(function(b) {
-            bhtml += '<div class="booking">';
-            bhtml += '<div class="booking-date">📅 ' + b.date + ' ' + b.time + '</div>';
-            bhtml += '<div><b>' + b.name + '</b> (' + b.phone + ')</div>';
-            bhtml += '<div>' + b.courseName + ' - ' + b.teacher + '</div>';
-            bhtml += '<button class="course-btn" onclick="delBooking(' + b.id + ')" style="background:#ff4777;margin-top:8px">刪除</button>';
+        Object.keys(grouped).forEach(function(key) {
+            var g = grouped[key];
+            var studentCount = g.students.length;
+            bhtml += '<div class="booking" onclick="toggleStudents(\'' + key + '\')" style="cursor:pointer">';
+            bhtml += '<div class="booking-date">📅 ' + g.date + ' ' + g.time + '</div>';
+            bhtml += '<div><b>' + g.courseName + '</b> - ' + g.teacher + '</div>';
+            bhtml += '<div style="color:#ff6b8f">👥 ' + studentCount + ' 人預約 ▼</div>';
+            bhtml += '<div id="students-' + key + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #ffe5ec">';
+            g.students.forEach(function(s) {
+                bhtml += '<div style="padding:8px;background:#fff0f3;border-radius:8px;margin-bottom:5px">';
+                bhtml += '<b>' + s.name + '</b> (' + s.phone + ') ';
+                bhtml += '<button onclick="event.stopPropagation();delBooking(' + s.id + ')" style="background:#ff4777;color:white;border:none;padding:3px 8px;border-radius:10px;font-size:12px">刪除</button>';
+                bhtml += '</div>';
+            });
+            bhtml += '</div>';
             bhtml += '</div>';
         });
     }
@@ -511,6 +531,11 @@ function delBooking(id) {
         saveData();
         renderTeacher();
     }
+}
+
+function toggleStudents(key) {
+    var el = document.getElementById('students-' + key);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 function renderTeacherCourses() {
