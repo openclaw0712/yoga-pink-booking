@@ -43,6 +43,7 @@
             </div>
             
             <div id="loginTab">
+                <button onclick="clearData()" style="background:#ff6b6b;margin-bottom:15px;padding:8px;">🗑️ 清除所有資料</button>
                 <input type="tel" id="phone" placeholder="手機號碼">
                 <input type="password" id="password" placeholder="密碼">
                 <div class="checkbox">
@@ -125,6 +126,17 @@ var courses = [{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}];
 var currentUser = null;
 
 // 初始化
+function clearData() {
+    if(confirm('確定清除所有資料？')) {
+        localStorage.removeItem('yoga_users');
+        localStorage.removeItem('yoga_bookings');
+        localStorage.removeItem('yoga_courses');
+        localStorage.removeItem('yoga_phone');
+        localStorage.removeItem('yoga_pw');
+        alert('已清除！請重新整理頁面');
+    }
+}
+
 function init() {
     try {
         users = JSON.parse(localStorage.getItem('yoga_users')) || [];
