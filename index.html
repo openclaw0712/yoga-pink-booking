@@ -191,6 +191,10 @@
                     <h2 style="color:#d63384">📅 每週課程</h2>
                     <button onclick="logout()" style="background:#ff6b8f;color:white;border:none;padding:8px 15px;border-radius:15px">登出</button>
                 </div>
+                <div class="form-group">
+                    <label style="color:#d63384">選擇日期</label>
+                    <select id="courseDate" onchange="renderCourses()"></select>
+                </div>
                 <div id="courseList"></div>
             </div>
         </div>
@@ -247,6 +251,7 @@ var users = [], bookings = [], courses = [], currentUser = null;
 
 function init() {
     loadData();
+    renderDateOptions();
     checkAutoLogin();
 }
 
@@ -388,8 +393,23 @@ function getNextFriday() {
     return d.toISOString().split('T')[0];
 }
 
+function renderDateOptions() {
+    var dates = [];
+    var d = new Date();
+    while (dates.length < 12) {
+        if (d.getDay() === 5) dates.push(d.toISOString().split('T')[0]);
+        d.setDate(d.getDate() + 1);
+    }
+    var opt = '';
+    dates.forEach(function(x) {
+        var dd = new Date(x);
+        opt += '<option value="' + x + '">' + (dd.getMonth()+1) + '/' + dd.getDate() + ' (五)</option>';
+    });
+    document.getElementById('courseDate').innerHTML = opt;
+}
+
 function renderCourses() {
-    var date = getNextFriday();
+    var date = document.getElementById('courseDate').value || getNextFriday();
     var html = '';
     courses.forEach(function(c) {
         var booked = bookings.filter(function(b){return b.courseId===c.id && b.date===date && b.status!=='cancelled'}).length;
@@ -409,7 +429,7 @@ function renderCourses() {
 
 function quickBook(courseId) {
     var course = courses.find(function(c){return c.id === courseId});
-    var date = getNextFriday();
+    var date = document.getElementById('courseDate').value || getNextFriday();
     
     if (bookings.some(function(b){return b.phone===currentUser.phone && b.courseId===courseId && b.date===date && b.status!=='cancelled'})) {
         alert('您已預約過');
