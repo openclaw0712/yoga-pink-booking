@@ -358,7 +358,7 @@ function renderCourses() {
         html += '<div class="course">';
         html += '<div class="course-name">' + c.name + '</div>';
         html += '<div class="course-info">👩‍🏫 ' + c.teacher + ' | ⏰ ' + c.time + '</div>';
-        html += '<div class="course-info">名額 ' + remain + '/' + c.capacity + '</div>';
+        html += '<div class="course-info">名額 ' + remain + ' 員</div>';
         if (remain > 0) {
             html += '<button class="course-btn" onclick="goBook(' + c.id + ')">預約</button>';
         }
@@ -400,7 +400,7 @@ function updateRemaining() {
     var info = document.getElementById('bookInfo');
     info.innerHTML = '<div class="course"><div class="course-name">' + course.name + '</div>';
     info.innerHTML += '<div class="course-info">👩‍🏫 ' + course.teacher + ' | ⏰ ' + course.time + '</div>';
-    info.innerHTML += '<div class="course-info" style="color:#ff6b8f;font-weight:bold">剩餘名額: ' + remain + '/' + course.capacity + '</div></div>';
+    info.innerHTML += '<div class="course-info" style="color:#ff6b8f;font-weight:bold">剩餘名額: ' + remain + ' 員</div></div>';
 }
 
 // 確認預約
