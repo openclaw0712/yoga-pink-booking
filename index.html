@@ -85,7 +85,7 @@
         
         <div id="bookTab" class="card">
             <select id="courseSelect"></select>
-            <input type="date" id="dateInput">
+            <input type="date" id="dateInput" min>
             <div id="remaining" style="margin-bottom:15px;color:#fb6f92;font-weight:600"></div>
             <textarea id="note" placeholder="備註"></textarea>
             <button onclick="doBook()">確認預約</button>
@@ -165,7 +165,7 @@ function init() {
         doLogin();
     }
     
-    // 日期
+    // 日期 - 只顯示禮拜五
     var dates = [];
     var d = new Date();
     while(dates.length < 12) {
@@ -178,6 +178,11 @@ function init() {
         opt += '<option value="'+x+'">'+(dd.getMonth()+1)+'月'+dd.getDate()+'日 禮拜五</option>';
     });
     document.getElementById('dateInput').innerHTML = opt;
+    // 設定 min 屬性防止選其他天
+    if(dates.length > 0) {
+        document.getElementById('dateInput').min = dates[0];
+        document.getElementById('dateInput').value = dates[0];
+    }
 }
 
 function save() {
