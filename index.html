@@ -104,6 +104,10 @@
                         <label>密碼</label>
                         <input type="password" id="loginPassword" placeholder="請輸入密碼">
                     </div>
+                    <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+                        <input type="checkbox" id="rememberMe" style="width:auto;">
+                        <label style="margin:0;">記住我</label>
+                    </div>
                     <button onclick="login()">登入</button>
                     <p class="error" id="loginError"></p>
                 </div>
@@ -244,6 +248,41 @@
         
         let currentUser = null;
         
+        // 載入記住的帳號
+        function loadRememberedUser() {
+            const savedPhone = localStorage.getItem('yoga_saved_phone');
+            const savedPassword = localStorage.getItem('yoga_saved_password');
+            if (savedPhone) document.getElementById('loginPhone').value = savedPhone;
+            if (savedPassword) document.getElementById('loginPassword').value = savedPassword;
+            if (savedPhone && savedPassword) document.getElementById('rememberMe').checked = true;
+        }
+        
+        // 初始化時自動登入
+        function autoLogin() {
+            const savedId = localStorage.getItem('yoga_current_id');
+            if (savedId) {
+                const user = users.find(u => u.id == savedId);
+                if (user) {
+                    currentUser = user;
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('userPhone').textContent = user.phone;
+                    renderStudentCourses();
+                    showStudentTab('book');
+                    showScreen('studentScreen');
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        // 頁面載入時嘗試自動登入
+        window.onload = function() {
+            loadRememberedUser();
+            if (!autoLogin()) {
+                showScreen('authScreen');
+            }
+        };
+        
         // 儲存
         function saveData() {
             localStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -300,10 +339,23 @@
         function login() {
             const phone = document.getElementById('loginPhone').value.trim();
             const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
             
             const user = users.find(u => u.phone === phone && u.password === password);
             if (user) {
                 currentUser = user;
+                
+                // 記住密碼
+                if (remember) {
+                    localStorage.setItem('yoga_saved_phone', phone);
+                    localStorage.setItem('yoga_saved_password', password);
+                    localStorage.setItem('yoga_current_id', user.id);
+                } else {
+                    localStorage.removeItem('yoga_saved_phone');
+                    localStorage.removeItem('yoga_saved_password');
+                    localStorage.removeItem('yoga_current_id');
+                }
+                
                 document.getElementById('userName').textContent = user.name;
                 document.getElementById('userPhone').textContent = user.phone;
                 renderStudentCourses();
@@ -332,6 +384,9 @@
         // 登出
         function logout() {
             currentUser = null;
+            localStorage.removeItem('yoga_current_id');
+            document.getElementById('loginPhone').value = '';
+            document.getElementById('loginPassword').value = '';
             showScreen('authScreen');
         }
         
