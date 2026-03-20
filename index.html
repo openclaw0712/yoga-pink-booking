@@ -358,7 +358,7 @@ function renderCourses() {
         html += '<div class="course">';
         html += '<div class="course-name">' + c.name + '</div>';
         html += '<div class="course-info">👩‍🏫 ' + c.teacher + ' | ⏰ ' + c.time + '</div>';
-        html += '<div class="course-info">名額 ' + remain + ' 員</div>';
+        html += '<div class="course-info">名額 ' + c.capacity + ' 員</div>';
         if (remain > 0) {
             html += '<button class="course-btn" onclick="goBook(' + c.id + ')">預約</button>';
         }
