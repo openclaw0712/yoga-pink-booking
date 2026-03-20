@@ -259,9 +259,10 @@
         
         // 初始化時自動登入
         function autoLogin() {
-            const savedId = localStorage.getItem('yoga_current_id');
-            if (savedId) {
-                const user = users.find(u => u.id == savedId);
+            const savedPhone = localStorage.getItem('yoga_saved_phone');
+            const savedPassword = localStorage.getItem('yoga_saved_password');
+            if (savedPhone && savedPassword) {
+                const user = users.find(u => u.phone === savedPhone && u.password === savedPassword);
                 if (user) {
                     currentUser = user;
                     document.getElementById('userName').textContent = user.name;
