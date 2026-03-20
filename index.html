@@ -191,9 +191,11 @@
                 <div class="tabs">
                     <button class="active" onclick="showTeacherTab('members')">會員</button>
                     <button onclick="showTeacherTab('bookings')">預約</button>
+                    <button onclick="showTeacherTab('courses')">課程</button>
                 </div>
                 <div id="teacherMembers"></div>
                 <div id="teacherBookings" style="display:none"></div>
+                <div id="teacherCourses" style="display:none"></div>
             </div>
             <div class="footer">
                 <button onclick="logout()">登出</button>
@@ -260,10 +262,12 @@ function showTab(tab) {
 
 function showTeacherTab(tab) {
     document.querySelectorAll('.tabs button').forEach(function(b, i) {
-        b.classList.toggle('active', (tab === 'members' && i === 0) || (tab === 'bookings' && i === 1));
+        b.classList.toggle('active', (tab === 'members' && i === 0) || (tab === 'bookings' && i === 1) || (tab === 'courses' && i === 2));
     });
     document.getElementById('teacherMembers').style.display = tab === 'members' ? 'block' : 'none';
     document.getElementById('teacherBookings').style.display = tab === 'bookings' ? 'block' : 'none';
+    document.getElementById('teacherCourses').style.display = tab === 'courses' ? 'block' : 'none';
+    if (tab === 'courses') renderTeacherCourses();
 }
 
 // 註冊
@@ -506,6 +510,58 @@ function delBooking(id) {
         bookings = bookings.filter(function(b){return b.id !== id});
         saveData();
         renderTeacher();
+    }
+}
+
+function renderTeacherCourses() {
+    var chtml = '';
+    chtml += '<div style="margin-bottom:15px">';
+    chtml += '<h3 style="color:#ff6b8f;margin-bottom:10px">新增課程</h3>';
+    chtml += '<input type="text" id="newCourseName" placeholder="課程名稱" style="margin-bottom:8px">';
+    chtml += '<input type="text" id="newCourseTeacher" placeholder="老師名稱" style="margin-bottom:8px">';
+    chtml += '<input type="text" id="newCourseTime" placeholder="時間 (如 15:00)" style="margin-bottom:8px">';
+    chtml += '<input type="number" id="newCourseCapacity" placeholder="名額" value="8" style="margin-bottom:8px">';
+    chtml += '<button onclick="addCourse()" style="margin-bottom:15px">新增課程</button>';
+    chtml += '</div>';
+    
+    chtml += '<h3 style="color:#ff6b8f;margin-bottom:10px">現有課程</h3>';
+    if (courses.length === 0) {
+        chtml += '<p style="color:#8a6a6a">尚無課程</p>';
+    } else {
+        courses.forEach(function(c) {
+            chtml += '<div class="member-item">';
+            chtml += '<span><b>' + c.name + '</b> - ' + c.teacher + ' (' + c.time + ', ' + c.capacity + '人)</span>';
+            chtml += '<button onclick="delCourse(' + c.id + ')" style="background:#ff4777;width:auto;padding:5px 10px;font-size:12px">刪除</button>';
+            chtml += '</div>';
+        });
+    }
+    document.getElementById('teacherCourses').innerHTML = chtml;
+}
+
+function addCourse() {
+    var name = document.getElementById('newCourseName').value.trim();
+    var teacher = document.getElementById('newCourseTeacher').value.trim();
+    var time = document.getElementById('newCourseTime').value.trim();
+    var capacity = parseInt(document.getElementById('newCourseCapacity').value) || 8;
+    
+    if (!name || !teacher || !time) { alert('請填寫課程名稱、老師、時間'); return; }
+    
+    courses.push({id:Date.now(), name:name, teacher:teacher, time:time, capacity:capacity});
+    saveData();
+    
+    document.getElementById('newCourseName').value = '';
+    document.getElementById('newCourseTeacher').value = '';
+    document.getElementById('newCourseTime').value = '';
+    
+    alert('課程已新增！');
+    renderTeacherCourses();
+}
+
+function delCourse(id) {
+    if (confirm('刪除此課程？')) {
+        courses = courses.filter(function(c){return c.id !== id});
+        saveData();
+        renderTeacherCourses();
     }
 }
 
