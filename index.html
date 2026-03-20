@@ -504,8 +504,7 @@ function renderTeacher() {
             bhtml += '<div id="students-' + key + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #ffe5ec">';
             g.students.forEach(function(s) {
                 bhtml += '<div style="padding:8px;background:#fff0f3;border-radius:8px;margin-bottom:5px">';
-                bhtml += '<b>' + s.name + '</b> (' + s.phone + ') ';
-                bhtml += '<button onclick="event.stopPropagation();delBooking(' + s.id + ')" style="background:#ff4777;color:white;border:none;padding:3px 8px;border-radius:10px;font-size:12px">刪除</button>';
+                bhtml += '<b>' + s.name + '</b> (' + s.phone + ')';
                 bhtml += '</div>';
             });
             bhtml += '</div>';
