@@ -6,11 +6,11 @@
     <title>九容瑜伽</title>
     <style>
         :root {
-            --primary: #e8b4b8;
-            --primary-dark: #d4929a;
-            --accent: #9e2a2b;
-            --bg: #fff5f5;
-            --text: #4a1a1a;
+            --primary: #ffb6c1;
+            --primary-dark: #ff91a4;
+            --accent: #d63384;
+            --bg: #fff0f5;
+            --text: #8b4557;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -20,12 +20,13 @@
             min-height: 100vh;
         }
         .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, #ffc0cb 0%, #ffb6c1 50%, #ff91a4 100%);
             padding: 30px 20px;
             text-align: center;
+            box-shadow: 0 4px 15px rgba(214, 51, 132, 0.2);
         }
-        .header h1 { font-size: 28px; color: var(--accent); margin-bottom: 5px; }
-        .header p { font-size: 14px; opacity: 0.8; }
+        .header h1 { font-size: 32px; color: #d63384; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
+        .header p { font-size: 16px; color: #8b4557; }
         
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         
@@ -48,40 +49,42 @@
             cursor: pointer;
         }
         .nav button.active {
-            background: var(--accent);
+            background: #d63384;
             color: white;
-            border-color: var(--accent);
+            border-color: #d63384;
         }
         
         /* 卡片 */
         .card {
             background: white;
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 25px;
             margin-bottom: 15px;
-            box-shadow: 0 2px 10px rgba(158, 42, 43, 0.1);
+            box-shadow: 0 4px 20px rgba(214, 51, 132, 0.15);
+            border: 1px solid rgba(255, 182, 193, 0.3);
         }
         
         /* 課程卡片 */
         .course-card {
-            border-left: 4px solid var(--accent);
+            border-left: 4px solid #d63384;
             padding: 15px;
-            background: #fffdfd;
-            border-radius: 0 10px 10px 0;
+            background: #fff5f8;
+            border-radius: 0 15px 15px 0;
             margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(214, 51, 132, 0.1);
         }
-        .course-card .name { font-size: 18px; font-weight: 700; color: var(--accent); }
-        .course-card .info { font-size: 14px; color: #666; margin: 5px 0; }
+        .course-card .name { font-size: 18px; font-weight: 700; color: #d63384; }
+        .course-card .info { font-size: 14px; color: #8b4557; margin: 5px 0; }
         .course-card .capacity { 
             font-size: 13px; 
-            color: var(--accent);
-            background: var(--bg);
+            color: #d63384;
+            background: #fff0f5;
             padding: 3px 10px;
             border-radius: 20px;
             display: inline-block;
             margin-top: 8px;
         }
-        .course-card .capacity.full { background: #ffebee; color: #c62828; }
+        .course-card .capacity.full { background: #ffebf0; color: #c62828; }
         
         /* 表單 */
         .form-group { margin-bottom: 15px; }
@@ -89,25 +92,31 @@
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid var(--primary);
-            border-radius: 8px;
+            border: 2px solid #ffb6c1;
+            border-radius: 12px;
             font-size: 16px;
+            background: #fffafc;
         }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: #d63384;
+            box-shadow: 0 0 0 3px rgba(214, 51, 132, 0.1);
         }
         
         button.btn-primary {
             width: 100%;
             padding: 14px;
-            background: var(--accent);
+            background: linear-gradient(135deg, #d63384 0%, #c1357a 100%);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 25px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(214, 51, 132, 0.3);
+        }
+        button.btn-primary:hover {
+            background: linear-gradient(135deg, #c1357a 0%, #a82d6d 100%);
         }
         button.btn-secondary {
             background: #888;
@@ -116,10 +125,10 @@
         /* 預約卡片 */
         .booking-card {
             padding: 15px;
-            background: #fffdfd;
-            border-radius: 10px;
+            background: #fff5f8;
+            border-radius: 12px;
             margin-bottom: 10px;
-            border: 1px solid var(--primary);
+            border: 1px solid #ffb6c1;
         }
         .booking-card .date { font-weight: 700; color: var(--accent); }
         .booking-card .course { font-size: 16px; margin: 5px 0; }
