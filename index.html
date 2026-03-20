@@ -373,9 +373,7 @@ function goBook(courseId) {
     var course = courses.find(function(c){return c.id === courseId});
     
     var html = '<div class="course"><div class="course-name">' + course.name + '</div>';
-    html += '<div class="course-info">👩‍🏫 ' + course.teacher + ' | ⏰ ' + course.time + '</div>';
-    html += '<div class="course-info">姓名: ' + currentUser.name + '</div>';
-    html += '<div class="course-info">手機: ' + currentUser.phone + '</div></div>';
+    html += '<div class="course-info">👩‍🏫 ' + course.teacher + ' | ⏰ ' + course.time + '</div></div>';
     document.getElementById('bookInfo').innerHTML = html;
     
     var dates = getFridays();
@@ -386,7 +384,23 @@ function goBook(courseId) {
     });
     document.getElementById('bookDate').innerHTML = opt;
     
+    // 顯示剩餘名額
+    updateRemaining();
+    document.getElementById('bookDate').onchange = updateRemaining;
+    
     showPage('book');
+}
+
+function updateRemaining() {
+    var course = courses.find(function(c){return c.id === selectCourseId});
+    var date = document.getElementById('bookDate').value;
+    var booked = bookings.filter(function(b){return b.courseId === selectCourseId && b.date === date && b.status !== 'cancelled'}).length;
+    var remain = course.capacity - booked;
+    
+    var info = document.getElementById('bookInfo');
+    info.innerHTML = '<div class="course"><div class="course-name">' + course.name + '</div>';
+    info.innerHTML += '<div class="course-info">👩‍🏫 ' + course.teacher + ' | ⏰ ' + course.time + '</div>';
+    info.innerHTML += '<div class="course-info" style="color:#ff6b8f;font-weight:bold">剩餘名額: ' + remain + '/' + course.capacity + '</div></div>';
 }
 
 // 確認預約
