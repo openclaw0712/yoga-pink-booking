@@ -43,7 +43,6 @@
             </div>
             
             <div id="loginTab">
-                <button onclick="clearData()" style="background:#ff6b6b;margin-bottom:15px;padding:8px;">🗑️ 清除所有資料</button>
                 <input type="tel" id="phone" placeholder="手機號碼">
                 <input type="password" id="password" placeholder="密碼">
                 <div class="checkbox">
@@ -139,17 +138,27 @@ function clearData() {
 
 function init() {
     try {
-        users = JSON.parse(localStorage.getItem('yoga_users')) || [];
-        bookings = JSON.parse(localStorage.getItem('yoga_bookings')) || [];
-        courses = JSON.parse(localStorage.getItem('yoga_courses')) || [{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}];
-        if(courses.length===0){courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}]}
-    } catch(e) {users=[];bookings=[];courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}]}
+        var storedUsers = localStorage.getItem('yoga_users');
+        users = storedUsers ? JSON.parse(storedUsers) : [];
+        if(!Array.isArray(users)) users = [];
+        
+        var storedBookings = localStorage.getItem('yoga_bookings');
+        bookings = storedBookings ? JSON.parse(storedBookings) : [];
+        if(!Array.isArray(bookings)) bookings = [];
+        
+        var storedCourses = localStorage.getItem('yoga_courses');
+        courses = storedCourses ? JSON.parse(storedCourses) : [{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}];
+        if(!Array.isArray(courses) || courses.length===0){courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}]}
+    } catch(e) {
+        console.error('Init error:', e);
+        users=[];bookings=[];courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}];
+    }
     save();
     
-    // 自動登入
+    // 自動登入（如果有效）
     var savedPhone = localStorage.getItem('yoga_phone');
     var savedPw = localStorage.getItem('yoga_pw');
-    if(savedPhone && savedPw) {
+    if(savedPhone && savedPw && users.some(function(u){return u.phone===savedPhone && u.pw===savedPw})) {
         document.getElementById('phone').value = savedPhone;
         document.getElementById('password').value = savedPw;
         document.getElementById('remember').checked = true;
@@ -223,7 +232,10 @@ function doLogin() {
     var pw = document.getElementById('password').value;
     var remember = document.getElementById('remember').checked;
     
+    console.log('Login attempt:', phone, 'users:', users);
+    
     var user = users.find(function(u){return u.phone === phone && u.pw === pw});
+    console.log('Found user:', user);
     if(user) {
         currentUser = user;
         if(remember) {
@@ -238,7 +250,7 @@ function doLogin() {
         showScreen('studentScreen');
         renderCourses();
     } else {
-        document.getElementById('loginError').innerText = '帳號或密碼錯誤';
+        document.getElementById('loginError').innerText = '帳號或密碼錯誤，請先註冊';
     }
 }
 
@@ -345,7 +357,8 @@ function cancelMy(id) {
 
 // 老師列表
 function renderTeacher() {
-    var html = '';
+    var html = renderTeacherUsers();
+    html += '<h3>預約紀錄</h3>';
     var all = bookings.filter(function(b){return b.status!='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
     if(all.length === 0) html = '<p style="text-align:center">尚無預約</p>';
     all.forEach(function(b) {
@@ -358,6 +371,28 @@ function renderTeacher() {
 function deleteBooking(id) {
     if(confirm('刪除？')) {
         bookings = bookings.filter(function(b){return b.id!==id});
+        save();
+        renderTeacher();
+    }
+}
+
+// 老師管理會員
+function renderTeacherUsers() {
+    var html = '<h3>會員管理</h3><div style="margin-bottom:20px">';
+    users.forEach(function(u) {
+        html += '<div style="padding:10px;background:#fff0f3;margin-bottom:8px;border-radius:8px;display:flex;justify-content:space-between;align-items:center">';
+        html += '<span><b>'+u.name+'</b> ('+u.phone+')</span>';
+        html += '<button onclick="deleteUser('+u.id+')" style="background:#ff6b6b;width:auto;padding:5px 10px;font-size:12px">刪除</button>';
+        html += '</div>';
+    });
+    html += '</div>';
+    return html;
+}
+
+function deleteUser(id) {
+    if(confirm('刪除此會員帳號？')) {
+        users = users.filter(function(u){return u.id!==id});
+        bookings = bookings.filter(function(b){return b.userId!==id});
         save();
         renderTeacher();
     }
