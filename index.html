@@ -118,10 +118,6 @@
                         <input type="tel" id="regPhone" placeholder="09xxxxxxxx">
                     </div>
                     <div class="form-group">
-                        <label>LINE ID（選填）</label>
-                        <input type="text" id="regLine" placeholder="LINE ID">
-                    </div>
-                    <div class="form-group">
                         <label>設定密碼</label>
                         <input type="password" id="regPassword" placeholder="請設定密碼">
                     </div>
@@ -220,6 +216,10 @@
                         <label>老師</label>
                         <input type="text" id="newCourseTeacher" placeholder="老師姓名">
                     </div>
+                    <div class="form-group">
+                        <label>人數上限</label>
+                        <input type="number" id="newCourseCapacity" value="8" min="1" max="20">
+                    </div>
                     <button onclick="addCourse()">儲存課程</button>
                 </div>
                 <div id="courseList"></div>
@@ -238,7 +238,7 @@
         let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
         let bookings = JSON.parse(localStorage.getItem(BOOKINGS_KEY)) || [];
         let courses = JSON.parse(localStorage.getItem(COURSES_KEY)) || [
-            { id: 1, name: '基礎瑜伽', teacher: '小怡老師', day: 5, time: '15:00' }
+            { id: 1, name: '基礎瑜伽', teacher: '小怡老師', day: 5, time: '15:00', capacity: 8 }
         ];
         
         let currentUser = null;
@@ -276,7 +276,6 @@
         function register() {
             const name = document.getElementById('regName').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
-            const line = document.getElementById('regLine').value.trim();
             const password = document.getElementById('regPassword').value;
             
             if (!name || !phone || !password) {
@@ -289,7 +288,7 @@
                 return;
             }
             
-            users.push({ id: Date.now(), name, phone, line, password });
+            users.push({ id: Date.now(), name, phone, password });
             saveData();
             
             alert('註冊成功！請登入');
@@ -356,9 +355,14 @@
         
         function renderStudentCourses() {
             const select = document.getElementById('studentCourse');
-            select.innerHTML = courses.map(c => 
-                `<option value="${c.id}">${c.name} - ${c.teacher}</option>`
-            ).join('');
+            select.innerHTML = courses.map(c => {
+                const dateInput = document.getElementById('studentDate');
+                const selectedDate = dateInput ? dateInput.value : '';
+                const booked = selectedDate ? bookings.filter(b => b.courseId === c.id && b.date === selectedDate && b.status !== 'completed').length : 0;
+                const remaining = (c.capacity || 8) - booked;
+                const label = remaining > 0 ? `${c.name} - ${c.teacher} (剩餘${remaining}位)` : `${c.name} - ${c.teacher} (額滿)`;
+                return `<option value="${c.id}">${label}</option>`;
+            }).join('');
             
             // 設定日期限制
             const dateInput = document.getElementById('studentDate');
@@ -402,6 +406,14 @@
             
             if (!date) {
                 alert('請選擇日期');
+                return;
+            }
+            
+            // 檢查名額
+            const courseCapacity = course.capacity || 8;
+            const bookedCount = bookings.filter(b => b.courseId === courseId && b.date === date && b.status !== 'completed').length;
+            if (bookedCount >= courseCapacity) {
+                alert('該時段已額滿，請選擇其他日期或時段');
                 return;
             }
             
@@ -530,13 +542,14 @@
         function addCourse() {
             const name = document.getElementById('newCourseName').value.trim();
             const teacher = document.getElementById('newCourseTeacher').value.trim();
+            const capacity = parseInt(document.getElementById('newCourseCapacity').value) || 8;
             
             if (!name || !teacher) {
                 alert('請填寫課程名稱和老師');
                 return;
             }
             
-            courses.push({ id: Date.now(), name, teacher, day: 5, time: '15:00' });
+            courses.push({ id: Date.now(), name, teacher, day: 5, time: '15:00', capacity: capacity });
             saveData();
             
             document.getElementById('newCourseName').value = '';
