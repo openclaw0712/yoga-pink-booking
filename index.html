@@ -275,7 +275,7 @@
         let courses = JSON.parse(localStorage.getItem(COURSES_KEY)) || [
             {id: 1, name: '基礎瑜伽', teacher: '小怡老師', day: 5, time: '15:00', desc: '每週五下午基礎瑜伽課程'}
         ];
-        let bookings = JSON.parse(localStorage.getItem(BOOKINGS_KEY)) || '[]';
+        let bookings = JSON.parse(localStorage.getItem(BOOKINGS_KEY)) || [];
         
         // 初始化 - 只允許星期五
         const today = new Date();
