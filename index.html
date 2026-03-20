@@ -5,404 +5,652 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>九容瑜伽</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:sans-serif;background:linear-gradient(135deg,#ffe5ec,#ffc2d1);min-height:100vh;padding:20px}
-        .container{max-width:450px;margin:0 auto}
-        .card{background:white;border-radius:20px;padding:25px;margin-bottom:20px;box-shadow:0 10px30px rgba(164,19,60,0.15)}
-        h1{text-align:center;color:#590d22;margin-bottom:20px}
-        input,select,textarea{width:100%;padding:12px;border:2px solid #ffc2d1;border-radius:10px;margin-bottom:15px;font-size:16px}
-        button{width:100%;padding:14px;background:#ff8fab;color:white;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer}
-        .tab{display:flex;gap:10px;margin-bottom:20px}
-        .tab button{flex:1;background:rgba(255,255,255,0.6);color:#590d22}
-        .tab button.active{background:#ff8fab;color:white}
-        .screen{display:none}
-        .screen.active{display:block}
-        .booking{background:#fff0f3;padding:15px;border-radius:10px;margin-bottom:10px;border-left:4px solid #ff8fab}
-        .booking .date{font-weight:600;color:#590d22}
-        .booking .info{font-size:14px;color:#a4133c}
-        .btn-danger{background:#ff6b6b;width:auto;padding:8px 15px;font-size:14px}
-        .btn-group{display:flex;gap:10px;margin-top:10px}
-        .btn-group button{width:auto;flex:1;padding:10px}
-        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-        .user-info{text-align:center;padding:15px;background:#fff0f3;border-radius:10px;margin-bottom:15px}
-        .checkbox{display:flex;align-items:center;gap:8px;margin-bottom:15px}
-        .checkbox input{width:auto;margin:0}
-        .error{color:red;font-size:14px;text-align:center}
+        :root {
+            --primary: #e8b4b8;
+            --primary-dark: #d4929a;
+            --accent: #9e2a2b;
+            --bg: #fff5f5;
+            --text: #4a1a1a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 { font-size: 28px; color: var(--accent); margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.8; }
+        
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        
+        /* 導航 */
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .nav button {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav button.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        /* 卡片 */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(158, 42, 43, 0.1);
+        }
+        
+        /* 課程卡片 */
+        .course-card {
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            background: #fffdfd;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 12px;
+        }
+        .course-card .name { font-size: 18px; font-weight: 700; color: var(--accent); }
+        .course-card .info { font-size: 14px; color: #666; margin: 5px 0; }
+        .course-card .capacity { 
+            font-size: 13px; 
+            color: var(--accent);
+            background: var(--bg);
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .course-card .capacity.full { background: #ffebee; color: #c62828; }
+        
+        /* 表單 */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        button.btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        button.btn-secondary {
+            background: #888;
+        }
+        
+        /* 預約卡片 */
+        .booking-card {
+            padding: 15px;
+            background: #fffdfd;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--primary);
+        }
+        .booking-card .date { font-weight: 700; color: var(--accent); }
+        .booking-card .course { font-size: 16px; margin: 5px 0; }
+        .booking-card .status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        /* 會列表 */
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--primary);
+        }
+        .member-item:last-child { border-bottom: none; }
+        
+        .error { color: #c62828; text-align: center; margin-bottom: 10px; }
+        .success { color: #2e7d32; text-align: center; margin-bottom: 10px; }
+        
+        .hidden { display: none; }
+        
+        @media (max-width: 480px) {
+            .header h1 { font-size: 24px; }
+            .container { padding: 15px; }
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>🌸 九容瑜伽</h1>
+    <div class="header">
+        <h1>🧘 九容瑜伽</h1>
+        <p>每週五 15:00 基礎瑜伽</p>
+    </div>
     
-    <!-- 登入畫面 -->
-    <div id="loginScreen" class="screen active">
-        <div class="card">
-            <div class="tab">
-                <button class="active" onclick="showTab('login')">登入</button>
-                <button onclick="showTab('register')">註冊</button>
+    <div class="container">
+        <!-- 導航 -->
+        <div class="nav" id="mainNav">
+            <button class="active" data-tab="courses">課程</button>
+            <button data-tab="book">預約</button>
+            <button data-tab="my">我的</button>
+            <button data-tab="login">登入</button>
+        </div>
+        
+        <!-- 課程列表 -->
+        <div id="tab-courses" class="tab-content">
+            <div class="card">
+                <h2 style="margin-bottom:15px;color:var(--accent)">📅 每週課程</h2>
+                <div id="courseList"></div>
             </div>
-            
-            <div id="loginTab">
-                <input type="tel" id="phone" placeholder="手機號碼">
-                <input type="password" id="password" placeholder="密碼">
-                <div class="checkbox">
-                    <input type="checkbox" id="remember">
-                    <label>記住我</label>
+        </div>
+        
+        <!-- 預約表單 -->
+        <div id="tab-book" class="tab-content hidden">
+            <div class="card">
+                <h2 style="margin-bottom:15px;color:var(--accent)">📝 預約報名</h2>
+                <div class="form-group">
+                    <label>選擇課程</label>
+                    <select id="bookCourse"></select>
                 </div>
-                <button onclick="doLogin()">登入</button>
-                <p class="error" id="loginError"></p>
+                <div class="form-group">
+                    <label>選擇日期</label>
+                    <select id="bookDate"></select>
+                </div>
+                <div class="form-group">
+                    <label>姓名</label>
+                    <input type="text" id="bookName" placeholder="請輸入姓名">
+                </div>
+                <div class="form-group">
+                    <label>手機</label>
+                    <input type="tel" id="bookPhone" placeholder="09xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>備註</label>
+                    <textarea id="bookNote" rows="2" placeholder="如有舊傷或其他需注意"></textarea>
+                </div>
+                <button class="btn-primary" onclick="submitBooking()">確認預約</button>
+                <p id="bookMsg" class="error"></p>
+            </div>
+        </div>
+        
+        <!-- 我的預約 -->
+        <div id="tab-my" class="tab-content hidden">
+            <div class="card">
+                <h2 style="margin-bottom:15px;color:var(--accent)">📋 我的預約</h2>
+                <div id="myBookingList"></div>
+            </div>
+        </div>
+        
+        <!-- 登入/註冊 -->
+        <div id="tab-login" class="tab-content hidden">
+            <div class="card">
+                <div id="loginForm">
+                    <h2 style="margin-bottom:15px;color:var(--accent)">🔐 會員登入</h2>
+                    <div class="form-group">
+                        <label>手機</label>
+                        <input type="tel" id="loginPhone" placeholder="09xxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>密碼</label>
+                        <input type="password" id="loginPw" placeholder="密碼">
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:8px">
+                            <input type="checkbox" id="rememberMe" style="width:auto;margin:0">
+                            記住登入
+                        </label>
+                    </div>
+                    <button class="btn-primary" onclick="doLogin()">登入</button>
+                    <p id="loginError" class="error"></p>
+                    <p style="text-align:center;margin-top:15px">
+                        還沒帳號？<a href="#" onclick="showRegister()" style="color:var(--accent)">立即註冊</a>
+                    </p>
+                </div>
+                
+                <div id="registerForm" class="hidden">
+                    <h2 style="margin-bottom:15px;color:var(--accent)">✨ 註冊會員</h2>
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <input type="text" id="regName" placeholder="請輸入姓名">
+                    </div>
+                    <div class="form-group">
+                        <label>手機</label>
+                        <input type="tel" id="regPhone" placeholder="09xxxxxxxx">
+                    </div>
+                    <div class="form-group">
+                        <label>密碼</label>
+                        <input type="password" id="regPw" placeholder="設定密碼">
+                    </div>
+                    <button class="btn-primary" onclick="doRegister()">註冊</button>
+                    <p id="regError" class="error"></p>
+                    <p style="text-align:center;margin-top:15px">
+                        已有帳號？<a href="#" onclick="showLogin()" style="color:var(--accent)">立即登入</a>
+                    </p>
+                </div>
             </div>
             
-            <div id="registerTab" style="display:none">
-                <input type="text" id="regName" placeholder="姓名">
-                <input type="tel" id="regPhone" placeholder="手機號碼">
-                <input type="password" id="regPassword" placeholder="密碼">
-                <button onclick="doRegister()">註冊</button>
-                <p class="error" id="regError"></p>
+            <div class="card" style="text-align:center">
+                <p>老師專區</p>
+                <button class="btn-secondary" style="background:transparent;border:2px solid var(--accent);color:var(--accent);margin-top:10px" onclick="showTeacherLogin()">老師入口</button>
             </div>
         </div>
         
-        <div class="card" style="text-align:center">
-            <p>老師登入</p>
-            <button class="outline" style="background:transparent;border:2px solid #ff8fab;color:#ff8fab" onclick="showScreen('teacherLogin')">老師入口</button>
-        </div>
-    </div>
-    
-    <!-- 學員畫面 -->
-    <div id="studentScreen" class="screen">
-        <div class="header">
-            <div class="user-info">
-                <div id="userName" style="font-weight:600"></div>
-                <div id="userPhone" style="font-size:14px;color:#a4133c"></div>
+        <!-- 老師登入 -->
+        <div id="tab-teacher-login" class="tab-content hidden">
+            <div class="card">
+                <h2 style="margin-bottom:15px;color:var(--accent)">👩‍🏫 老師登入</h2>
+                <div class="form-group">
+                    <label>帳號</label>
+                    <input type="text" id="teacherId" value="teacher">
+                </div>
+                <div class="form-group">
+                    <label>密碼</label>
+                    <input type="password" id="teacherPw">
+                </div>
+                <button class="btn-primary" onclick="doTeacherLogin()">登入</button>
+                <button class="btn-secondary" onclick="switchTab('login')" style="margin-top:10px;background:#ccc;border:none;padding:12px;border-radius:10px;width:100%">返回</button>
             </div>
-            <button onclick="doLogout()" style="width:auto;padding:8px 15px;background:#aaa">登出</button>
         </div>
         
-        <div class="tab">
-            <button class="active" onclick="showTab2('book')">預約</button>
-            <button onclick="showTab2('my')">我的預約</button>
-        </div>
-        
-        <div id="bookTab" class="card">
-            <select id="courseSelect"></select>
-            <input type="date" id="dateInput" min>
-            <div id="remaining" style="margin-bottom:15px;color:#fb6f92;font-weight:600"></div>
-            <textarea id="note" placeholder="備註"></textarea>
-            <button onclick="doBook()">確認預約</button>
-        </div>
-        
-        <div id="myTab" class="card" style="display:none">
-            <div id="myList"></div>
-        </div>
-    </div>
-    
-    <!-- 老師登入 -->
-    <div id="teacherLogin" class="screen">
-        <div class="card">
-            <h2>👩‍🏫 老師登入</h2>
-            <input type="text" id="teacherId" value="teacher" placeholder="ID">
-            <input type="password" id="teacherPw" placeholder="密碼">
-            <button onclick="doTeacherLogin()">登入</button>
-            <button onclick="showScreen('loginScreen')" style="background:#aaa;margin-top:10px">返回</button>
+        <!-- 老師後台 -->
+        <div id="tab-teacher" class="tab-content hidden">
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+                    <h2 style="color:var(--accent)">👩‍🏫 老師後台</h2>
+                    <button onclick="logout()" style="background:none;border:none;color:var(--accent);cursor:pointer">登出</button>
+                </div>
+                
+                <h3 style="margin:15px 0 10px;color:var(--accent)">👥 會員管理</h3>
+                <div id="memberList"></div>
+                
+                <h3 style="margin:20px 0 10px;color:var(--accent)">📋 預約紀錄</h3>
+                <div id="teacherBookingList"></div>
+            </div>
         </div>
     </div>
-    
-    <!-- 老師後台 -->
-    <div id="teacherScreen" class="screen">
-        <div class="header">
-            <h2>👩‍🏫 老師後台</h2>
-            <button onclick="showScreen('loginScreen')" style="width:auto;padding:8px;background:#aaa">登出</button>
-        </div>
-        <div id="teacherList"></div>
-    </div>
-</div>
 
 <script>
 // 資料
 var users = [];
 var bookings = [];
-var courses = [{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}];
+var courses = [];
 var currentUser = null;
 
 // 初始化
-function clearData() {
-    if(confirm('確定清除所有資料？')) {
-        localStorage.removeItem('yoga_users');
-        localStorage.removeItem('yoga_bookings');
-        localStorage.removeItem('yoga_courses');
-        localStorage.removeItem('yoga_phone');
-        localStorage.removeItem('yoga_pw');
-        alert('已清除！請重新整理頁面');
-    }
-}
-
 function init() {
+    loadData();
+    renderCourses();
+    renderDates();
+    checkAutoLogin();
+}
+
+function loadData() {
     try {
-        var storedUsers = localStorage.getItem('yoga_users');
-        users = storedUsers ? JSON.parse(storedUsers) : [];
-        if(!Array.isArray(users)) users = [];
-        
-        var storedBookings = localStorage.getItem('yoga_bookings');
-        bookings = storedBookings ? JSON.parse(storedBookings) : [];
-        if(!Array.isArray(bookings)) bookings = [];
-        
-        var storedCourses = localStorage.getItem('yoga_courses');
-        courses = storedCourses ? JSON.parse(storedCourses) : [{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}];
-        if(!Array.isArray(courses) || courses.length===0){courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}]}
-    } catch(e) {
-        console.error('Init error:', e);
-        users=[];bookings=[];courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',capacity:8}];
-    }
-    save();
-    
-    // 自動登入（如果有效）
-    var savedPhone = localStorage.getItem('yoga_phone');
-    var savedPw = localStorage.getItem('yoga_pw');
-    if(savedPhone && savedPw && users.some(function(u){return u.phone===savedPhone && u.pw===savedPw})) {
-        document.getElementById('phone').value = savedPhone;
-        document.getElementById('password').value = savedPw;
-        document.getElementById('remember').checked = true;
-        doLogin();
-    }
-    
-    // 日期 - 只顯示禮拜五
-    var dates = [];
-    var d = new Date();
-    while(dates.length < 12) {
-        if(d.getDay() === 5) dates.push(d.toISOString().split('T')[0]);
-        d.setDate(d.getDate() + 1);
-    }
-    var opt = '';
-    dates.forEach(function(x) {
-        var dd = new Date(x);
-        opt += '<option value="'+x+'">'+(dd.getMonth()+1)+'月'+dd.getDate()+'日 禮拜五</option>';
-    });
-    document.getElementById('dateInput').innerHTML = opt;
-    // 設定 min 屬性防止選其他天
-    if(dates.length > 0) {
-        document.getElementById('dateInput').min = dates[0];
-        document.getElementById('dateInput').value = dates[0];
-    }
-}
-
-function save() {
-    try {
-        localStorage.setItem('yoga_users', JSON.stringify(users));
-        localStorage.setItem('yoga_bookings', JSON.stringify(bookings));
-        localStorage.setItem('yoga_courses', JSON.stringify(courses));
-    } catch(e) {}
-}
-
-function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
-    document.getElementById(id).classList.add('active');
-}
-
-function showTab(tab) {
-    document.querySelectorAll('.tab button').forEach(function(b,b_i){b.classList.toggle('active',b_i===(tab==='login'?0:1))});
-    document.getElementById('loginTab').style.display = tab==='login'?'block':'none';
-    document.getElementById('registerTab').style.display = tab==='register'?'block':'none';
-}
-
-function showTab2(tab) {
-    document.querySelectorAll('#studentScreen .tab button').forEach(function(b,b_i){b.classList.toggle('active',b_i===(tab==='book'?0:1))});
-    document.getElementById('bookTab').style.display = tab==='book'?'block':'none';
-    document.getElementById('myTab').style.display = tab==='my'?'block':'none';
-    if(tab==='my') renderMy();
-}
-
-// 註冊
-function doRegister() {
-    var name = document.getElementById('regName').value.trim();
-    var phone = document.getElementById('regPhone').value.trim();
-    var pw = document.getElementById('regPassword').value;
-    
-    if(!name || !phone || !pw) {
-        document.getElementById('regError').innerText = '請填寫完整';
-        return;
-    }
-    if(users.some(function(u){return u.phone === phone})) {
-        document.getElementById('regError').innerText = '已註冊';
-        return;
-    }
-    users.push({id:Date.now(),name:name,phone:phone,pw:pw});
-    save();
-    alert('註冊成功！請登入');
-    showTab('login');
-}
-
-// 登入
-function doLogin() {
-    var phone = document.getElementById('phone').value.trim();
-    var pw = document.getElementById('password').value;
-    var remember = document.getElementById('remember').checked;
-    
-    console.log('Login attempt:', phone, 'users:', users);
-    
-    var user = users.find(function(u){return u.phone === phone && u.pw === pw});
-    console.log('Found user:', user);
-    if(user) {
-        currentUser = user;
-        if(remember) {
-            localStorage.setItem('yoga_phone',phone);
-            localStorage.setItem('yoga_pw',pw);
-        } else {
-            localStorage.removeItem('yoga_phone');
-            localStorage.removeItem('yoga_pw');
+        users = JSON.parse(localStorage.getItem('yoga_users')) || [];
+        bookings = JSON.parse(localStorage.getItem('yoga_bookings')) || [];
+        courses = JSON.parse(localStorage.getItem('yoga_courses')) || [];
+        if (!courses || courses.length === 0) {
+            courses = [
+                { id: 1, name: '基礎瑜伽', teacher: '小怡老師', time: '15:00', capacity: 8 }
+            ];
+            saveData();
         }
-        document.getElementById('userName').innerText = user.name;
-        document.getElementById('userPhone').innerText = user.phone;
-        showScreen('studentScreen');
-        renderCourses();
-    } else {
-        document.getElementById('loginError').innerText = '帳號或密碼錯誤，請先註冊';
+    } catch(e) {
+        courses = [{ id: 1, name: '基礎瑜伽', teacher: '小怡老師', time: '15:00', capacity: 8 }];
     }
 }
 
-function doLogout() {
-    currentUser = null;
-    showScreen('loginScreen');
+function saveData() {
+    localStorage.setItem('yoga_users', JSON.stringify(users));
+    localStorage.setItem('yoga_bookings', JSON.stringify(bookings));
+    localStorage.setItem('yoga_courses', JSON.stringify(courses));
 }
 
-// 老師登入
-function doTeacherLogin() {
-    var id = document.getElementById('teacherId').value;
-    var pw = document.getElementById('teacherPw').value;
-    if(id === 'teacher' && pw === 'yoga9527') {
-        showScreen('teacherScreen');
-        renderTeacher();
-    } else {
-        alert('錯誤');
+// 標籤切換
+document.querySelectorAll('.nav button').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        switchTab(this.dataset.tab);
+    });
+});
+
+function switchTab(tab) {
+    document.querySelectorAll('.nav button').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.tab === tab);
+    });
+    document.querySelectorAll('.tab-content').forEach(function(c) {
+        c.classList.add('hidden');
+    });
+    document.getElementById('tab-' + tab).classList.remove('hidden');
+    
+    if (tab === 'courses') renderCourses();
+    if (tab === 'my' && currentUser) renderMyBookings();
+    if (tab === 'book' && !currentUser) {
+        alert('請先登入');
+        switchTab('login');
     }
 }
 
 // 渲染課程
 function renderCourses() {
-    var date = document.getElementById('dateInput').value;
     var html = '';
     courses.forEach(function(c) {
-        var count = bookings.filter(function(b){return b.courseId===c.id && b.date===date && b.status!='cancelled'}).length;
-        var remain = c.capacity - count;
-        var disabled = remain<=0 ? 'disabled' : '';
-        html += '<option value="'+c.id+'" '+disabled+'>'+c.name+' - '+c.teacher+' (剩'+remain+'位)</option>';
+        var booked = bookings.filter(function(b) { return b.courseId === c.id && b.status !== 'cancelled'; }).length;
+        var remain = c.capacity - booked;
+        var fullClass = remain <= 0 ? 'full' : '';
+        
+        html += '<div class="course-card">';
+        html += '<div class="name">' + c.name + '</div>';
+        html += '<div class="info">👩‍🏫 ' + c.teacher + ' | ⏰ ' + c.time + '</div>';
+        html += '<span class="capacity ' + fullClass + '">剩餘名額: ' + remain + '/' + c.capacity + '</span>';
+        html += '</div>';
     });
-    document.getElementById('courseSelect').innerHTML = html;
+    document.getElementById('courseList').innerHTML = html;
     
-    if(date) {
-        var total = 0;
-        courses.forEach(function(c){
-            total += c.capacity - bookings.filter(function(b){return b.courseId===c.id && b.date===date && b.status!='cancelled'}).length;
-        });
-        document.getElementById('remaining').innerText = '當日剩餘：'+total+' 位';
+    // 預約表單的課程選項
+    var opt = '';
+    courses.forEach(function(c) {
+        var booked = bookings.filter(function(b) { return b.courseId === c.id && b.status !== 'cancelled'; }).length;
+        var remain = c.capacity - booked;
+        var disabled = remain <= 0 ? 'disabled' : '';
+        opt += '<option value="' + c.id + '" ' + disabled + '>' + c.name + ' - ' + c.teacher + ' (剩' + remain + '位)</option>';
+    });
+    document.getElementById('bookCourse').innerHTML = opt;
+}
+
+// 渲染日期
+function renderDates() {
+    var dates = [];
+    var d = new Date();
+    while (dates.length < 12) {
+        if (d.getDay() === 5) {
+            dates.push(d.toISOString().split('T')[0]);
+        }
+        d.setDate(d.getDate() + 1);
+    }
+    var opt = '';
+    dates.forEach(function(x) {
+        var dd = new Date(x);
+        opt += '<option value="' + x + '">' + (dd.getMonth() + 1) + '/' + dd.getDate() + ' (五)</option>';
+    });
+    document.getElementById('bookDate').innerHTML = opt;
+}
+
+// 會員登入/註冊
+function showRegister() {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('registerForm').classList.remove('hidden');
+}
+
+function showLogin() {
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('loginForm').classList.remove('hidden');
+}
+
+function doRegister() {
+    var name = document.getElementById('regName').value.trim();
+    var phone = document.getElementById('regPhone').value.trim();
+    var pw = document.getElementById('regPw').value;
+    
+    if (!name || !phone || !pw) {
+        document.getElementById('regError').innerText = '請填寫完整';
+        return;
+    }
+    if (users.some(function(u) { return u.phone === phone; })) {
+        document.getElementById('regError').innerText = '此手機已註冊';
+        return;
+    }
+    
+    var user = { id: Date.now(), name: name, phone: phone, pw: pw };
+    users.push(user);
+    saveData();
+    
+    alert('註冊成功！請登入');
+    showLogin();
+}
+
+function doLogin() {
+    var phone = document.getElementById('loginPhone').value.trim();
+    var pw = document.getElementById('loginPw').value;
+    var remember = document.getElementById('rememberMe').checked;
+    
+    var user = users.find(function(u) { return u.phone === phone && u.pw === pw; });
+    if (user) {
+        currentUser = user;
+        if (remember) {
+            localStorage.setItem('yoga_current_user', JSON.stringify(user));
+        }
+        switchTab('my');
+        renderMyBookings();
+    } else {
+        document.getElementById('loginError').innerText = '帳號或密碼錯誤';
     }
 }
 
-document.getElementById('dateInput').addEventListener('change',renderCourses);
+function checkAutoLogin() {
+    var saved = localStorage.getItem('yoga_current_user');
+    if (saved) {
+        try {
+            var user = JSON.parse(saved);
+            if (users.some(function(u) { return u.id === user.id; })) {
+                currentUser = user;
+                switchTab('my');
+                renderMyBookings();
+                return;
+            }
+        } catch(e) {}
+    }
+    switchTab('courses');
+}
+
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('yoga_current_user');
+    switchTab('courses');
+}
 
 // 預約
-function doBook() {
-    var courseId = parseInt(document.getElementById('courseSelect').value);
-    var date = document.getElementById('dateInput').value;
-    var note = document.getElementById('note').value;
-    var course = courses.find(function(c){return c.id===courseId});
+function submitBooking() {
+    if (!currentUser) {
+        alert('請先登入');
+        switchTab('login');
+        return;
+    }
     
-    if(!date || !courseId) {alert('請選擇');return;}
+    var courseId = parseInt(document.getElementById('bookCourse').value);
+    var date = document.getElementById('bookDate').value;
+    var name = document.getElementById('bookName').value.trim();
+    var phone = document.getElementById('bookPhone').value.trim();
+    var note = document.getElementById('bookNote').value;
+    var msg = document.getElementById('bookMsg');
+    
+    if (!name || !phone) {
+        msg.innerText = '請填寫姓名和手機';
+        return;
+    }
+    
+    var course = courses.find(function(c) { return c.id === courseId; });
     
     // 檢查重複
-    if(bookings.some(function(b){return b.userId===currentUser.id && b.courseId===courseId && b.date===date && b.status!='cancelled'})) {
-        alert('已預約過');
+    if (bookings.some(function(b) { 
+        return b.phone === phone && b.courseId === courseId && b.date === date && b.status !== 'cancelled'; 
+    })) {
+        msg.innerText = '您已預約過此課程';
         return;
     }
     
     // 檢查名額
-    var count = bookings.filter(function(b){return b.courseId===courseId && b.date===date && b.status!='cancelled'}).length;
-    if(count >= course.capacity) {alert('額滿');return;}
+    var booked = bookings.filter(function(b) { 
+        return b.courseId === courseId && b.date === date && b.status !== 'cancelled'; 
+    }).length;
+    if (booked >= course.capacity) {
+        msg.innerText = '名額已滿';
+        return;
+    }
     
     bookings.push({
-        id:Date.now(),
-        userId:currentUser.id,
-        userName:currentUser.name,
-        userPhone:currentUser.phone,
-        courseId:courseId,
-        courseName:course.name,
-        courseTeacher:course.teacher,
-        date:date,
-        time:'15:00',
-        note:note,
-        status:'confirmed'
+        id: Date.now(),
+        courseId: courseId,
+        courseName: course.name,
+        teacher: course.teacher,
+        date: date,
+        time: course.time,
+        name: name,
+        phone: phone,
+        note: note,
+        status: 'confirmed',
+        createdAt: new Date().toISOString()
     });
-    save();
+    saveData();
+    
     alert('預約成功！');
-    document.getElementById('note').value = '';
+    document.getElementById('bookName').value = '';
+    document.getElementById('bookPhone').value = '';
+    document.getElementById('bookNote').value = '';
+    msg.innerText = '';
+    
     renderCourses();
-    showTab2('my');
+    switchTab('my');
+    renderMyBookings();
 }
 
 // 我的預約
-function renderMy() {
-    var my = bookings.filter(function(b){return b.userId===currentUser.id}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
+function renderMyBookings() {
+    if (!currentUser) return;
+    
+    var my = bookings.filter(function(b) { return b.phone === currentUser.phone; });
     var html = '';
-    if(my.length === 0) html = '<p style="text-align:center;color:#a4133c">尚無預約</p>';
-    my.forEach(function(b) {
-        html += '<div class="booking"><div class="date">📅 '+b.date+' '+b.time+'</div><div class="info">'+b.courseName+' - '+b.courseTeacher+'</div>';
-        if(b.status !== 'cancelled') {
-            html += '<div class="btn-group"><button class="btn-danger" onclick="cancelMy('+b.id+')">取消預約</button></div>';
-        }
-        html += '</div>';
-    });
-    document.getElementById('myList').innerHTML = html;
+    
+    if (my.length === 0) {
+        html = '<p style="text-align:center;color:#666">尚無預約紀錄</p>';
+    } else {
+        my.sort(function(a, b) { return new Date(b.date) - new Date(a.date); }).forEach(function(b) {
+            html += '<div class="booking-card">';
+            html += '<div class="date">📅 ' + b.date + ' ' + b.time + '</div>';
+            html += '<div class="course">' + b.courseName + ' - ' + b.teacher + '</div>';
+            if (b.status !== 'cancelled') {
+                html += '<button onclick="cancelBooking(' + b.id + ')" style="background:#ff6b6b;color:white;border:none;padding:8px 15px;border-radius:8px;margin-top:10px;cursor:pointer">取消預約</button>';
+            }
+            html += '</div>';
+        });
+    }
+    document.getElementById('myBookingList').innerHTML = html;
 }
 
-function cancelMy(id) {
-    if(confirm('取消？')) {
-        var b = bookings.find(function(x){return x.id===id});
-        if(b) {b.status = 'cancelled'; save(); renderMy(); renderCourses();}
+function cancelBooking(id) {
+    if (confirm('確定取消？')) {
+        var b = bookings.find(function(x) { return x.id === id; });
+        if (b) {
+            b.status = 'cancelled';
+            saveData();
+            renderMyBookings();
+            renderCourses();
+        }
     }
 }
 
-// 老師列表
-function renderTeacher() {
-    var html = renderTeacherUsers();
-    html += '<h3>預約紀錄</h3>';
-    var all = bookings.filter(function(b){return b.status!='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
-    if(all.length === 0) html = '<p style="text-align:center">尚無預約</p>';
-    all.forEach(function(b) {
-        html += '<div class="booking"><div class="date">📅 '+b.date+' '+b.time+'</div><div class="info"><b>'+b.userName+'</b> ('+b.userPhone+')<br>'+b.courseName+' - '+b.courseTeacher+'<br>備註: '+(b.note||'-')+'</div>';
-        html += '<div class="btn-group"><button class="btn-danger" onclick="deleteBooking('+b.id+')">刪除</button></div></div>';
-    });
-    document.getElementById('teacherList').innerHTML = html;
+// 老師登入
+function showTeacherLogin() {
+    switchTab('teacher-login');
+}
+
+function doTeacherLogin() {
+    var id = document.getElementById('teacherId').value;
+    var pw = document.getElementById('teacherPw').value;
+    
+    if (id === 'teacher' && pw === 'yoga9527') {
+        renderTeacherPanel();
+        switchTab('teacher');
+    } else {
+        alert('帳號或密碼錯誤');
+    }
+}
+
+// 老師後台
+function renderTeacherPanel() {
+    // 會員列表
+    var memberHtml = '';
+    if (users.length === 0) {
+        memberHtml = '<p style="color:#666">尚無會員</p>';
+    } else {
+        users.forEach(function(u) {
+            memberHtml += '<div class="member-item">';
+            memberHtml += '<span><b>' + u.name + '</b> (' + u.phone + ')</span>';
+            memberHtml += '<button onclick="deleteMember(' + u.id + ')" style="background:#ff6b6b;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer">刪除</button>';
+            memberHtml += '</div>';
+        });
+    }
+    document.getElementById('memberList').innerHTML = memberHtml;
+    
+    // 預約列表
+    var bookingHtml = '';
+    var all = bookings.filter(function(b) { return b.status !== 'cancelled'; });
+    if (all.length === 0) {
+        bookingHtml = '<p style="color:#666">尚無預約</p>';
+    } else {
+        all.sort(function(a, b) { return new Date(b.date) - new Date(a.date); }).forEach(function(b) {
+            bookingHtml += '<div class="booking-card">';
+            bookingHtml += '<div class="date">📅 ' + b.date + ' ' + b.time + '</div>';
+            bookingHtml += '<div><b>' + b.name + '</b> (' + b.phone + ')</div>';
+            bookingHtml += '<div>' + b.courseName + ' - ' + b.teacher + '</div>';
+            if (b.note) bookingHtml += '<div style="color:#666;font-size:14px">備註: ' + b.note + '</div>';
+            bookingHtml += '<button onclick="deleteBooking(' + b.id + ')" style="background:#ff6b6b;color:white;border:none;padding:5px 10px;border-radius:5px;margin-top:10px;cursor:pointer">刪除</button>';
+            bookingHtml += '</div>';
+        });
+    }
+    document.getElementById('teacherBookingList').innerHTML = bookingHtml;
+}
+
+function deleteMember(id) {
+    if (confirm('刪除此會員？')) {
+        users = users.filter(function(u) { return u.id !== id; });
+        bookings = bookings.filter(function(b) { return b.userId !== id && b.phone !== users.find(function(u){return u.id===id})?.phone; });
+        saveData();
+        renderTeacherPanel();
+    }
 }
 
 function deleteBooking(id) {
-    if(confirm('刪除？')) {
-        bookings = bookings.filter(function(b){return b.id!==id});
-        save();
-        renderTeacher();
+    if (confirm('刪除此預約？')) {
+        bookings = bookings.filter(function(b) { return b.id !== id; });
+        saveData();
+        renderTeacherPanel();
+        renderCourses();
     }
 }
 
-// 老師管理會員
-function renderTeacherUsers() {
-    var html = '<h3>會員管理</h3><div style="margin-bottom:20px">';
-    users.forEach(function(u) {
-        html += '<div style="padding:10px;background:#fff0f3;margin-bottom:8px;border-radius:8px;display:flex;justify-content:space-between;align-items:center">';
-        html += '<span><b>'+u.name+'</b> ('+u.phone+')</span>';
-        html += '<button onclick="deleteUser('+u.id+')" style="background:#ff6b6b;width:auto;padding:5px 10px;font-size:12px">刪除</button>';
-        html += '</div>';
-    });
-    html += '</div>';
-    return html;
-}
-
-function deleteUser(id) {
-    if(confirm('刪除此會員帳號？')) {
-        users = users.filter(function(u){return u.id!==id});
-        bookings = bookings.filter(function(b){return b.userId!==id});
-        save();
-        renderTeacher();
-    }
-}
-
+// 啟動
 init();
 </script>
 </body>
