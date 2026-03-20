@@ -286,6 +286,8 @@ var currentUser = null;
 // 初始化
 function init() {
     loadData();
+    // 先顯示登入畫面
+    showLoginNav();
     renderCourses();
     renderDates();
     checkAutoLogin();
