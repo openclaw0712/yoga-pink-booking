@@ -473,6 +473,7 @@ function doRegister() {
     
     alert('註冊成功！請登入');
     showLogin();
+    switchTab('login');
 }
 
 function doLogin() {
@@ -486,8 +487,8 @@ function doLogin() {
         if (remember) {
             localStorage.setItem('yoga_current_user', JSON.stringify(user));
         }
-        switchTab('my');
-        renderMyBookings();
+        showMemberNav();
+        switchTab('courses');
     } else {
         document.getElementById('loginError').innerText = '帳號或密碼錯誤';
     }
@@ -500,19 +501,32 @@ function checkAutoLogin() {
             var user = JSON.parse(saved);
             if (users.some(function(u) { return u.id === user.id; })) {
                 currentUser = user;
-                switchTab('my');
-                renderMyBookings();
+                showMemberNav();
+                switchTab('courses');
                 return;
             }
         } catch(e) {}
     }
-    switchTab('login');
+    showLoginNav();
+}
+
+function showLoginNav() {
+    document.getElementById('mainNav').innerHTML = '<button class="active" onclick="switchTab(\'login\')">登入</button>';
+}
+
+function showMemberNav() {
+    document.getElementById('mainNav').innerHTML = '<button class="active" data-tab="courses">課程</button><button data-tab="my">我的</button>';
+    // Re-bind click events
+    document.querySelectorAll('.nav button').forEach(function(btn) {
+        btn.onclick = function() { switchTab(this.dataset.tab); };
+    });
 }
 
 function logout() {
     currentUser = null;
     localStorage.removeItem('yoga_current_user');
-    switchTab('courses');
+    showLoginNav();
+    switchTab('login');
 }
 
 // 預約
