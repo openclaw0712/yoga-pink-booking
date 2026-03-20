@@ -173,7 +173,7 @@
     
     <div class="container">
         <!-- 導航 -->
-        <div class="nav" id="mainNav">
+        <div class="nav" id="mainNav" style="display:none">
             <button class="active" data-tab="courses">課程</button>
             <button data-tab="my">我的</button>
         </div>
@@ -525,11 +525,12 @@ function checkAutoLogin() {
 }
 
 function showLoginNav() {
-    document.getElementById('mainNav').innerHTML = '<button class="active" onclick="switchTab(\'login\')">登入</button>';
+    document.getElementById('mainNav').style.display = 'none';
     switchTab('login');
 }
 
 function showMemberNav() {
+    document.getElementById('mainNav').style.display = 'flex';
     document.getElementById('mainNav').innerHTML = '<button class="active" data-tab="courses">課程</button><button data-tab="my">我的</button>';
     // Re-bind click events
     document.querySelectorAll('.nav button').forEach(function(btn) {
@@ -541,7 +542,6 @@ function logout() {
     currentUser = null;
     localStorage.removeItem('yoga_current_user');
     showLoginNav();
-    switchTab('login');
 }
 
 // 預約
