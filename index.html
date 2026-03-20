@@ -354,15 +354,21 @@
         }
         
         function renderStudentCourses() {
+            updateCourseOptions();
+        }
+        
+        function updateCourseOptions() {
             const select = document.getElementById('studentCourse');
+            const dateInput = document.getElementById('studentDate');
+            const selectedDate = dateInput ? dateInput.value : '';
+            
             select.innerHTML = courses.map(c => {
-                const dateInput = document.getElementById('studentDate');
-                const selectedDate = dateInput ? dateInput.value : '';
                 const booked = selectedDate ? bookings.filter(b => b.courseId === c.id && b.date === selectedDate && b.status !== 'completed').length : 0;
                 const remaining = (c.capacity || 8) - booked;
                 const label = remaining > 0 ? `${c.name} - ${c.teacher} (剩餘${remaining}位)` : `${c.name} - ${c.teacher} (額滿)`;
                 return `<option value="${c.id}">${label}</option>`;
             }).join('');
+        }
             
             // 設定日期限制
             const dateInput = document.getElementById('studentDate');
@@ -385,6 +391,11 @@
                     alert('僅開放禮拜五預約');
                     this.value = fridays[0];
                 }
+                updateCourseOptions();
+            });
+            
+            dateInput.addEventListener('input', function() {
+                updateCourseOptions();
             });
         }
         
@@ -449,6 +460,7 @@
             
             alert('預約成功！');
             document.getElementById('studentNote').value = '';
+            updateCourseOptions();
             showStudentTab('my');
         }
         
