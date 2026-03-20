@@ -164,11 +164,14 @@
         <div class="nav" id="mainNav">
             <button class="active" data-tab="courses">課程</button>
             <button data-tab="my">我的</button>
-            
         </div>
         
         <!-- 課程列表 -->
         <div id="tab-courses" class="tab-content">
+            <div id="loginPrompt" class="card" style="text-align:center">
+                <p style="margin-bottom:15px">登入後可預約課程</p>
+                <button onclick="switchTab('login')" class="btn-primary" style="max-width:200px">登入 / 註冊</button>
+            </div>
             <div class="card">
                 <h2 style="margin-bottom:15px;color:var(--accent)">📅 每週課程</h2>
                 <div id="courseList"></div>
@@ -326,8 +329,18 @@ function switchTab(tab) {
     });
     document.getElementById('tab-' + tab).classList.remove('hidden');
     
-    if (tab === 'courses') renderCourses();
-    if (tab === 'my' && currentUser) renderMyBookings();
+    if (tab === 'courses') {
+        renderCourses();
+        var prompt = document.getElementById('loginPrompt');
+        if (prompt) prompt.style.display = currentUser ? 'none' : 'block';
+    }
+    if (tab === 'my') {
+        if (!currentUser) {
+            switchTab('login');
+        } else {
+            renderMyBookings();
+        }
+    }
     if (tab === 'book' && !currentUser) {
         alert('請先登入');
         switchTab('login');
