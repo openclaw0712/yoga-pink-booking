@@ -377,21 +377,22 @@ var isInLine=false;
 function init(){
     loadData();
     
-    // 嘗試初始化 LIFF
-    if(typeof liff!=='undefined'){
-        liff.init({liffId:'2009559552'}).then(function(){
-            isInLine=true;
-            document.getElementById('lineLoginBtn').style.display='block';
-            document.getElementById('lineLoginBtn').style.width='100%';
-            document.getElementById('lineLoginBtn').style.padding='16px 24px';
-            document.getElementById('lineLoginBtn').style.fontSize='17px';
-            document.getElementById('lineLoginBtn').style.borderRadius='14px';
-            if(liff.isLoggedIn()){
-                getLineProfile();
-            }
-        }).catch(function(err){
-            console.log('LIFF init error:',err);
-        });
+    // 檢查 URL 是否是 LINE Login 回調
+    var urlParams=new URLSearchParams(window.location.search);
+    var code=urlParams.get('code');
+    var state=urlParams.get('state');
+    var error=urlParams.get('error');
+    
+    if(error){
+        alert('LINE 登入失敗：'+error);
+        showLoginPage();
+        return;
+    }
+    
+    if(code && state==='yoga123'){
+        alert('收到 LINE 回調！code='+code.substring(0,10)+'...');
+        processLineLogin(code);
+        return;
     }
     
     // 顯示 LINE 登入按鈕
@@ -402,25 +403,23 @@ function init(){
 }
 
 function processLineLogin(code){
-    // 用 LINE code 登入
+    alert('處理 LINE 登入...');
     var lineUserId='LINE_'+(code.substring(0,20)||'user');
     var displayName='LINE User';
     
     var existingUser=users.find(function(u){return u.lineId===lineUserId});
     if(existingUser){
         currentUser=existingUser;
+        alert('找到舊用戶：'+currentUser.name);
     }else{
         var newUser={id:Date.now(),name:displayName,phone:'',pw:'',lineId:lineUserId};
         users.push(newUser);
         saveData();
         currentUser=newUser;
+        alert('建立新用戶：'+displayName);
     }
     
-    // 清除 URL 參數
     window.history.replaceState({},document.title,window.location.pathname);
-    
-    // 顯示成功訊息
-    alert('LINE 登入成功！');
     showMemberUI();
 }
 
