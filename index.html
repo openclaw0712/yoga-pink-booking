@@ -243,6 +243,10 @@
                     <label for="remember">記住登入</label>
                 </div>
                 
+                <button id="lineLoginBtn" class="btn" style="background:linear-gradient(135deg,#00B900,#00a000);color:white;margin-top:8px;display:none" onclick="lineLogin()">
+                    ✅ 用 LINE 帳號登入
+                </button>
+                
                 <button class="btn btn-primary" onclick="login()">登入</button>
                 <p id="loginError" class="text-center text-error mt-16" style="font-size:14px"></p>
                 <p class="text-center mt-16" style="font-size:14px;color:#8a6a6a">
@@ -376,19 +380,23 @@ function init(){
     if(typeof liff!=='undefined'){
         liff.init({liffId:'2009558913-hZyWZ5n0'}).then(function(){
             isInLine=true;
-            // 先嘗試取得現有用戶
+            document.getElementById('lineLoginBtn').style.display='block';
             if(liff.isLoggedIn()){
                 getLineProfile();
-            }else{
-                // 尚未登入，顯示 LINE 登入按鈕
-                showLineLoginButton();
             }
         }).catch(function(err){
             console.log('LIFF init error:',err);
             checkLogin();
         });
     }else{
+        // 非 LINE 環境
         checkLogin();
+    }
+}
+
+function lineLogin(){
+    if(typeof liff!=='undefined'){
+        liff.login();
     }
 }
 
@@ -397,13 +405,11 @@ function getLineProfile(){
         var lineUserId=profile.userId;
         var displayName=profile.displayName;
         var picUrl=profile.pictureUrl||'';
-        // 用 LINE ID 自動登入或註冊
         var existingUser=users.find(function(u){return u.lineId===lineUserId});
         if(existingUser){
             currentUser=existingUser;
             showMemberUI();
         }else{
-            // 新用戶，自動註冊
             var newUser={id:Date.now(),name:displayName,phone:'',pw:'',lineId:lineUserId,picUrl:picUrl};
             users.push(newUser);
             saveData();
@@ -414,22 +420,6 @@ function getLineProfile(){
         console.log('Get profile error:',err);
         checkLogin();
     });
-}
-
-function showLineLoginButton(){
-    // 在登入頁顯示 LINE 登入按鈕
-    var loginCard=document.querySelector('#tab-login .card');
-    if(loginCard){
-        var btn=document.createElement('button');
-        btn.className='btn btn-primary';
-        btn.style.background='linear-gradient(135deg, #00B900 0%, #00a000 100%)';
-        btn.style.marginTop='12px';
-        btn.innerHTML='✅ 用 LINE 帳號登入';
-        btn.onclick=function(){
-            liff.login();
-        };
-        loginCard.appendChild(btn);
-    }
 }
 
 function loadData(){
