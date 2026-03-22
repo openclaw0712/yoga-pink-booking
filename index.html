@@ -25,7 +25,7 @@
             border-radius: 0 0 24px 24px;
             box-shadow: 0 4px 16px rgba(255, 107, 143, 0.3);
         }
-        .header h1 { font-size: 28px; color: white; font-weight: 700; }
+        .header h1 { font-size: 34px; color: white; font-weight: 700; }
         .header p { font-size: 14px; color: rgba(255,255,255,0.9); margin-top: 4px; }
         
         /* Container */
@@ -415,6 +415,7 @@ function processLineLogin(code){
     // 如果找到用戶，直接登入
     if(existingUser){
         currentUser=existingUser;
+        localStorage.setItem('yoga_current',JSON.stringify(currentUser));
         saveData();
         window.history.replaceState({},document.title,window.location.pathname);
         showMemberUI();
@@ -448,6 +449,7 @@ function submitFirstNickname(persistentId){
         currentUser=newUser;
     }
     saveData();
+    localStorage.setItem('yoga_current',JSON.stringify(currentUser));
     window.history.replaceState({},document.title,window.location.pathname);
     showMemberUI();
 }
