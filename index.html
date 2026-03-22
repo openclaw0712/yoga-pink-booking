@@ -411,11 +411,26 @@ function processLineLogin(code){
     if(existingUser){
         existingUser.lineId=lineUserId;
         currentUser=existingUser;
+        saveData();
+        window.history.replaceState({},document.title,window.location.pathname);
+        showMemberUI();
     }else{
-        var newUser={id:Date.now(),name:'新會員',phone:'',pw:'',lineId:lineUserId};
-        users.push(newUser);
-        currentUser=newUser;
+        // 第一次登入，需要輸入暱稱
+        var html='<div class="card">';
+        html+='<h2 class="text-center mb-12" style="color:#ff6b8f">請輸入您的暱稱</h2>';
+        html+='<div class="form-group"><input type="text" id="firstNickname" placeholder="例如：葉小欣" maxlength="20"></div>';
+        html+='<button class="btn btn-primary" onclick="submitFirstNickname(\''+lineUserId+'\')">確定</button>';
+        html+='</div>';
+        document.getElementById('tab-login').innerHTML=html;
     }
+}
+
+function submitFirstNickname(lineUserId){
+    var nickname=document.getElementById('firstNickname').value.trim();
+    if(!nickname){alert('請輸入暱稱');return}
+    var newUser={id:Date.now(),name:nickname,phone:'',pw:'',lineId:lineUserId};
+    users.push(newUser);
+    currentUser=newUser;
     saveData();
     window.history.replaceState({},document.title,window.location.pathname);
     showMemberUI();
@@ -703,8 +718,13 @@ function confirmBook(){
 
 function renderMyBookings(){
     var my=bookings.filter(function(x){return x.phone===currentUser.phone&&x.status!=='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
-    var html='';
-    if(my.length===0){html='<p class="text-center" style="color:#8a6a6a">尚無預約</p>'}
+    var html='<div style="margin-bottom:16px;padding:16px;background:#fff0f5;border-radius:12px">';
+    html+='<p style="font-size:14px;color:#8a6a6a">會員暱稱</p>';
+    html+='<p style="font-size:18px;font-weight:600;color:#ff6b8f;margin-top:4px">'+currentUser.name+'</p>';
+    html+='<button class="btn btn-secondary" style="margin-top:12px" onclick="editNickname()">編輯暱稱</button>';
+    html+='</div>';
+    
+    if(my.length===0){html+='<p class="text-center" style="color:#8a6a6a">尚無預約</p>'}
     else{
         my.forEach(function(b){
             html+='<div class="booking">';
@@ -715,6 +735,25 @@ function renderMyBookings(){
         });
     }
     document.getElementById('myList').innerHTML=html;
+}
+
+function editNickname(){
+    var html='<div class="card">';
+    html+='<h2 class="text-center mb-12" style="color:#ff6b8f">修改暱稱</h2>';
+    html+='<div class="form-group"><input type="text" id="editNickname" value="'+currentUser.name+'" maxlength="20"></div>';
+    html+='<button class="btn btn-primary" onclick="saveNickname()">儲存</button>';
+    html+='<button class="btn btn-secondary mt-16" onclick="renderMyBookings()">返回</button>';
+    html+='</div>';
+    document.getElementById('myList').innerHTML=html;
+}
+
+function saveNickname(){
+    var nickname=document.getElementById('editNickname').value.trim();
+    if(!nickname){alert('請輸入暱稱');return}
+    currentUser.name=nickname;
+    saveData();
+    alert('暱稱已更新！');
+    renderMyBookings();
 }
 
 function cancelBook(id){
