@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>九容瑜伽</title>
-    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+    <script charset="utf-8" src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body { width: 100%; overflow-x: hidden; }
@@ -376,33 +376,33 @@ var isInLine=false;
 
 function init(){
     loadData();
-    // 偵錯資訊
-    var debug='LIFF SDK: '+(typeof liff!=='undefined'?'Loaded':'Not loaded')+'\n';
-    debug+='LIFF ID: 2009558913-hZyWZ5n0\n';
     
-    // 嘗試初始化 LIFF
-    if(typeof liff!=='undefined'){
-        liff.init({liffId:'2009558913-hZyWZ5n0'}).then(function(){
-            isInLine=true;
-            debug+='LIFF Init: Success\n';
-            debug+='Logged In: '+liff.isLoggedIn()+'\n';
-            document.getElementById('lineLoginBtn').style.display='block';
-            document.getElementById('lineLoginBtn').style.width='100%';
-            document.getElementById('lineLoginBtn').style.padding='16px 24px';
-            document.getElementById('lineLoginBtn').style.fontSize='17px';
-            document.getElementById('lineLoginBtn').style.borderRadius='14px';
-            if(liff.isLoggedIn()){
-                getLineProfile();
-            }
-            alert(debug);
-        }).catch(function(err){
-            alert('LIFF 初始化失敗\n'+err+'\n\n請確認：\n1. LIFF ID 是否正確\n2. LINE Developers Console 是否啟用此 LIFF');
-            checkLogin();
-        });
-    }else{
-        alert('LIFF SDK 未載入！\n\n請在 LINE 內開啟此頁面。\n\n'+debug);
-        checkLogin();
+    // 等待 LIFF SDK 載入
+    function waitForLiff(){
+        if(typeof liff!=='undefined'){
+            liff.init({liffId:'2009558913-hZyWZ5n0'}).then(function(){
+                isInLine=true;
+                document.getElementById('lineLoginBtn').style.display='block';
+                document.getElementById('lineLoginBtn').style.width='100%';
+                document.getElementById('lineLoginBtn').style.padding='16px 24px';
+                document.getElementById('lineLoginBtn').style.fontSize='17px';
+                document.getElementById('lineLoginBtn').style.borderRadius='14px';
+                if(liff.isLoggedIn()){
+                    getLineProfile();
+                }
+            }).catch(function(err){
+                console.log('LIFF init error:',err);
+                checkLogin();
+            });
+        }else{
+            // SDK 還沒載入，再等一下
+            setTimeout(waitForLiff, 500);
+        }
     }
+    
+    // 先等一下讓 SDK 載入
+    setTimeout(waitForLiff, 1000);
+    checkLogin();
 }
 
 function lineLogin(){
