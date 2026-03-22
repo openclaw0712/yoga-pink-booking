@@ -453,14 +453,17 @@ function getLineProfile(){
         var displayName=profile.displayName || 'LINE會員';
         var picUrl=profile.pictureUrl||'';
         
-        // 更新用戶名字
+        // 用 LINE User ID 作為顯示名字
+        var showName=displayName+' ('+lineUserId.substring(0,8)+')';
+        
+        // 更新用戶資料
         var existingUser=users.find(function(u){return u.lineId===lineUserId});
         if(existingUser){
-            existingUser.name=displayName;
+            existingUser.name=showName;
             existingUser.picUrl=picUrl;
             currentUser=existingUser;
         }else{
-            var newUser={id:Date.now(),name:displayName,phone:'',pw:'',lineId:lineUserId,picUrl:picUrl};
+            var newUser={id:Date.now(),name:showName,phone:'',pw:'',lineId:lineUserId,picUrl:picUrl};
             users.push(newUser);
             currentUser=newUser;
         }
