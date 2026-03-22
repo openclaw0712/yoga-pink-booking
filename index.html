@@ -403,10 +403,35 @@ function init(){
 }
 
 function processLineLogin(code){
-    var lineUserId='LINE_'+(code.substring(0,30)||'user');
+    // 嘗試從 URL 解碼 ID token 取得真正的 LINE User ID
+    var urlParams=new URLSearchParams(window.location.search);
+    var idToken=urlParams.get('id_token');
+    var lineUserId=null;
     
-    // 檢查是否已有用戶
-    var existingUser=users.find(function(u){return u.lineId && u.lineId.startsWith('LINE_')});
+    if(idToken){
+        try{
+            // 解碼 JWT ID token
+            var parts=idToken.split('.');
+            if(parts.length>=2){
+                var payload=parts[1].replace(/-/g,'+').replace(/_/g,'/');
+                while(payload.length % 4){payload+='=';}
+                var decoded=JSON.parse(atob(payload));
+                if(decoded.sub){
+                    lineUserId=decoded.sub;
+                }
+            }
+        }catch(e){
+            console.log('ID token decode error:',e);
+        }
+    }
+    
+    // 如果解碼失敗，用 code 當作臨時 ID（這種情況不應該發生）
+    if(!lineUserId){
+        lineUserId='TEMP_'+(code.substring(0,20)||'user');
+    }
+    
+    // 檢查是否已有用戶（用臨時 ID 找）
+    var existingUser=users.find(function(u){return u.lineId && (u.lineId===lineUserId || u.lineId.startsWith('TEMP_'))});
     
     if(existingUser){
         existingUser.lineId=lineUserId;
@@ -439,10 +464,10 @@ function submitFirstNickname(lineUserId){
 
 
 function lineLogin(){
-    // 直接用 LINE Login OAuth
+    // 直接用 LINE Login OAuth，請求 id_token
     var clientId='2009559768';
     var redirectUri=encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/');
-    var lineLoginUrl='https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectUri+'&state=yoga123&scope=openid%20profile';
+    var lineLoginUrl='https://access.line.me/oauth2/v2.1/authorize?response_type=code+id_token&client_id='+clientId+'&redirect_uri='+redirectUri+'&state=yoga123&scope=openid%20profile&nonce=test';
     window.location.href=lineLoginUrl;
 }
 
