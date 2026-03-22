@@ -518,6 +518,14 @@ function loadData(){
         if(courses.length===0){
             courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00-16:00',capacity:8}];
             saveData();
+        }else{
+            // 統一舊資料的時間格式
+            courses.forEach(function(c){
+                if(c.time && c.time==='15:00'){
+                    c.time='15:00-16:00';
+                }
+            });
+            saveData();
         }
     }catch(e){
         courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00-16:00',capacity:8}];
@@ -779,7 +787,7 @@ function confirmBook(){
     
     // 如果在 LINE 中，發送預約確認
     if(isInLine && typeof liff!=='undefined'){
-        var msg='✅ 預約成功\n\n📅 日期：'+date+'\n🧘 課程：'+c.name+'\n⏰ 時間：'+c.time+'\n👤 姓名：'+currentUser.name;
+        var msg='✅ 預約成功\n\n📅 日期：'+date+'\n🧘 課程：'+c.name+'\n⏰ 時間：每週五 '+(c.time||'15:00-16:00')+'\n👤 姓名：'+currentUser.name;
         liff.sendMessages([{type:'text',text:msg}]).then(function(){}).catch(function(){});
     }
     
@@ -793,7 +801,7 @@ function renderMyBookings(){
     if(my.length===0){var html='<p class="text-center" style="color:#8a6a6a">尚無預約</p>'}else{var html='';
         my.forEach(function(b){
             html+='<div class="booking">';
-            html+='<div class="booking-date">📅 '+b.date+' '+(b.time||'15:00-16:00')+'</div>';
+            html+='<div class="booking-date">📅 '+b.date+' 每週五 '+(b.time||'15:00-16:00')+'</div>';
             html+='<div class="booking-info">'+b.courseName+' - '+b.teacher+'</div>';
             html+='<button class="btn btn-secondary" onclick="cancelBook('+b.id+')">取消預約</button>';
             html+='</div>';
