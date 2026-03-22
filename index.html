@@ -731,12 +731,12 @@ function updateRemaining(){
 
 function confirmBook(){
     var c=courses.find(function(x){return x.id===selectCourseId}),date=document.getElementById('bookDate').value;
-    if(bookings.some(function(x){return x.phone===currentUser.phone&&x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'})){
+    if(bookings.some(function(x){return x.phone===(currentUser.persistentId||currentUser.phone)&&x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'})){
         alert('您已預約過');return
     }
     var b=bookings.filter(function(x){return x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'}).length;
     if(b>=c.capacity){alert('名額已滿');return}
-    bookings.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:currentUser.name,phone:currentUser.phone,status:'confirmed'});
+    bookings.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:currentUser.name,phone:currentUser.persistentId || currentUser.phone,status:'confirmed'});
     saveData();
     alert('預約成功！');
     
@@ -751,7 +751,7 @@ function confirmBook(){
 }
 
 function renderMyBookings(){
-    var my=bookings.filter(function(x){return x.phone===currentUser.phone&&x.status!=='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
+    var my=bookings.filter(function(x){return x.phone===(currentUser.persistentId||currentUser.phone)&&x.status!=='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
     
     if(my.length===0){var html='<p class="text-center" style="color:#8a6a6a">尚無預約</p>'}else{var html='';
         my.forEach(function(b){
@@ -853,7 +853,7 @@ function renderTeacherBookings(){
             html+='<div class="booking-info" style="color:#ff6b8f">👥 '+x.students.length+' 人預約 ▼</div>';
             html+='<div id="s-'+k+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #ffc2d1">';
             x.students.forEach(function(s){
-                html+='<div style="padding:10px;background:#fff;border-radius:8px;margin-bottom:8px;font-size:14px"><b>'+s.name+'</b> ('+s.phone+')</div>';
+                html+='<div style="padding:10px;background:#fff;border-radius:8px;margin-bottom:8px;font-size:14px"><b>'+s.name+'</b> ('+(s.phone||'無').substring(0,12)+')</div>';
             });
             html+='</div></div>';
         });
