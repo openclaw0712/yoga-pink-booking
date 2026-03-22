@@ -395,9 +395,9 @@ function init(){
         });
     }
     
-    // 顯示 LINE 登入按鈕
+    // 顯示 LINE 登入按鈕（非 LINE 環境才顯示）
     var btn=document.getElementById('lineLoginBtn');
-    if(btn)btn.style.display='block';
+    if(btn && !isInLine)btn.style.display='block';
     
     checkLogin();
 }
@@ -405,58 +405,23 @@ function init(){
 function processLineLogin(code){
     var lineUserId='LINE_'+(code.substring(0,30)||'user');
     
-    // 檢查是否已有暱稱
-    var existingUser=users.find(function(u){return u.lineId && u.lineId.startsWith('LINE_')});
-    
-    alert('現有用戶：'+(existingUser?existingUser.name:'無')+'\n新ID：'+lineUserId);
-    
-    if(existingUser && existingUser.name && existingUser.name !== 'LINE User' && existingUser.name !== 'LINE會員'){
-        // 已有有效暱稱，更新ID並登入
-        existingUser.lineId=lineUserId;
-        currentUser=existingUser;
-        saveData();
-        window.history.replaceState({},document.title,window.location.pathname);
-        showMemberUI();
-    }else{
-        // 需要輸入暱稱
-        askForNickname(lineUserId);
-    }
-}
-
-function askForNickname(lineUserId){
-    var html='<div style="text-align:center;padding:20px 0;">';
-    html+='<h3 style="color:#ff6b8f;margin-bottom:16px">請輸入您的暱稱</h3>';
-    html+='<input type="text" id="nickname" placeholder="例如：葉小欣" maxlength="20" style="width:100%;padding:14px;border:2px solid #ffc2d1;border-radius:12px;font-size:16px;margin-bottom:16px">';
-    html+='<button class="btn btn-primary" onclick="submitNickname(\''+lineUserId+'\')">確定</button>';
-    html+='</div>';
-    html+='<button class="btn btn-secondary mt-16" onclick="logout()">取消</button>';
-    document.getElementById('tab-login').innerHTML=html;
-}
-
-function submitNickname(lineUserId){
-    var nickname=document.getElementById('nickname').value.trim();
-    if(!nickname){
-        alert('請輸入暱稱');
-        return;
-    }
-    
     // 檢查是否已有用戶
     var existingUser=users.find(function(u){return u.lineId && u.lineId.startsWith('LINE_')});
+    
     if(existingUser){
-        existingUser.name=nickname;
         existingUser.lineId=lineUserId;
         currentUser=existingUser;
-        alert('已更新暱稱：'+nickname);
     }else{
-        var newUser={id:Date.now(),name:nickname,phone:'',pw:'',lineId:lineUserId};
+        var newUser={id:Date.now(),name:'新會員',phone:'',pw:'',lineId:lineUserId};
         users.push(newUser);
         currentUser=newUser;
-        alert('已建立：'+nickname);
     }
     saveData();
     window.history.replaceState({},document.title,window.location.pathname);
     showMemberUI();
 }
+
+
 
 function lineLogin(){
     // 直接用 LINE Login OAuth
