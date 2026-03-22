@@ -523,7 +523,10 @@ function showPage(page){
 function switchTab(tab){
     showPage(tab);
     if(tab==='courses')renderCourses();
-    else if(tab==='my')renderMyBookings();
+    else if(tab==='my'){
+        document.querySelector('#tab-my .card h2').style.display='block';
+        renderMyBookings();
+    }
 }
 
 function updateNav(page){
@@ -745,6 +748,7 @@ function editNickname(){
     html+='<button class="btn btn-secondary mt-16" onclick="switchTab(\'my\')">返回</button>';
     html+='</div>';
     document.getElementById('myList').innerHTML=html;
+    document.querySelector('#tab-my .card h2').style.display='none';
     showPage('my');
 }
 
@@ -764,6 +768,7 @@ function saveNickname(){
         editBtn.onclick=editNickname;
         nameEl.appendChild(editBtn);
     }
+    document.querySelector('#tab-my .card h2').style.display='block';
     switchTab('my');
     renderMyBookings();
 }
