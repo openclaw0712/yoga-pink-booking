@@ -403,23 +403,25 @@ function init(){
 
 function processLineLogin(code){
     // 用 LINE code 登入
-    // 先用 code 作為用戶識別符
     var lineUserId='LINE_'+(code.substring(0,20)||'user');
     var displayName='LINE User';
     
-    // 嘗試從 localStorage 找已存在的用戶
     var existingUser=users.find(function(u){return u.lineId===lineUserId});
     if(existingUser){
         currentUser=existingUser;
-        showMemberUI();
     }else{
-        // 新用戶，自動註冊
         var newUser={id:Date.now(),name:displayName,phone:'',pw:'',lineId:lineUserId};
         users.push(newUser);
         saveData();
         currentUser=newUser;
-        showMemberUI();
     }
+    
+    // 清除 URL 參數
+    window.history.replaceState({},document.title,window.location.pathname);
+    
+    // 顯示成功訊息
+    alert('LINE 登入成功！');
+    showMemberUI();
 }
 
 function lineLogin(){
