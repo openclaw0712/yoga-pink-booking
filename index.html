@@ -742,9 +742,10 @@ function editNickname(){
     html+='<h2 class="text-center mb-12" style="color:#ff6b8f">修改暱稱</h2>';
     html+='<div class="form-group"><input type="text" id="editNickname" value="'+currentUser.name+'" maxlength="20"></div>';
     html+='<button class="btn btn-primary" onclick="saveNickname()">儲存</button>';
-    html+='<button class="btn btn-secondary mt-16" onclick="renderMyBookings()">返回</button>';
+    html+='<button class="btn btn-secondary mt-16" onclick="switchTab(\'my\')">返回</button>';
     html+='</div>';
     document.getElementById('myList').innerHTML=html;
+    showPage('my');
 }
 
 function saveNickname(){
@@ -753,6 +754,17 @@ function saveNickname(){
     currentUser.name=nickname;
     saveData();
     alert('暱稱已更新！');
+    // 更新 header
+    var nameEl=document.querySelector('.user-name');
+    if(nameEl){
+        nameEl.innerHTML='👤 '+currentUser.name;
+        var editBtn=document.createElement('span');
+        editBtn.style.cssText='color:rgba(255,255,255,0.8);font-size:13px;margin-left:8px;text-decoration:underline;cursor:pointer';
+        editBtn.innerHTML='[編輯]';
+        editBtn.onclick=editNickname;
+        nameEl.appendChild(editBtn);
+    }
+    switchTab('my');
     renderMyBookings();
 }
 
