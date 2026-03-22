@@ -377,16 +377,26 @@ var isInLine=false;
 function init(){
     loadData();
     
+    alert('開始初始化...');
+    
     // 嘗試初始化 LIFF
     if(typeof liff!=='undefined'){
+        alert('LIFF SDK 已載入');
         liff.init({liffId:'2009559768-h44Oa41n'}).then(function(){
+            alert('LIFF 初始化成功');
             isInLine=true;
             if(liff.isLoggedIn()){
+                alert('已登入，準備取得資料');
                 getLineProfile();
+            }else{
+                alert('未登入');
             }
         }).catch(function(err){
+            alert('LIFF 初始化失敗：'+err);
             console.log('LIFF init error:',err);
         });
+    }else{
+        alert('LIFF SDK 未載入');
     }
     
     // 檢查 URL 是否是 LINE Login 回調
@@ -448,6 +458,7 @@ function lineLogin(){
 }
 
 function getLineProfile(){
+    alert('開始取得LINE資料...');
     // 先嘗試 getProfile
     liff.getProfile().then(function(profile){
         alert('LINE回傳：\nuserId: '+profile.userId+'\ndisplayName: '+profile.displayName+'\npictureUrl: '+profile.pictureUrl);
@@ -471,6 +482,7 @@ function getLineProfile(){
             createOrUpdateUser(lineUserId,showName,'');
         }
     }).catch(function(err){
+        alert('取得LINE資料失敗：'+err);
         console.log('Get profile error:',err);
         checkLogin();
     });
