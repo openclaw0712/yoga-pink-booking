@@ -414,26 +414,20 @@ function init(){
 }
 
 function processLineLogin(code){
-    // OAuth code 可以用來取得用戶資訊
-    // 先嘗試解碼 ID token 取得用戶資料
-    // 但需要呼叫 LINE API，這裡先用 code 作為識別
     var lineUserId='LINE_'+(code.substring(0,30)||'user');
     
     // 嘗試從 URL 取得其他參數
     var urlParams=new URLSearchParams(window.location.search);
     var idToken=urlParams.get('id_token');
-    var accessToken=urlParams.get('access_token');
     
     if(idToken){
         try{
-            // 解碼 JWT (header.payload.signature)
             var payload=idToken.split('.')[1];
-            // Base64URL decode
             payload=payload.replace(/-/g,'+').replace(/_/g,'/');
             var decoded=JSON.parse(atob(payload));
             if(decoded.name){
                 lineUserId='LINE_'+decoded.sub;
-                var showName=decoded.name+' (LINE)';
+                var showName=decoded.name;
                 var existingUser=users.find(function(u){return u.lineId===lineUserId});
                 if(existingUser){
                     existingUser.name=showName;
@@ -453,13 +447,39 @@ function processLineLogin(code){
         }
     }
     
-    // 預設方式：用 code 建立用戶
-    var showName='LINE:'+lineUserId.substring(0,12);
+    // 檢查是否已有暱稱
+    var existingUser=users.find(function(u){return u.lineId===lineUserId});
+    if(existingUser && existingUser.name && !existingUser.name.startsWith('LINE:')){
+        currentUser=existingUser;
+        saveData();
+        window.history.replaceState({},document.title,window.location.pathname);
+        showMemberUI();
+    }else{
+        // 需要輸入暱稱
+        askForNickname(lineUserId);
+    }
+}
+
+function askForNickname(lineUserId){
+    var html='<div class="form-group"><label>請輸入您的暱稱</label><input type="text" id="nickname" placeholder="例如：葉小欣" maxlength="20"></div>';
+    html+='<button class="btn btn-primary" onclick="submitNickname(\''+lineUserId+'\')">確定</button>';
+    document.getElementById('bookInfo').innerHTML=html;
+    showPage('book');
+}
+
+function submitNickname(lineUserId){
+    var nickname=document.getElementById('nickname').value.trim();
+    if(!nickname){
+        alert('請輸入暱稱');
+        return;
+    }
+    
     var existingUser=users.find(function(u){return u.lineId===lineUserId});
     if(existingUser){
+        existingUser.name=nickname;
         currentUser=existingUser;
     }else{
-        var newUser={id:Date.now(),name:showName,phone:'',pw:'',lineId:lineUserId};
+        var newUser={id:Date.now(),name:nickname,phone:'',pw:'',lineId:lineUserId};
         users.push(newUser);
         currentUser=newUser;
     }
