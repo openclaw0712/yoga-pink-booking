@@ -435,11 +435,16 @@ function processLineLogin(code){
 }
 
 function lineLogin(){
-    // 使用 LINE Login OAuth2.0 登入
-    var clientId='2009559768';
-    var redirectUri=encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/');
-    var lineLoginUrl='https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectUri+'&state=yoga123&scope=openid%20profile';
-    window.location.href=lineLoginUrl;
+    // 使用 LIFF SDK 的 login
+    if(typeof liff!=='undefined'){
+        liff.login({redirectUri:'https://openclaw0712.github.io/yoga-pink-booking/'});
+    }else{
+        // fallback 到 LINE Login OAuth
+        var clientId='2009559768';
+        var redirectUri=encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/');
+        var lineLoginUrl='https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectUri+'&state=yoga123&scope=openid%20profile';
+        window.location.href=lineLoginUrl;
+    }
 }
 
 function getLineProfile(){
