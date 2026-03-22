@@ -553,8 +553,14 @@ function showMemberUI(){
             var nameEl=document.createElement('p');
             nameEl.className='user-name';
             nameEl.style.cssText='color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';
-            nameEl.innerHTML='👤 '+currentUser.name+' <span onclick="editNickname()" style="text-decoration:underline;cursor:pointer">[編輯]</span>';
+            nameEl.innerHTML='👤 '+currentUser.name;
             header.appendChild(nameEl);
+            
+            var editBtn=document.createElement('span');
+            editBtn.style.cssText='color:rgba(255,255,255,0.8);font-size:13px;margin-left:8px;text-decoration:underline;cursor:pointer';
+            editBtn.innerHTML='[編輯]';
+            editBtn.onclick=editNickname;
+            nameEl.appendChild(editBtn);
         }
     }
     
