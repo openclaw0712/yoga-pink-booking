@@ -405,39 +405,11 @@ function init(){
 function processLineLogin(code){
     var lineUserId='LINE_'+(code.substring(0,30)||'user');
     
-    // 嘗試從 URL 取得其他參數
-    var urlParams=new URLSearchParams(window.location.search);
-    var idToken=urlParams.get('id_token');
-    
-    if(idToken){
-        try{
-            var payload=idToken.split('.')[1];
-            payload=payload.replace(/-/g,'+').replace(/_/g,'/');
-            var decoded=JSON.parse(atob(payload));
-            if(decoded.name){
-                lineUserId='LINE_'+decoded.sub;
-                var showName=decoded.name;
-                var existingUser=users.find(function(u){return u.lineId===lineUserId});
-                if(existingUser){
-                    existingUser.name=showName;
-                    currentUser=existingUser;
-                }else{
-                    var newUser={id:Date.now(),name:showName,phone:'',pw:'',lineId:lineUserId};
-                    users.push(newUser);
-                    currentUser=newUser;
-                }
-                saveData();
-                window.history.replaceState({},document.title,window.location.pathname);
-                showMemberUI();
-                return;
-            }
-        }catch(e){
-            console.log('ID token decode error:',e);
-        }
-    }
-    
     // 檢查是否已有暱稱（檢查所有有 lineId 的用戶）
     var existingUser=users.find(function(u){return u.lineId && u.lineId.startsWith('LINE_')});
+    
+    alert('現有用戶：'+(existingUser?existingUser.name:'無')+'\n新ID：'+lineUserId);
+    
     if(existingUser && existingUser.name && !existingUser.name.startsWith('LINE:')){
         // 更新 lineId 為新的
         existingUser.lineId=lineUserId;
@@ -474,10 +446,12 @@ function submitNickname(lineUserId){
         existingUser.name=nickname;
         existingUser.lineId=lineUserId;
         currentUser=existingUser;
+        alert('已更新暱稱：'+nickname);
     }else{
         var newUser={id:Date.now(),name:nickname,phone:'',pw:'',lineId:lineUserId};
         users.push(newUser);
         currentUser=newUser;
+        alert('已建立：'+nickname);
     }
     saveData();
     window.history.replaceState({},document.title,window.location.pathname);
