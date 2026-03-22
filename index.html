@@ -314,18 +314,7 @@
         <div id="tab-book" class="tab-content">
             <div class="card">
                 <h2 class="mb-12" style="color:#ff6b8f;font-size:18px">📝 預約報名</h2>
-                <div id="bookInfo"></div>
-                
-                <div class="form-group mt-16">
-                    <label>選擇日期</label>
-                    <select id="bookDate" onchange="updateRemaining()"></select>
-                </div>
-                
-                <p id="remainingInfo" class="text-center mb-12" style="font-weight:600;color:#ff6b8f"></p>
-                
-                <button class="btn btn-primary" onclick="confirmBook()">確認預約</button>
-                <button class="btn btn-secondary mt-16" onclick="showPage('courses')">返回</button>
-                <p id="bookError" class="text-center text-error mt-16" style="font-size:14px"></p>
+                <div id="bookInfo" style="display:none"></div>
             </div>
         </div>
         
@@ -718,9 +707,19 @@ function renderCourses(){
 function goBook(id){
     selectCourseId=id;
     var c=courses.find(function(x){return x.id===id});
-    var html='<div class="course"><div class="course-name">'+c.name+'</div>';
-    html+='<div class="course-info">👩‍🏫 '+c.teacher+' ⏰ '+(c.time||'15:00-16:00')+'</div></div>';
-    document.getElementById('bookInfo').innerHTML=html;
+    
+    // 直接在登出按鈕上方插入預約表單
+    var html='<div style="margin-bottom:16px;padding:16px;background:#fff0f5;border-radius:12px;text-align:center">';
+    html+='<h3 style="color:#ff6b8f;margin-bottom:8px">'+c.name+'</h3>';
+    html+='<p style="color:#8a6a6a;font-size:14px">'+c.teacher+' | '+c.time+'</p>';
+    html+='</div>';
+    html+='<div class="form-group"><label>選擇日期</label><select id="bookDate" onchange="updateRemaining()"></select></div>';
+    html+='<p id="remainingInfo" class="text-center mb-12" style="font-weight:600;color:#ff6b8f"></p>';
+    html+='<button class="btn btn-primary" onclick="confirmBook()">確認預約</button>';
+    html+='<button class="btn btn-secondary mt-16" onclick="showPage(\'courses\')">返回</button>';
+    
+    document.getElementById('tab-book').innerHTML=html;
+    
     var dates=getFridays(),opt='';
     dates.forEach(function(d){
         var dd=new Date(d);
@@ -741,10 +740,10 @@ function updateRemaining(){
 function confirmBook(){
     var c=courses.find(function(x){return x.id===selectCourseId}),date=document.getElementById('bookDate').value;
     if(bookings.some(function(x){return x.phone===currentUser.phone&&x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'})){
-        document.getElementById('bookError').innerText='您已預約過';return
+        alert('您已預約過');return
     }
     var b=bookings.filter(function(x){return x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'}).length;
-    if(b>=c.capacity){document.getElementById('bookError').innerText='名額已滿';return}
+    if(b>=c.capacity){alert('名額已滿');return}
     bookings.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:currentUser.name,phone:currentUser.phone,status:'confirmed'});
     saveData();
     alert('預約成功！');
@@ -752,15 +751,11 @@ function confirmBook(){
     // 如果在 LINE 中，發送預約確認
     if(isInLine && typeof liff!=='undefined'){
         var msg='✅ 預約成功\n\n📅 日期：'+date+'\n🧘 課程：'+c.name+'\n⏰ 時間：'+c.time+'\n👤 姓名：'+currentUser.name;
-        liff.sendMessages([{type:'text',text:msg}]).then(function(){
-            console.log('Message sent');
-        }).catch(function(err){
-            console.log('Send message error:',err);
-        });
+        liff.sendMessages([{type:'text',text:msg}]).then(function(){}).catch(function(){});
     }
     
-    showPage('my');
-    renderMyBookings();
+    showPage('courses');
+    renderCourses();
 }
 
 function renderMyBookings(){
