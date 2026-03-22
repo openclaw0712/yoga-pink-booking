@@ -639,7 +639,7 @@ function renderCourses(){
         var r=c.capacity-b;
         html+='<div class="course">';
         html+='<div class="course-name">'+c.name+'</div>';
-        html+='<div class="course-info">👩‍🏫 '+c.teacher+' ⏰ '+(c.time||'15:00-16:00')+'</div>';
+        html+='<div class="course-info">👩‍🏫 '+c.teacher+' | 每週五 '+c.time+'</div>';
         html+='<div class="course-info">名額 '+c.capacity+' 人</div>';
         if(r>0){html+='<button class="btn btn-primary" onclick="goBook('+c.id+')">預約</button>'}
         html+='</div>';
@@ -796,7 +796,7 @@ function renderTeacherCourses(){
     else{
         courses.forEach(function(c){
             html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #ffe5ec;font-size:14px">';
-            html+='<span><b>'+c.name+'</b> - '+c.teacher+' ('+(c.time||'15:00-16:00')+', '+c.capacity+'人)</span>';
+            html+='<span><b>'+c.name+'</b> - '+c.teacher+' (每週五 '+(c.time||'15:00-16:00')+', '+c.capacity+'人)</span>';
             html+='<button onclick="delCourse('+c.id+')" style="background:#c62828;color:white;border:none;padding:6px 10px;border-radius:6px;font-size:12px">刪除</button>';
             html+='</div>';
         });
