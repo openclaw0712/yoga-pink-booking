@@ -212,7 +212,7 @@
 <body>
     <div class="header">
         <h1>🧘 九容瑜伽</h1>
-        <p>動若雲，靜若水，身隨意，境隨心。</p>
+        <p>靜而有容，修身於形。</p>
         <button id="shareBtn" class="btn btn-secondary" style="margin-top:12px;padding:10px 20px;font-size:14px;display:none" onclick="shareToLine()">📤 分享給朋友</button>
     </div>
     
@@ -580,6 +580,12 @@ function showMemberUI(){
             editBtn.innerHTML='[編輯]';
             editBtn.onclick=editNickname;
             nameEl.appendChild(editBtn);
+            
+            var idEl=document.createElement('p');
+            idEl.className='user-id';
+            idEl.style.cssText='color:rgba(255,255,255,0.7);font-size:12px;margin-top:4px';
+            idEl.innerHTML=currentUser.persistentId || '';
+            header.appendChild(idEl);
         }
     }
     
