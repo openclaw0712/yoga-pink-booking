@@ -381,11 +381,15 @@ function init(){
         liff.init({liffId:'2009558913-hZyWZ5n0'}).then(function(){
             isInLine=true;
             document.getElementById('lineLoginBtn').style.display='block';
+            document.getElementById('lineLoginBtn').style.width='100%';
+            document.getElementById('lineLoginBtn').style.padding='16px 24px';
+            document.getElementById('lineLoginBtn').style.fontSize='17px';
+            document.getElementById('lineLoginBtn').style.borderRadius='14px';
             if(liff.isLoggedIn()){
                 getLineProfile();
             }
         }).catch(function(err){
-            console.log('LIFF init error:',err);
+            alert('LIFF 初始化失敗: '+err);
             checkLogin();
         });
     }else{
