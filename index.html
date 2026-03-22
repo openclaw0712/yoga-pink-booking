@@ -736,7 +736,7 @@ function confirmBook(){
     }
     var b=bookings.filter(function(x){return x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'}).length;
     if(b>=c.capacity){alert('名額已滿');return}
-    bookings.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:currentUser.name,phone:currentUser.persistentId || currentUser.phone,status:'confirmed'});
+    bookings.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:currentUser.name,phone:currentUser.persistentId || currentUser.phone || 'guest',status:'confirmed'});
     saveData();
     alert('預約成功！');
     
