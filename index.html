@@ -610,7 +610,11 @@ function shareToLine(){
 
 function showRegister(){showPage('register')}
 function showLogin(){showPage('login')}
-function showTeacherLogin(){showPage('teacher-login');loadTeacherCredentials();}
+function showTeacherLogin(){
+    if(checkTeacherLogin())return;
+    showPage('teacher-login');
+    loadTeacherCredentials();
+}
 
 function register(){
     var n=document.getElementById('regName').value.trim();
@@ -658,14 +662,18 @@ function checkLogin(){
 function logout(){
     currentUser=null;
     localStorage.removeItem('yoga_current');
+    localStorage.removeItem('yoga_teacher_logged_in');
     // 清除 header 的會員資訊
     var header=document.querySelector('.header');
     if(header){
         var userName=header.querySelector('.user-name');
         if(userName)userName.remove();
+        var userId=header.querySelector('.user-id');
+        if(userId)userId.remove();
     }
     // 清除編輯狀態
-    document.querySelector('#tab-my .card h2').style.display='block';
+    var myTitle=document.querySelector('#tab-my .card h2');
+    if(myTitle)myTitle.style.display='block';
     // 恢復登入頁
     location.reload();
 }
@@ -676,10 +684,21 @@ function teacherLogin(){
     if(id==='teacher'&&pw==='yoga9527'){
         // 記住密碼
         localStorage.setItem('yoga_teacher_pw',pw);
+        localStorage.setItem('yoga_teacher_logged_in','true');
         document.getElementById('mainNav').style.display='none';
         showPage('teacher');
         renderTeacher();
     }else{alert('帳號或密碼錯誤')}
+}
+
+function checkTeacherLogin(){
+    if(localStorage.getItem('yoga_teacher_logged_in')==='true'){
+        document.getElementById('mainNav').style.display='none';
+        showPage('teacher');
+        renderTeacher();
+        return true;
+    }
+    return false;
 }
 
 function loadTeacherCredentials(){
