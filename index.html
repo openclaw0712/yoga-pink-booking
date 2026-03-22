@@ -375,11 +375,11 @@ function loadData(){
         bookings=JSON.parse(localStorage.getItem('yoga_bookings'))||[];
         courses=JSON.parse(localStorage.getItem('yoga_courses'))||[];
         if(courses.length===0){
-            courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00',capacity:8}];
+            courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00-16:00',capacity:8}];
             saveData();
         }
     }catch(e){
-        courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00',capacity:8}];
+        courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00-16:00',capacity:8}];
     }
 }
 
@@ -503,7 +503,7 @@ function renderCourses(){
         var r=c.capacity-b;
         html+='<div class="course">';
         html+='<div class="course-name">'+c.name+'</div>';
-        html+='<div class="course-info">👩‍🏫 '+c.teacher+' ⏰ '+(c.time||'15:00')+'</div>';
+        html+='<div class="course-info">👩‍🏫 '+c.teacher+' ⏰ '+(c.time||'15:00-16:00')+'</div>';
         html+='<div class="course-info">名額 '+c.capacity+' 人</div>';
         if(r>0){html+='<button class="btn btn-primary" onclick="goBook('+c.id+')">預約</button>'}
         html+='</div>';
@@ -515,7 +515,7 @@ function goBook(id){
     selectCourseId=id;
     var c=courses.find(function(x){return x.id===id});
     var html='<div class="course"><div class="course-name">'+c.name+'</div>';
-    html+='<div class="course-info">👩‍🏫 '+c.teacher+' ⏰ '+(c.time||'15:00')+'</div></div>';
+    html+='<div class="course-info">👩‍🏫 '+c.teacher+' ⏰ '+(c.time||'15:00-16:00')+'</div></div>';
     document.getElementById('bookInfo').innerHTML=html;
     var dates=getFridays(),opt='';
     dates.forEach(function(d){
@@ -555,7 +555,7 @@ function renderMyBookings(){
     else{
         my.forEach(function(b){
             html+='<div class="booking">';
-            html+='<div class="booking-date">📅 '+b.date+' '+(b.time||'15:00')+'</div>';
+            html+='<div class="booking-date">📅 '+b.date+' '+(b.time||'15:00-16:00')+'</div>';
             html+='<div class="booking-info">'+b.courseName+' - '+b.teacher+'</div>';
             html+='<button class="btn btn-secondary" onclick="cancelBook('+b.id+')">取消預約</button>';
             html+='</div>';
@@ -613,7 +613,7 @@ function renderTeacherBookings(){
         Object.keys(g).forEach(function(k){
             var x=g[k];
             html+='<div class="course" onclick="toggleStudents(\''+k+'\')" style="cursor:pointer">';
-            html+='<div class="booking-date">📅 '+x.date+' '+(x.time||'15:00')+'</div>';
+            html+='<div class="booking-date">📅 '+x.date+' '+(x.time||'15:00-16:00')+'</div>';
             html+='<div class="booking-info"><b>'+x.courseName+'</b> - '+x.teacher+'</div>';
             html+='<div class="booking-info" style="color:#ff6b8f">👥 '+x.students.length+' 人預約 ▼</div>';
             html+='<div id="s-'+k+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #ffc2d1">';
@@ -635,7 +635,7 @@ function renderTeacherCourses(){
     var html='<h3 style="color:#5a3a3a;margin-bottom:12px;font-size:15px">新增課程</h3>';
     html+='<div class="form-group"><input type="text" id="newCourseName" placeholder="課程名稱"></div>';
     html+='<div class="form-group"><input type="text" id="newCourseTeacher" placeholder="老師名稱"></div>';
-    html+='<div class="form-group"><input type="text" id="newCourseTime" placeholder="時間 (如 15:00)"></div>';
+    html+='<div class="form-group"><input type="text" id="newCourseTime" placeholder="時間 (如 15:00-16:00)"></div>';
     html+='<div class="form-group"><input type="number" id="newCourseCapacity" placeholder="名額" value="8"></div>';
     html+='<button class="btn btn-primary" onclick="addCourse()">新增課程</button>';
     html+='<h3 style="color:#5a3a3a;margin:20px 0 12px;font-size:15px">現有課程</h3>';
@@ -643,7 +643,7 @@ function renderTeacherCourses(){
     else{
         courses.forEach(function(c){
             html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #ffe5ec;font-size:14px">';
-            html+='<span><b>'+c.name+'</b> - '+c.teacher+' ('+(c.time||'15:00')+', '+c.capacity+'人)</span>';
+            html+='<span><b>'+c.name+'</b> - '+c.teacher+' ('+(c.time||'15:00-16:00')+', '+c.capacity+'人)</span>';
             html+='<button onclick="delCourse('+c.id+')" style="background:#c62828;color:white;border:none;padding:6px 10px;border-radius:6px;font-size:12px">刪除</button>';
             html+='</div>';
         });
