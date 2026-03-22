@@ -610,7 +610,7 @@ function shareToLine(){
 
 function showRegister(){showPage('register')}
 function showLogin(){showPage('login')}
-function showTeacherLogin(){showPage('teacher-login')}
+function showTeacherLogin(){showPage('teacher-login');loadTeacherCredentials();}
 
 function register(){
     var n=document.getElementById('regName').value.trim();
@@ -674,10 +674,20 @@ function teacherLogin(){
     var id=document.getElementById('teacherId').value;
     var pw=document.getElementById('teacherPw').value;
     if(id==='teacher'&&pw==='yoga9527'){
+        // 記住密碼
+        localStorage.setItem('yoga_teacher_pw',pw);
         document.getElementById('mainNav').style.display='none';
         showPage('teacher');
         renderTeacher();
     }else{alert('帳號或密碼錯誤')}
+}
+
+function loadTeacherCredentials(){
+    var savedPw=localStorage.getItem('yoga_teacher_pw');
+    if(savedPw){
+        document.getElementById('teacherId').value='teacher';
+        document.getElementById('teacherPw').value=savedPw;
+    }
 }
 
 function getFridays(){
