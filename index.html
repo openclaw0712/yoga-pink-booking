@@ -247,6 +247,15 @@
                     ✅ 用 LINE 帳號登入
                 </button>
                 
+                <button id="qrLoginBtn" class="btn btn-secondary" style="margin-top:8px" onclick="showQRLogin()">
+                    📱 用 QR Code 登入
+                </button>
+                
+                <div id="qrCode" style="display:none;text-align:center;margin-top:12px;">
+                    <p style="font-size:14px;color:#5a3a3a;margin-bottom:8px">或用 LINE 掃描登入：</p>
+                    <img id="qrImg" src="" style="width:150px;height:150px;border-radius:8px;border:2px solid #ffc2d1">
+                </div>
+                
                 <button class="btn btn-primary" onclick="login()">登入</button>
                 <p id="loginError" class="text-center text-error mt-16" style="font-size:14px"></p>
                 <p class="text-center mt-16" style="font-size:14px;color:#8a6a6a">
@@ -408,7 +417,17 @@ function init(){
 function lineLogin(){
     if(typeof liff!=='undefined'){
         liff.login();
+    }else{
+        // 顯示 QR Code 登入
+        showQRLogin();
     }
+}
+
+function showQRLogin(){
+    // 顯示 QR Code，用 LINE 掃描
+    var liffUrl='https://liff.line.me/2009558913-hZyWZ5n0';
+    document.getElementById('qrCode').style.display='block';
+    document.getElementById('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+encodeURIComponent(liffUrl);
 }
 
 function getLineProfile(){
