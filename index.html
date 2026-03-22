@@ -217,8 +217,8 @@
     <div class="container">
         <!-- Nav -->
         <div class="nav" id="mainNav" style="display:none">
-            <button class="active" data-tab="courses">課程</button>
-            <button data-tab="my">我的</button>
+            <button class="active" onclick="switchTab('courses')">課程</button>
+            <button onclick="switchTab('my')">我的</button>
         </div>
         
         <!-- Login -->
@@ -394,6 +394,23 @@ function showPage(page){
         document.getElementById('tab-'+p).classList.remove('active');
     });
     document.getElementById('tab-'+page).classList.add('active');
+    updateNav(page);
+}
+
+function switchTab(tab){
+    showPage(tab);
+    if(tab==='courses')renderCourses();
+    else if(tab==='my')renderMyBookings();
+}
+
+function updateNav(page){
+    var nav=document.getElementById('mainNav');
+    if(!nav)return;
+    var buttons=nav.querySelectorAll('button');
+    buttons.forEach(function(b,i){
+        var tabName=i===0?'courses':'my';
+        b.classList.toggle('active',tabName===page);
+    });
 }
 
 function showLoginPage(){
