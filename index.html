@@ -666,7 +666,7 @@ function goBook(id){
     var dates=getFridays(),opt='';
     dates.forEach(function(d){
         var dd=new Date(d);
-        opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' (五)</option>';
+        opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' 週五</option>';
     });
     document.getElementById('bookDate').innerHTML=opt;
     updateRemaining();
