@@ -453,14 +453,12 @@ function getLineProfile(){
         var displayName=profile.displayName;
         var picUrl=profile.pictureUrl||'';
         
-        alert('LINE資料：\nID：'+lineUserId+'\n名字：'+displayName);
-        
         // 用 LINE User ID 作為顯示名字
-        var showName=displayName;
-        if(displayName==='LINE User' || !displayName){
-            showName='LINE:'+lineUserId.substring(0,12);
-        }else{
+        var showName;
+        if(displayName && displayName!=='LINE User'){
             showName=displayName+' (LINE)';
+        }else{
+            showName='LINE:'+lineUserId.substring(0,12);
         }
         
         // 尋找已存在的用戶（用 lineId 比對）
@@ -480,7 +478,7 @@ function getLineProfile(){
             showMemberUI();
         }
     }).catch(function(err){
-        alert('取得LINE資料失敗：'+err);
+        console.log('Get profile error:',err);
         checkLogin();
     });
 }
