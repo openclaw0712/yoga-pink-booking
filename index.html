@@ -800,8 +800,9 @@ function renderTeacherMembers(){
     if(users.length===0){html='<p class="text-center" style="color:#8a6a6a">尚無會員</p>'}
     else{
         users.forEach(function(u){
+            var userId=u.lineId || u.phone || '無';
             html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #ffe5ec">';
-            html+='<span><b>'+u.name+'</b> ('+u.phone+')</span>';
+            html+='<span><b>'+u.name+'</b> ('+userId.substring(0,12)+')</span>';
             html+='<button onclick="delMember('+u.id+')" style="background:#c62828;color:white;border:none;padding:8px 12px;border-radius:8px;font-size:13px">刪除</button>';
             html+='</div>';
         });
