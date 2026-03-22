@@ -448,39 +448,47 @@ function lineLogin(){
 }
 
 function getLineProfile(){
+    // 先嘗試 getProfile
     liff.getProfile().then(function(profile){
+        alert('LINE回傳：\nuserId: '+profile.userId+'\ndisplayName: '+profile.displayName+'\npictureUrl: '+profile.pictureUrl);
+        console.log('Profile:',profile);
         var lineUserId=profile.userId;
-        var displayName=profile.displayName;
-        var picUrl=profile.pictureUrl||'';
+        var displayName=profile.displayName || '';
         
-        // 用 LINE User ID 作為顯示名字
-        var showName;
-        if(displayName && displayName!=='LINE User'){
-            showName=displayName+' (LINE)';
+        // 如果 displayName 是空的，嘗試用其他方式
+        if(!displayName || displayName==='LINE User'){
+            // 嘗試取得 email 或其他資訊
+            liff.getContext().then(function(ctx){
+                console.log('Context:',ctx);
+                var showName='LINE:'+lineUserId.substring(0,12);
+                createOrUpdateUser(lineUserId,showName,'');
+            }).catch(function(){
+                var showName='LINE:'+lineUserId.substring(0,12);
+                createOrUpdateUser(lineUserId,showName,'');
+            });
         }else{
-            showName='LINE:'+lineUserId.substring(0,12);
-        }
-        
-        // 尋找已存在的用戶（用 lineId 比對）
-        var existingUser=users.find(function(u){return u.lineId===lineUserId});
-        
-        if(existingUser){
-            existingUser.name=showName;
-            existingUser.picUrl=picUrl;
-            currentUser=existingUser;
-            saveData();
-            showMemberUI();
-        }else{
-            var newUser={id:Date.now(),name:showName,phone:'',pw:'',lineId:lineUserId,picUrl:picUrl};
-            users.push(newUser);
-            saveData();
-            currentUser=newUser;
-            showMemberUI();
+            var showName=displayName+' (LINE)';
+            createOrUpdateUser(lineUserId,showName,'');
         }
     }).catch(function(err){
         console.log('Get profile error:',err);
         checkLogin();
     });
+}
+
+function createOrUpdateUser(lineUserId,showName,picUrl){
+    var existingUser=users.find(function(u){return u.lineId===lineUserId});
+    if(existingUser){
+        existingUser.name=showName;
+        currentUser=existingUser;
+        saveData();
+    }else{
+        var newUser={id:Date.now(),name:showName,phone:'',pw:'',lineId:lineUserId,picUrl:picUrl};
+        users.push(newUser);
+        currentUser=newUser;
+        saveData();
+    }
+    showMemberUI();
 }
 
 function loadData(){
