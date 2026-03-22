@@ -654,7 +654,7 @@ function goBook(id){
     // 直接在登出按鈕上方插入預約表單
     var html='<div style="margin-bottom:16px;padding:16px;background:#fff0f5;border-radius:12px;text-align:center">';
     html+='<h3 style="color:#ff6b8f;margin-bottom:8px">'+c.name+'</h3>';
-    html+='<p style="color:#8a6a6a;font-size:14px">'+c.teacher+' | '+c.time+'</p>';
+    html+='<p style="color:#8a6a6a;font-size:14px">'+c.teacher+' | 每週五 '+c.time+'</p>';
     html+='</div>';
     html+='<div class="form-group"><label>選擇日期</label><select id="bookDate" onchange="updateRemaining()"></select></div>';
     html+='<p id="remainingInfo" class="text-center mb-12" style="font-weight:600;color:#ff6b8f"></p>';
