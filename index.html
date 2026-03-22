@@ -405,13 +405,13 @@ function init(){
 function processLineLogin(code){
     var lineUserId='LINE_'+(code.substring(0,30)||'user');
     
-    // 檢查是否已有暱稱（檢查所有有 lineId 的用戶）
+    // 檢查是否已有暱稱
     var existingUser=users.find(function(u){return u.lineId && u.lineId.startsWith('LINE_')});
     
     alert('現有用戶：'+(existingUser?existingUser.name:'無')+'\n新ID：'+lineUserId);
     
-    if(existingUser && existingUser.name && !existingUser.name.startsWith('LINE:')){
-        // 更新 lineId 為新的
+    if(existingUser && existingUser.name && existingUser.name !== 'LINE User' && existingUser.name !== 'LINE會員'){
+        // 已有有效暱稱，更新ID並登入
         existingUser.lineId=lineUserId;
         currentUser=existingUser;
         saveData();
