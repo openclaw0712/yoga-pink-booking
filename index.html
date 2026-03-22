@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>九容瑜伽</title>
     <style>
-        /* ===== CSS Variables - Color System ===== */
         :root {
             --pink-50: #fff0f5;
             --pink-100: #ffe4ec;
@@ -15,167 +14,92 @@
             --pink-500: #ff6b8f;
             --pink-600: #e85a7e;
             --pink-700: #d63384;
-            --pink-800: #c1356d;
-            --pink-900: #8b2a4d;
             --gray-50: #fafafa;
             --gray-100: #f5f5f5;
             --gray-200: #e5e5e5;
-            --gray-300: #d4d4d4;
-            --gray-400: #a3a3a3;
             --gray-500: #737373;
             --gray-600: #525252;
             --gray-700: #404040;
-            --gray-800: #262626;
-            --gray-900: #171717;
-            --success: #22c55e;
             --error: #ef4444;
-            --warning: #f59e0b;
         }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--pink-50);
-            color: var(--gray-800);
+            color: var(--gray-700);
             line-height: 1.6;
             min-height: 100vh;
         }
-        
-        .text-xs { font-size: 12px; line-height: 16px; }
-        .text-sm { font-size: 14px; line-height: 20px; }
-        .text-base { font-size: 16px; line-height: 24px; }
-        .text-lg { font-size: 18px; line-height: 28px; }
-        .text-xl { font-size: 20px; line-height: 28px; }
-        .text-2xl { font-size: 24px; line-height: 32px; }
-        
         .container { max-width: 480px; margin: 0 auto; padding: 24px 16px; }
-        
         .card {
             background: white;
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 8px rgba(214,51,132,0.08);
         }
-        .card:hover { box-shadow: 0 4px 12px rgba(214, 51, 132, 0.1); }
-        
         .header {
             text-align: center;
             padding: 48px 24px;
-            background: linear-gradient(135deg, var(--pink-400) 0%, var(--pink-500) 100%);
+            background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
             border-radius: 0 0 24px 24px;
             margin-bottom: 24px;
         }
-        .header h1 { font-size: 32px; color: white; margin-bottom: 8px; }
+        .header h1 { font-size: 28px; color: white; margin-bottom: 8px; }
         .header p { font-size: 14px; color: rgba(255,255,255,0.9); }
-        
         .nav { display: flex; gap: 8px; margin-bottom: 24px; }
         .nav button {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid var(--pink-300);
-            border-radius: 12px;
-            background: white;
-            color: var(--pink-600);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            flex: 1; padding: 12px 16px; border: 2px solid var(--pink-300);
+            border-radius: 12px; background: white; color: var(--pink-600);
+            font-weight: 600; font-size: 14px; cursor: pointer;
+            transition: all 0.2s;
         }
         .nav button:hover { background: var(--pink-50); }
         .nav button.active { background: var(--pink-500); border-color: var(--pink-500); color: white; }
-        .nav button:active { transform: scale(0.95); }
-        
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 8px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 6px; }
         .form-group input, .form-group select {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid var(--gray-200);
-            border-radius: 12px;
-            font-size: 16px;
-            background: var(--gray-50);
-            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%; padding: 12px 14px; border: 2px solid var(--gray-200);
+            border-radius: 10px; font-size: 16px; background: var(--gray-50);
         }
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--pink-400);
-            box-shadow: 0 0 0 4px rgba(255, 107, 143, 0.1);
-        }
-        .form-group input::placeholder { color: var(--gray-400); }
-        
-        .checkbox { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-        .checkbox input { width: 20px; height: 20px; accent-color: var(--pink-500); }
-        
+        .form-group input:focus { outline: none; border-color: var(--pink-400); }
+        .checkbox { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .checkbox input { width: 18px; height: 18px; accent-color: var(--pink-500); }
         .btn {
-            width: 100%;
-            padding: 16px 24px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            width: 100%; padding: 14px 24px; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.15s;
         }
         .btn:hover { transform: translateY(-2px); }
-        .btn:active { transform: translateY(0) scale(0.98); }
         .btn-primary {
-            background: linear-gradient(135deg, var(--pink-500) 0%, var(--pink-600) 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(255, 107, 143, 0.3);
+            background: linear-gradient(135deg, var(--pink-500), var(--pink-600));
+            color: white; box-shadow: 0 4px 12px rgba(255,107,143,0.3);
         }
         .btn-secondary { background: var(--gray-100); color: var(--gray-700); }
         .btn-outline { background: transparent; border: 2px solid var(--pink-400); color: var(--pink-600); }
-        
         .course-card {
-            background: var(--pink-50);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 12px;
-            border-left: 4px solid var(--pink-500);
-            transition: transform 0.2s ease;
+            background: var(--pink-50); border-radius: 12px; padding: 16px;
+            margin-bottom: 12px; border-left: 4px solid var(--pink-500);
         }
-        .course-card:hover { transform: translateX(4px); }
-        .course-card .name { font-size: 18px; font-weight: 700; color: var(--pink-700); margin-bottom: 8px; }
-        .course-card .info { font-size: 14px; color: var(--gray-600); margin-bottom: 4px; }
-        .course-card .capacity {
-            display: inline-block;
-            padding: 4px 12px;
-            background: var(--pink-100);
-            color: var(--pink-700);
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-        .btn-reserve { width: auto; padding: 10px 20px; margin-top: 12px; font-size: 14px; }
-        
-        .booking-card { background: var(--gray-50); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-        .booking-card .date { font-size: 14px; font-weight: 700; color: var(--pink-600); margin-bottom: 4px; }
-        .booking-card .detail { font-size: 14px; color: var(--gray-600); }
-        
+        .course-card .name { font-size: 16px; font-weight: 700; color: var(--pink-700); }
+        .course-card .info { font-size: 13px; color: var(--gray-600); margin-top: 4px; }
+        .course-card .cap { display: inline-block; padding: 4px 10px; background: var(--pink-100); color: var(--pink-700); border-radius: 20px; font-size: 12px; font-weight: 600; margin-top: 8px; }
+        .booking-card { background: var(--gray-50); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+        .booking-card .date { font-size: 13px; font-weight: 700; color: var(--pink-600); }
+        .booking-card .detail { font-size: 13px; color: var(--gray-600); margin-top: 4px; }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        
         .link { color: var(--pink-600); text-decoration: underline; cursor: pointer; }
-        .link:hover { color: var(--pink-700); }
-        
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .tabs button { flex: 1; padding: 12px; background: var(--gray-100); border: none; border-radius: 10px; font-weight: 600; color: var(--gray-600); cursor: pointer; transition: all 0.2s ease; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+        .tabs button { flex: 1; padding: 10px; background: var(--gray-100); border: none; border-radius: 8px; font-weight: 600; color: var(--gray-600); font-size: 13px; }
         .tabs button.active { background: var(--pink-500); color: white; }
-        
-        .footer { text-align: center; margin-top: 32px; padding: 24px; }
-        
+        .footer { text-align: center; margin-top: 24px; padding: 16px; }
         .text-center { text-align: center; }
         .text-error { color: var(--error); }
         .mt-16 { margin-top: 16px; }
-        .mt-24 { margin-top: 24px; }
-        .mb-8 { margin-bottom: 8px; }
-        .mb-16 { margin-bottom: 16px; }
-        .hidden { display: none !important; }
+        .mt-20 { margin-top: 20px; }
+        .mb-12 { margin-bottom: 12px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -183,16 +107,15 @@
         <h1>🧘 九容瑜伽</h1>
         <p>動若雲，靜若水，身隨意，境隨心。</p>
     </div>
-    
     <div class="container">
-        <div class="nav" id="mainNav">
+        <div class="nav" id="mainNav" style="display:none">
             <button class="active" data-tab="courses">課程</button>
             <button data-tab="my">我的</button>
         </div>
         
-        <div id="page-login">
+        <div id="page-login" class="tab-content active">
             <div class="card">
-                <h2 class="text-2xl text-center mb-16" style="color: var(--pink-600);">會員登入</h2>
+                <h2 class="text-center mb-12" style="color:var(--pink-600)">會員登入</h2>
                 <div class="form-group">
                     <label>手機號碼</label>
                     <input type="tel" id="loginPhone" placeholder="09xxxxxxxx">
@@ -203,61 +126,61 @@
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" id="remember">
-                    <label for="remember">記住登入狀態</label>
+                    <label for="remember">記住登入</label>
                 </div>
                 <button class="btn btn-primary" onclick="login()">登入</button>
-                <p id="loginError" class="text-error text-center mt-16 text-sm"></p>
-                <p class="text-center mt-24">還沒有帳號？<span class="link" onclick="showRegister()">立即註冊</span></p>
+                <p id="loginError" class="text-center text-error mt-16" style="font-size:14px"></p>
+                <p class="text-center mt-20">還沒帳號？<span class="link" onclick="showRegister()">立即註冊</span></p>
             </div>
             <div class="card">
-                <p class="text-center text-sm" style="color: var(--gray-500);">老師專區</p>
+                <p class="text-center" style="color:var(--gray-500);font-size:14px">老師專區</p>
                 <button class="btn btn-outline mt-16" onclick="showTeacherLogin()">老師入口</button>
             </div>
         </div>
         
-        <div id="page-register" class="hidden">
+        <div id="page-register" class="tab-content">
             <div class="card">
-                <h2 class="text-2xl text-center mb-16" style="color: var(--pink-600);">註冊會員</h2>
+                <h2 class="text-center mb-12" style="color:var(--pink-600)">註冊會員</h2>
                 <div class="form-group"><label>姓名</label><input type="text" id="regName" placeholder="請輸入姓名"></div>
-                <div class="form-group"><label>手機號碼</label><input type="tel" id="regPhone" placeholder="09xxxxxxxx"></div>
+                <div class="form-group"><label>手機</label><input type="tel" id="regPhone" placeholder="09xxxxxxxx"></div>
                 <div class="form-group"><label>密碼</label><input type="password" id="regPw" placeholder="設定密碼"></div>
                 <button class="btn btn-primary" onclick="register()">註冊</button>
-                <p id="regError" class="text-error text-center mt-16 text-sm"></p>
-                <p class="text-center mt-24">已有帳號？<span class="link" onclick="showLogin()">立即登入</span></p>
+                <p id="regError" class="text-center text-error mt-16" style="font-size:14px"></p>
+                <p class="text-center mt-20">已有帳號？<span class="link" onclick="showLogin()">立即登入</span></p>
             </div>
         </div>
         
-        <div id="page-courses" class="hidden">
+        <div id="page-courses" class="tab-content">
             <div class="card">
-                <h2 class="text-xl mb-16" style="color: var(--pink-600);">📅 每週課程</h2>
+                <h2 class="mb-12" style="color:var(--pink-600)">📅 每週課程</h2>
                 <div id="courseList"></div>
             </div>
             <div class="footer"><button class="btn btn-secondary" onclick="logout()">登出</button></div>
         </div>
         
-        <div id="page-my" class="hidden">
+        <div id="page-my" class="tab-content">
             <div class="card">
-                <h2 class="text-xl mb-16" style="color: var(--pink-600);">📋 我的預約</h2>
+                <h2 class="mb-12" style="color:var(--pink-600)">📋 我的預約</h2>
                 <div id="myList"></div>
             </div>
             <div class="footer"><button class="btn btn-secondary" onclick="logout()">登出</button></div>
         </div>
         
-        <div id="page-book" class="hidden">
+        <div id="page-book" class="tab-content">
             <div class="card">
-                <h2 class="text-xl mb-16" style="color: var(--pink-600);">📝 預約報名</h2>
+                <h2 class="mb-12" style="color:var(--pink-600)">📝 預約報名</h2>
                 <div id="bookInfo"></div>
-                <div class="form-group mt-24"><label>選擇日期</label><select id="bookDate" onchange="updateRemaining()"></select></div>
-                <div id="remainingInfo" class="text-center mb-16"></div>
+                <div class="form-group mt-20"><label>選擇日期</label><select id="bookDate" onchange="updateRemaining()"></select></div>
+                <p id="remainingInfo" class="text-center mb-12" style="font-weight:600;color:var(--pink-600)"></p>
                 <button class="btn btn-primary" onclick="confirmBook()">確認預約</button>
                 <button class="btn btn-secondary mt-16" onclick="showPage('courses')">返回</button>
-                <p id="bookError" class="text-error text-center mt-16 text-sm"></p>
+                <p id="bookError" class="text-center text-error mt-16" style="font-size:14px"></p>
             </div>
         </div>
         
-        <div id="page-teacher-login" class="hidden">
+        <div id="page-teacher-login" class="tab-content">
             <div class="card">
-                <h2 class="text-2xl text-center mb-16" style="color: var(--pink-600);">👩‍🏫 老師登入</h2>
+                <h2 class="text-center mb-12" style="color:var(--pink-600)">👩‍🏫 老師登入</h2>
                 <div class="form-group"><label>帳號</label><input type="text" id="teacherId" value="teacher"></div>
                 <div class="form-group"><label>密碼</label><input type="password" id="teacherPw" placeholder="請輸入密碼"></div>
                 <button class="btn btn-primary" onclick="teacherLogin()">登入</button>
@@ -265,9 +188,9 @@
             </div>
         </div>
         
-        <div id="page-teacher" class="hidden">
+        <div id="page-teacher" class="tab-content">
             <div class="card">
-                <h2 class="text-xl mb-16" style="color: var(--pink-600);">👩‍🏫 老師後台</h2>
+                <h2 class="mb-12" style="color:var(--pink-600)">👩‍🏫 老師後台</h2>
                 <div class="tabs">
                     <button class="active" onclick="showTeacherTab('members')">會員</button>
                     <button onclick="showTeacherTab('bookings')">預約</button>
@@ -284,35 +207,246 @@
 <script>
 var users=[],bookings=[],courses=[],currentUser=null,selectCourseId=null;
 function init(){loadData();checkLogin()}
-function loadData(){try{users=JSON.parse(localStorage.getItem('yoga_users'))||[];bookings=JSON.parse(localStorage.getItem('yoga_bookings'))||[];courses=JSON.parse(localStorage.getItem('yoga_courses'))||[];if(courses.length===0){courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00',capacity:8}];saveData()}}catch(e){courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00',capacity:8}]}}
-function saveData(){localStorage.setItem('yoga_users',JSON.stringify(users));localStorage.setItem('yoga_bookings',JSON.stringify(bookings));localStorage.setItem('yoga_courses',JSON.stringify(courses))}
-function showPage(p){['login','register','courses','my','book','teacher-login','teacher'].forEach(x=>document.getElementById('page-'+x).classList.add('hidden'));document.getElementById('page-'+p).classList.remove('hidden')}
+function loadData(){
+    try{
+        users=JSON.parse(localStorage.getItem('yoga_users'))||[];
+        bookings=JSON.parse(localStorage.getItem('yoga_bookings'))||[];
+        courses=JSON.parse(localStorage.getItem('yoga_courses'))||[];
+        if(courses.length===0){courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00',capacity:8}];saveData()}
+    }catch(e){courses=[{id:1,name:'基礎瑜伽',teacher:'小怡老師',time:'15:00',capacity:8}]}
+}
+function saveData(){
+    localStorage.setItem('yoga_users',JSON.stringify(users));
+    localStorage.setItem('yoga_bookings',JSON.stringify(bookings));
+    localStorage.setItem('yoga_courses',JSON.stringify(courses));
+}
+function showPage(p){
+    ['login','register','courses','my','book','teacher-login','teacher'].forEach(function(x){document.getElementById('page-'+x).classList.remove('active')});
+    document.getElementById('page-'+p).classList.add('active');
+}
 function showLoginPage(){showPage('login');document.getElementById('mainNav').style.display='none'}
-function showMemberUI(){document.getElementById('mainNav').style.display='block';showPage('courses');renderCourses()}
+function showMemberUI(){document.getElementById('mainNav').style.display='flex';showPage('courses');renderCourses()}
 function showRegister(){showPage('register')}
 function showLogin(){showPage('login')}
 function showTeacherLogin(){showPage('teacher-login')}
-function register(){var n=document.getElementById('regName').value.trim(),p=document.getElementById('regPhone').value.trim(),pw=document.getElementById('regPw').value;if(!n||!p||!pw){document.getElementById('regError').innerText='請填寫完整';return}if(users.some(function(u){return u.phone===p})){document.getElementById('regError').innerText='此手機已註冊';return}users.push({id:Date.now(),name:n,phone:p,pw:pw});saveData();alert('註冊成功！請登入');showLogin()}
-function login(){var p=document.getElementById('loginPhone').value.trim(),pw=document.getElementById('loginPw').value,r=document.getElementById('remember').checked;var u=users.find(function(x){return x.phone===p&&x.pw===pw});if(u){currentUser=u;if(r){localStorage.setItem('yoga_current',JSON.stringify(u))}showMemberUI()}else{document.getElementById('loginError').innerText='帳號或密碼錯誤'}}
-function checkLogin(){var s=localStorage.getItem('yoga_current');if(s){try{var u=JSON.parse(s);if(users.some(function(x){return x.id===u.id})){currentUser=u;showMemberUI();return}}catch(e){}}showLoginPage()}
+function register(){
+    var n=document.getElementById('regName').value.trim();
+    var p=document.getElementById('regPhone').value.trim();
+    var pw=document.getElementById('regPw').value;
+    if(!n||!p||!pw){document.getElementById('regError').innerText='請填寫完整';return}
+    if(users.some(function(u){return u.phone===p})){
+        document.getElementById('regError').innerText='此手機已註冊';return
+    }
+    users.push({id:Date.now(),name:n,phone:p,pw:pw});
+    saveData();
+    alert('註冊成功！請登入');
+    showLogin();
+}
+function login(){
+    var p=document.getElementById('loginPhone').value.trim();
+    var pw=document.getElementById('loginPw').value;
+    var r=document.getElementById('remember').checked;
+    var u=users.find(function(x){return x.phone===p&&x.pw===pw});
+    if(u){currentUser=u;if(r){localStorage.setItem('yoga_current',JSON.stringify(u))}showMemberUI()}
+    else{document.getElementById('loginError').innerText='帳號或密碼錯誤'}
+}
+function checkLogin(){
+    var s=localStorage.getItem('yoga_current');
+    if(s){
+        try{
+            var u=JSON.parse(s);
+            if(users.some(function(x){return x.id===u.id})){
+                currentUser=u;showMemberUI();return
+            }
+        }catch(e){}
+    }
+    showLoginPage();
+}
 function logout(){currentUser=null;localStorage.removeItem('yoga_current');showLoginPage()}
-function teacherLogin(){var id=document.getElementById('teacherId').value,pw=document.getElementById('teacherPw').value;if(id==='teacher'&&pw==='yoga9527'){document.getElementById('mainNav').style.display='block';showPage('teacher');renderTeacher()}else{alert('帳號或密碼錯誤')}}
-function getFridays(){var d=[],dd=new Date();while(d.length<12){if(dd.getDay()===5)d.push(dd.toISOString().split('T')[0]);dd.setDate(dd.getDate()+1)}return d}
-function renderCourses(){var dates=getFridays(),next=dates[0],html='';courses.forEach(function(c){var b=bookings.filter(function(x){return x.courseId===c.id&&x.date===next&&x.status!=='cancelled'}).length,r=c.capacity-b;html+='<div class="course-card"><div class="name">'+c.name+'</div><div class="info">👩‍🏫 '+c.teacher+' ⏰ '+c.time+'</div><div class="info">名額 '+c.capacity+' 人</div>';if(r>0){html+='<button class="btn btn-primary btn-reserve" onclick="goBook('+c.id+')">預約</button>'}html+='</div>'});document.getElementById('courseList').innerHTML=html}
-function goBook(id){selectCourseId=id;var c=courses.find(function(x){return x.id===id});var html='<div class="course-card"><div class="name">'+c.name+'</div><div class="info">👩‍🏫 '+c.teacher+' ⏰ '+c.time+'</div></div>';document.getElementById('bookInfo').innerHTML=html;var dates=getFridays(),opt='';dates.forEach(function(d){var dd=new Date(d);opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' (五)</option>'});document.getElementById('bookDate').innerHTML=opt;updateRemaining();showPage('book')}
-function updateRemaining(){var c=courses.find(function(x){return x.id===selectCourseId}),date=document.getElementById('bookDate').value,b=bookings.filter(function(x){return x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'}).length,r=c.capacity-b;document.getElementById('remainingInfo').innerHTML=r>0?'<span style="color:var(--pink-600);font-weight:600;">剩餘名額：'+r+' / '+c.capacity+'</span>':'<span style="color:var(--error);font-weight:600;">已額滿</span>'}
-function confirmBook(){var c=courses.find(function(x){return x.id===selectCourseId}),date=document.getElementById('bookDate').value;if(bookings.some(function(x){return x.phone===currentUser.phone&&x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'})){document.getElementById('bookError').innerText='您已預約過';return}var b=bookings.filter(function(x){return x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'}).length;if(b>=c.capacity){document.getElementById('bookError').innerText='名額已滿';return}bookings.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:currentUser.name,phone:currentUser.phone,status:'confirmed'});saveData();alert('預約成功！');showPage('my');renderMyBookings()}
-function renderMyBookings(){var my=bookings.filter(function(x){return x.phone===currentUser.phone&&x.status!=='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)}),html='';if(my.length===0){html='<p class="text-center" style="color:var(--gray-500);">尚無預約</p>'}else{my.forEach(function(b){html+='<div class="booking-card"><div class="date">📅 '+b.date+' '+b.time+'</div><div class="detail">'+b.courseName+' - '+b.teacher+'</div><button class="btn btn-secondary mt-16" onclick="cancelBook('+b.id+')" style="width:100%;padding:12px;">取消預約</button></div>'})}}document.getElementById('myList').innerHTML=html}
-function cancelBook(id){if(confirm('確定取消？')){var b=bookings.find(function(x){return x.id===id});if(b){b.status='cancelled';saveData();renderMyBookings()}}}
-function showTeacherTab(t){document.querySelectorAll('.tabs button').forEach(function(b,i){var idx=t==='members'?0:t==='bookings'?1:2;b.classList.toggle('active',i===idx)});document.getElementById('teacherMembers').classList.toggle('hidden',t!=='members');document.getElementById('teacherBookings').classList.toggle('hidden',t!=='bookings');document.getElementById('teacherCourses').classList.toggle('hidden',t!=='courses');if(t==='members')renderTeacherMembers();else if(t==='bookings')renderTeacherBookings();else if(t==='courses')renderTeacherCourses()}
+function teacherLogin(){
+    var id=document.getElementById('teacherId').value;
+    var pw=document.getElementById('teacherPw').value;
+    if(id==='teacher'&&pw==='yoga9527'){
+        document.getElementById('mainNav').style.display='flex';
+        showPage('teacher');
+        renderTeacher();
+    }else{alert('帳號或密碼錯誤')}
+}
+function getFridays(){
+    var d=[],dd=new Date();
+    while(d.length<12){if(dd.getDay()===5)d.push(dd.toISOString().split('T')[0]);dd.setDate(dd.getDate()+1)}
+    return d;
+}
+function renderCourses(){
+    var dates=getFridays(),next=dates[0],html='';
+    courses.forEach(function(c){
+        var b=bookings.filter(function(x){return x.courseId===c.id&&x.date===next&&x.status!=='cancelled'}).length;
+        var r=c.capacity-b;
+        html+='<div class="course-card">';
+        html+='<div class="name">'+c.name+'</div>';
+        html+='<div class="info">👩‍🏫 '+c.teacher+' ⏰ '+c.time+'</div>';
+        html+='<div class="info">名額 '+c.capacity+' 人</div>';
+        if(r>0){html+='<button class="btn btn-primary" style="margin-top:12px;padding:10px 20px;font-size:14px" onclick="goBook('+c.id+')">預約</button>'}
+        html+='</div>';
+    });
+    document.getElementById('courseList').innerHTML=html;
+}
+function goBook(id){
+    selectCourseId=id;
+    var c=courses.find(function(x){return x.id===id});
+    var html='<div class="course-card"><div class="name">'+c.name+'</div><div class="info">👩‍🏫 '+c.teacher+' ⏰ '+c.time+'</div></div>';
+    document.getElementById('bookInfo').innerHTML=html;
+    var dates=getFridays(),opt='';
+    dates.forEach(function(d){
+        var dd=new Date(d);
+        opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' (五)</option>'
+    });
+    document.getElementById('bookDate').innerHTML=opt;
+    updateRemaining();
+    showPage('book');
+}
+function updateRemaining(){
+    var c=courses.find(function(x){return x.id===selectCourseId}),date=document.getElementById('bookDate').value;
+    var b=bookings.filter(function(x){return x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'}).length;
+    var r=c.capacity-b;
+    var info=document.getElementById('remainingInfo');
+    if(r>0){info.innerHTML='剩餘名額：<span style="color:var(--pink-600)">'+r+'</span> / '+c.capacity;info.style.color='var(--gray-700)'}
+    else{info.innerHTML='已額滿';info.style.color='var(--error)'}
+}
+function confirmBook(){
+    var c=courses.find(function(x){return x.id===selectCourseId}),date=document.getElementById('bookDate').value;
+    if(bookings.some(function(x){return x.phone===currentUser.phone&&x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'})){
+        document.getElementById('bookError').innerText='您已預約過';return
+    }
+    var b=bookings.filter(function(x){return x.courseId===selectCourseId&&x.date===date&&x.status!=='cancelled'}).length;
+    if(b>=c.capacity){document.getElementById('bookError').innerText='名額已滿';return}
+    bookings.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:currentUser.name,phone:currentUser.phone,status:'confirmed'});
+    saveData();
+    alert('預約成功！');
+    showPage('my');
+    renderMyBookings();
+}
+function renderMyBookings(){
+    var my=bookings.filter(function(x){return x.phone===currentUser.phone&&x.status!=='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
+    var html='';
+    if(my.length===0){html='<p class="text-center" style="color:var(--gray-500)">尚無預約</p>'}
+    else{
+        my.forEach(function(b){
+            html+='<div class="booking-card">';
+            html+='<div class="date">📅 '+b.date+' '+b.time+'</div>';
+            html+='<div class="detail">'+b.courseName+' - '+b.teacher+'</div>';
+            html+='<button class="btn btn-secondary mt-16" style="width:100%;padding:10px" onclick="cancelBook('+b.id+')">取消預約</button>';
+            html+='</div>';
+        });
+    }
+    document.getElementById('myList').innerHTML=html;
+}
+function cancelBook(id){
+    if(confirm('確定取消？')){
+        var b=bookings.find(function(x){return x.id===id});
+        if(b){b.status='cancelled';saveData();renderMyBookings()}
+    }
+}
+function showTeacherTab(t){
+    document.querySelectorAll('.tabs button').forEach(function(b,i){
+        var idx=t==='members'?0:t==='bookings'?1:2;
+        b.classList.toggle('active',i===idx);
+    });
+    document.getElementById('teacherMembers').classList.toggle('hidden',t!=='members');
+    document.getElementById('teacherBookings').classList.toggle('hidden',t!=='bookings');
+    document.getElementById('teacherCourses').classList.toggle('hidden',t!=='courses');
+    if(t==='members')renderTeacherMembers();
+    else if(t==='bookings')renderTeacherBookings();
+    else if(t==='courses')renderTeacherCourses();
+}
 function renderTeacher(){renderTeacherMembers()}
-function renderTeacherMembers(){var html='';if(users.length===0){html='<p class="text-center" style="color:var(--gray-500);">尚無會員</p>'}else{users.forEach(function(u){html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--gray-200);"><span><b>'+u.name+'</b> ('+u.phone+')</span><button onclick="delMember('+u.id+')" style="background:var(--error);color:white;border:none;padding:8px 12px;border-radius:8px;font-size:12px;">刪除</button></div>'})}}document.getElementById('teacherMembers').innerHTML=html}
-function renderTeacherBookings(){var g={},all=bookings.filter(function(x){return x.status!=='cancelled'});all.forEach(function(b){var k=b.courseId+'_'+b.date;if(!g[k]){g[k]={courseName:b.courseName,teacher:b.teacher,date:b.date,time:b.time,students:[]};}g[k].students.push(b)});var html='';if(all.length===0){html='<p class="text-center" style="color:var(--gray-500);">尚無預約</p>'}else{Object.keys(g).forEach(function(k){var x=g[k];html+='<div class="course-card" onclick="toggleStudents(\''+k+'\')" style="cursor:pointer;"><div class="date">📅 '+x.date+' '+x.time+'</div><div class="info"><b>'+x.courseName+'</b> - '+x.teacher+'</div><div class="info" style="color:var(--pink-600);">👥 '+x.students.length+' 人預約 ▼</div><div id="s-'+k+'" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--pink-200);">';x.students.forEach(function(s){html+='<div style="padding:8px;background:var(--gray-50);border-radius:8px;margin-bottom:8px;"><b>'+s.name+'</b> ('+s.phone+')</div>'});html+='</div></div>'})}}document.getElementById('teacherBookings').innerHTML=html}
-function toggleStudents(k){var el=document.getElementById('s-'+k);el.style.display=el.style.display==='none'?'block':'none'}
-function renderTeacherCourses(){var html='<h3 class="text-lg mb-16" style="color:var(--gray-700);">新增課程</h3><div class="form-group"><input type="text" id="newCourseName" placeholder="課程名稱"></div><div class="form-group"><input type="text" id="newCourseTeacher" placeholder="老師名稱"></div><div class="form-group"><input type="text" id="newCourseTime" placeholder="時間 (如 15:00)"></div><div class="form-group"><input type="number" id="newCourseCapacity" placeholder="名額" value="8"></div><button class="btn btn-primary" onclick="addCourse()">新增課程</button><h3 class="text-lg mt-24 mb-16" style="color:var(--gray-700);">現有課程</h3>';if(courses.length===0){html+='<p class="text-center" style="color:var(--gray-500);">尚無課程</p>'}else{courses.forEach(function(c){html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--gray-200);"><span><b>'+c.name+'</b> - '+c.teacher+' ('+c.time+', '+c.capacity+'人)</span><button onclick="delCourse('+c.id+')" style="background:var(--error);color:white;border:none;padding:6px 10px;border-radius:8px;font-size:12px;">刪除</button></div>'})}}document.getElementById('teacherCourses').innerHTML=html}
-function addCourse(){var n=document.getElementById('newCourseName').value.trim(),t=document.getElementById('newCourseTeacher').value.trim(),ti=document.getElementById('newCourseTime').value.trim(),c=parseInt(document.getElementById('newCourseCapacity').value)||8;if(!n||!t||!ti){alert('請填寫課程名稱、老師、時間');return}courses.push({id:Date.now(),name:n,teacher:t,time:ti,capacity:c});saveData();document.getElementById('newCourseName').value='';document.getElementById('newCourseTeacher').value='';document.getElementById('newCourseTime').value='';alert('課程已新增！');renderTeacherCourses()}
-function delCourse(id){if(confirm('刪除此課程？')){courses=courses.filter(function(x){return x.id!==id});saveData();renderTeacherCourses()}}
-function delMember(id){if(confirm('刪除此會員？')){var u=users.find(function(x){return x.id===id});users=users.filter(function(x){return x.id!==id});bookings=bookings.filter(function(x){return x.phone!==u.phone});saveData();renderTeacherMembers()}}
+function renderTeacherMembers(){
+    var html='';
+    if(users.length===0){html='<p class="text-center" style="color:var(--gray-500)">尚無會員</p>'}
+    else{
+        users.forEach(function(u){
+            html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-200)">';
+            html+='<span><b>'+u.name+'</b> ('+u.phone+')</span>';
+            html+='<button onclick="delMember('+u.id+')" style="background:var(--error);color:white;border:none;padding:6px 10px;border-radius:6px;font-size:12px">刪除</button>';
+            html+='</div>';
+        });
+    }
+    document.getElementById('teacherMembers').innerHTML=html;
+}
+function renderTeacherBookings(){
+    var g={},all=bookings.filter(function(x){return x.status!=='cancelled'});
+    all.forEach(function(b){
+        var k=b.courseId+'_'+b.date;
+        if(!g[k]){g[k]={courseName:b.courseName,teacher:b.teacher,date:b.date,time:b.time,students:[]}}
+        g[k].students.push(b);
+    });
+    var html='';
+    if(all.length===0){html='<p class="text-center" style="color:var(--gray-500)">尚無預約</p>'}
+    else{
+        Object.keys(g).forEach(function(k){
+            var x=g[k];
+            html+='<div class="course-card" onclick="toggleStudents(\''+k+'\')" style="cursor:pointer">';
+            html+='<div class="date">📅 '+x.date+' '+x.time+'</div>';
+            html+='<div class="info"><b>'+x.courseName+'</b> - '+x.teacher+'</div>';
+            html+='<div class="info" style="color:var(--pink-600)">👥 '+x.students.length+' 人預約 ▼</div>';
+            html+='<div id="s-'+k+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--pink-200)">';
+            x.students.forEach(function(s){
+                html+='<div style="padding:8px;background:var(--gray-50);border-radius:6px;margin-bottom:6px"><b>'+s.name+'</b> ('+s.phone+')</div>';
+            });
+            html+='</div></div>';
+        });
+    }
+    document.getElementById('teacherBookings').innerHTML=html;
+}
+function toggleStudents(k){
+    var el=document.getElementById('s-'+k);
+    el.style.display=el.style.display==='none'?'block':'none';
+}
+function renderTeacherCourses(){
+    var html='<h3 style="color:var(--gray-700);margin-bottom:12px">新增課程</h3>';
+    html+='<div class="form-group"><input type="text" id="newCourseName" placeholder="課程名稱"></div>';
+    html+='<div class="form-group"><input type="text" id="newCourseTeacher" placeholder="老師名稱"></div>';
+    html+='<div class="form-group"><input type="text" id="newCourseTime" placeholder="時間 (如 15:00)"></div>';
+    html+='<div class="form-group"><input type="number" id="newCourseCapacity" placeholder="名額" value="8"></div>';
+    html+='<button class="btn btn-primary" onclick="addCourse()">新增課程</button>';
+    html+='<h3 style="color:var(--gray-700);margin:20px 0 12px">現有課程</h3>';
+    if(courses.length===0){html+='<p class="text-center" style="color:var(--gray-500)">尚無課程</p>'}
+    else{
+        courses.forEach(function(c){
+            html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-200)">';
+            html+='<span><b>'+c.name+'</b> - '+c.teacher+' ('+c.time+', '+c.capacity+'人)</span>';
+            html+='<button onclick="delCourse('+c.id+')" style="background:var(--error);color:white;border:none;padding:6px 10px;border-radius:6px;font-size:12px">刪除</button>';
+            html+='</div>';
+        });
+    }
+    document.getElementById('teacherCourses').innerHTML=html;
+}
+function addCourse(){
+    var n=document.getElementById('newCourseName').value.trim();
+    var t=document.getElementById('newCourseTeacher').value.trim();
+    var ti=document.getElementById('newCourseTime').value.trim();
+    var c=parseInt(document.getElementById('newCourseCapacity').value)||8;
+    if(!n||!t||!ti){alert('請填寫課程名稱、老師、時間');return}
+    courses.push({id:Date.now(),name:n,teacher:t,time:ti,capacity:c});
+    saveData();
+    document.getElementById('newCourseName').value='';
+    document.getElementById('newCourseTeacher').value='';
+    document.getElementById('newCourseTime').value='';
+    alert('課程已新增！');
+    renderTeacherCourses();
+}
+function delCourse(id){
+    if(confirm('刪除此課程？')){courses=courses.filter(function(x){return x.id!==id});saveData();renderTeacherCourses()}
+}
+function delMember(id){
+    if(confirm('刪除此會員？')){
+        var u=users.find(function(x){return x.id===id});
+        users=users.filter(function(x){return x.id!==id});
+        bookings=bookings.filter(function(x){return x.phone!==u.phone});
+        saveData();
+        renderTeacherMembers();
+    }
+}
 init();
 </script>
 </body>
