@@ -376,30 +376,59 @@ function init(){
     if(typeof liff!=='undefined'){
         liff.init({liffId:'2009558913-hZyWZ5n0'}).then(function(){
             isInLine=true;
-            // LIFF 初始化成功，嘗試取得用戶資訊自動登入
-            liff.getProfile().then(function(profile){
-                var lineUserId=profile.userId;
-                var displayName=profile.displayName;
-                // 用 LINE ID 自動登入或註冊
-                var existingUser=users.find(function(u){return u.lineId===lineUserId});
-                if(existingUser){
-                    currentUser=existingUser;
-                    showMemberUI();
-                }else{
-                    // 可以選擇自動註冊或顯示註冊頁面
-                    document.getElementById('loginPhone').value='LINE:'+lineUserId;
-                    document.getElementById('loginPhone').readonly=true;
-                }
-            }).catch(function(err){
-                console.log('Get profile error:',err);
-                checkLogin();
-            });
+            // 先嘗試取得現有用戶
+            if(liff.isLoggedIn()){
+                getLineProfile();
+            }else{
+                // 尚未登入，顯示 LINE 登入按鈕
+                showLineLoginButton();
+            }
         }).catch(function(err){
             console.log('LIFF init error:',err);
             checkLogin();
         });
     }else{
         checkLogin();
+    }
+}
+
+function getLineProfile(){
+    liff.getProfile().then(function(profile){
+        var lineUserId=profile.userId;
+        var displayName=profile.displayName;
+        var picUrl=profile.pictureUrl||'';
+        // 用 LINE ID 自動登入或註冊
+        var existingUser=users.find(function(u){return u.lineId===lineUserId});
+        if(existingUser){
+            currentUser=existingUser;
+            showMemberUI();
+        }else{
+            // 新用戶，自動註冊
+            var newUser={id:Date.now(),name:displayName,phone:'',pw:'',lineId:lineUserId,picUrl:picUrl};
+            users.push(newUser);
+            saveData();
+            currentUser=newUser;
+            showMemberUI();
+        }
+    }).catch(function(err){
+        console.log('Get profile error:',err);
+        checkLogin();
+    });
+}
+
+function showLineLoginButton(){
+    // 在登入頁顯示 LINE 登入按鈕
+    var loginCard=document.querySelector('#tab-login .card');
+    if(loginCard){
+        var btn=document.createElement('button');
+        btn.className='btn btn-primary';
+        btn.style.background='linear-gradient(135deg, #00B900 0%, #00a000 100%)';
+        btn.style.marginTop='12px';
+        btn.innerHTML='✅ 用 LINE 帳號登入';
+        btn.onclick=function(){
+            liff.login();
+        };
+        loginCard.appendChild(btn);
     }
 }
 
