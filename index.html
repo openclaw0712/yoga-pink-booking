@@ -377,19 +377,26 @@ var isInLine=false;
 function init(){
     loadData();
     
+    // 嘗試初始化 LIFF
+    if(typeof liff!=='undefined'){
+        liff.init({liffId:'2009559552'}).then(function(){
+            isInLine=true;
+            document.getElementById('lineLoginBtn').style.display='block';
+            document.getElementById('lineLoginBtn').style.width='100%';
+            document.getElementById('lineLoginBtn').style.padding='16px 24px';
+            document.getElementById('lineLoginBtn').style.fontSize='17px';
+            document.getElementById('lineLoginBtn').style.borderRadius='14px';
+            if(liff.isLoggedIn()){
+                getLineProfile();
+            }
+        }).catch(function(err){
+            console.log('LIFF init error:',err);
+        });
+    }
+    
     // 顯示 LINE 登入按鈕
     var btn=document.getElementById('lineLoginBtn');
     if(btn)btn.style.display='block';
-    
-    // 檢查 URL 是否是 LINE Login 回調
-    var urlParams=new URLSearchParams(window.location.search);
-    var code=urlParams.get('code');
-    var state=urlParams.get('state');
-    
-    if(code && state==='yoga123'){
-        processLineLogin(code);
-        return;
-    }
     
     checkLogin();
 }
