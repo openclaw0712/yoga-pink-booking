@@ -377,6 +377,18 @@ var isInLine=false;
 function init(){
     loadData();
     
+    // 嘗試初始化 LIFF
+    if(typeof liff!=='undefined'){
+        liff.init({liffId:'2009559768-h44Oa41n'}).then(function(){
+            isInLine=true;
+            if(liff.isLoggedIn()){
+                getLineProfile();
+            }
+        }).catch(function(err){
+            console.log('LIFF init error:',err);
+        });
+    }
+    
     // 檢查 URL 是否是 LINE Login 回調
     var urlParams=new URLSearchParams(window.location.search);
     var code=urlParams.get('code');
@@ -390,7 +402,6 @@ function init(){
     }
     
     if(code && state==='yoga123'){
-        alert('收到 LINE 回調！code='+code.substring(0,10)+'...');
         processLineLogin(code);
         return;
     }
