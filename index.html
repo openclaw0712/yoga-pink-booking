@@ -456,7 +456,12 @@ function getLineProfile(){
         alert('LINE資料：\nID：'+lineUserId+'\n名字：'+displayName);
         
         // 用 LINE User ID 作為顯示名字
-        var showName=(displayName || 'LINE會員')+' ('+lineUserId.substring(0,8)+')';
+        var showName=displayName;
+        if(displayName==='LINE User' || !displayName){
+            showName='LINE:'+lineUserId.substring(0,12);
+        }else{
+            showName=displayName+' (LINE)';
+        }
         
         // 尋找已存在的用戶（用 lineId 比對）
         var existingUser=users.find(function(u){return u.lineId===lineUserId});
