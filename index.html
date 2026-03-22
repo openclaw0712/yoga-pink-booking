@@ -452,17 +452,20 @@ function getLineProfile(){
         var lineUserId=profile.userId;
         var displayName=profile.displayName;
         var picUrl=profile.pictureUrl||'';
+        
+        // 更新用戶名字
         var existingUser=users.find(function(u){return u.lineId===lineUserId});
         if(existingUser){
+            existingUser.name=displayName;
+            existingUser.picUrl=picUrl;
             currentUser=existingUser;
-            showMemberUI();
         }else{
             var newUser={id:Date.now(),name:displayName,phone:'',pw:'',lineId:lineUserId,picUrl:picUrl};
             users.push(newUser);
-            saveData();
             currentUser=newUser;
-            showMemberUI();
         }
+        saveData();
+        showMemberUI();
     }).catch(function(err){
         console.log('Get profile error:',err);
         checkLogin();
@@ -521,6 +524,16 @@ function showLoginPage(){
 function showMemberUI(){
     document.getElementById('mainNav').style.display='flex';
     if(isInLine)document.getElementById('shareBtn').style.display='inline-block';
+    
+    // 顯示會員名字
+    var header=document.querySelector('.header');
+    if(currentUser && header){
+        var nameEl=document.createElement('p');
+        nameEl.style.cssText='color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';
+        nameEl.innerHTML='👤 '+currentUser.name;
+        header.appendChild(nameEl);
+    }
+    
     showPage('courses');
     renderCourses();
 }
