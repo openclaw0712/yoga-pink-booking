@@ -641,7 +641,16 @@ function checkLogin(){
 function logout(){
     currentUser=null;
     localStorage.removeItem('yoga_current');
-    showLoginPage();
+    // 清除 header 的會員資訊
+    var header=document.querySelector('.header');
+    if(header){
+        var userName=header.querySelector('.user-name');
+        if(userName)userName.remove();
+    }
+    // 清除編輯狀態
+    document.querySelector('#tab-my .card h2').style.display='block';
+    // 恢復登入頁
+    location.reload();
 }
 
 function teacherLogin(){
