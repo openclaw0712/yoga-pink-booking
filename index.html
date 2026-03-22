@@ -243,18 +243,9 @@
                     <label for="remember">記住登入</label>
                 </div>
                 
-                <button id="lineLoginBtn" class="btn" style="background:linear-gradient(135deg,#00B900,#00a000);color:white;margin-top:8px;display:none" onclick="lineLogin()">
+                <button id="lineLoginBtn" class="btn" style="background:linear-gradient(135deg,#00B900,#00a000);color:white;margin-top:12px;width:100%;padding:16px 24px;font-size:17px;border-radius:14px" onclick="lineLogin()">
                     ✅ 用 LINE 帳號登入
                 </button>
-                
-                <button id="qrLoginBtn" class="btn btn-secondary" style="margin-top:8px" onclick="showQRLogin()">
-                    📱 用 QR Code 登入
-                </button>
-                
-                <div id="qrCode" style="display:none;text-align:center;margin-top:12px;">
-                    <p style="font-size:14px;color:#5a3a3a;margin-bottom:8px">或用 LINE 掃描登入：</p>
-                    <img id="qrImg" src="" style="width:150px;height:150px;border-radius:8px;border:2px solid #ffc2d1">
-                </div>
                 
                 <button class="btn btn-primary" onclick="login()">登入</button>
                 <p id="loginError" class="text-center text-error mt-16" style="font-size:14px"></p>
@@ -386,48 +377,50 @@ var isInLine=false;
 function init(){
     loadData();
     
-    // 等待 LIFF SDK 載入
-    function waitForLiff(){
-        if(typeof liff!=='undefined'){
-            liff.init({liffId:'2009558913-hZyWZ5n0'}).then(function(){
-                isInLine=true;
-                document.getElementById('lineLoginBtn').style.display='block';
-                document.getElementById('lineLoginBtn').style.width='100%';
-                document.getElementById('lineLoginBtn').style.padding='16px 24px';
-                document.getElementById('lineLoginBtn').style.fontSize='17px';
-                document.getElementById('lineLoginBtn').style.borderRadius='14px';
-                if(liff.isLoggedIn()){
-                    getLineProfile();
-                }
-            }).catch(function(err){
-                console.log('LIFF init error:',err);
-                checkLogin();
-            });
-        }else{
-            // SDK 還沒載入，再等一下
-            setTimeout(waitForLiff, 500);
-        }
+    // 顯示 LINE 登入按鈕
+    var btn=document.getElementById('lineLoginBtn');
+    if(btn)btn.style.display='block';
+    
+    // 檢查 URL 是否是 LINE Login 回調
+    var urlParams=new URLSearchParams(window.location.search);
+    var code=urlParams.get('code');
+    var state=urlParams.get('state');
+    
+    if(code && state==='yoga123'){
+        processLineLogin(code);
+        return;
     }
     
-    // 先等一下讓 SDK 載入
-    setTimeout(waitForLiff, 1000);
     checkLogin();
 }
 
-function lineLogin(){
-    if(typeof liff!=='undefined'){
-        liff.login();
+function processLineLogin(code){
+    // 用 LINE code 登入
+    // 先用 code 作為用戶識別符
+    var lineUserId='LINE_'+(code.substring(0,20)||'user');
+    var displayName='LINE User';
+    
+    // 嘗試從 localStorage 找已存在的用戶
+    var existingUser=users.find(function(u){return u.lineId===lineUserId});
+    if(existingUser){
+        currentUser=existingUser;
+        showMemberUI();
     }else{
-        // 顯示 QR Code 登入
-        showQRLogin();
+        // 新用戶，自動註冊
+        var newUser={id:Date.now(),name:displayName,phone:'',pw:'',lineId:lineUserId};
+        users.push(newUser);
+        saveData();
+        currentUser=newUser;
+        showMemberUI();
     }
 }
 
-function showQRLogin(){
-    // 顯示 QR Code，用 LINE 掃描
-    var liffUrl='https://liff.line.me/2009558913-hZyWZ5n0';
-    document.getElementById('qrCode').style.display='block';
-    document.getElementById('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+encodeURIComponent(liffUrl);
+function lineLogin(){
+    // 使用 LINE Login OAuth2.0 登入
+    var clientId='2007659489';
+    var redirectUri=encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/');
+    var lineLoginUrl='https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectUri+'&state=yoga123&scope=openid%20profile';
+    window.location.href=lineLoginUrl;
 }
 
 function getLineProfile(){
