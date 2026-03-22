@@ -450,7 +450,7 @@ function lineLogin(){
 function getLineProfile(){
     liff.getProfile().then(function(profile){
         var lineUserId=profile.userId;
-        var displayName=profile.displayName;
+        var displayName=profile.displayName || 'LINE會員';
         var picUrl=profile.pictureUrl||'';
         
         // 更新用戶名字
@@ -525,13 +525,17 @@ function showMemberUI(){
     document.getElementById('mainNav').style.display='flex';
     if(isInLine)document.getElementById('shareBtn').style.display='inline-block';
     
-    // 顯示會員名字
+    // 顯示會員名字（避免重複）
     var header=document.querySelector('.header');
     if(currentUser && header){
-        var nameEl=document.createElement('p');
-        nameEl.style.cssText='color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';
-        nameEl.innerHTML='👤 '+currentUser.name;
-        header.appendChild(nameEl);
+        var existingName=header.querySelector('.user-name');
+        if(!existingName && currentUser.name){
+            var nameEl=document.createElement('p');
+            nameEl.className='user-name';
+            nameEl.style.cssText='color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';
+            nameEl.innerHTML='👤 '+currentUser.name;
+            header.appendChild(nameEl);
+        }
     }
     
     showPage('courses');
