@@ -545,15 +545,15 @@ function showMemberUI(){
     document.getElementById('mainNav').style.display='flex';
     if(isInLine)document.getElementById('shareBtn').style.display='inline-block';
     
-    // 顯示會員名字（避免重複）
+    // 顯示會員名字和編輯按鈕
     var header=document.querySelector('.header');
     if(currentUser && header){
         var existingName=header.querySelector('.user-name');
-        if(!existingName && currentUser.name){
+        if(!existingName){
             var nameEl=document.createElement('p');
             nameEl.className='user-name';
             nameEl.style.cssText='color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';
-            nameEl.innerHTML='👤 '+currentUser.name;
+            nameEl.innerHTML='👤 '+currentUser.name+' <span onclick="editNickname()" style="text-decoration:underline;cursor:pointer">[編輯]</span>';
             header.appendChild(nameEl);
         }
     }
@@ -718,14 +718,8 @@ function confirmBook(){
 
 function renderMyBookings(){
     var my=bookings.filter(function(x){return x.phone===currentUser.phone&&x.status!=='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
-    var html='<div style="margin-bottom:16px;padding:16px;background:#fff0f5;border-radius:12px">';
-    html+='<p style="font-size:14px;color:#8a6a6a">會員暱稱</p>';
-    html+='<p style="font-size:18px;font-weight:600;color:#ff6b8f;margin-top:4px">'+currentUser.name+'</p>';
-    html+='<button class="btn btn-secondary" style="margin-top:12px" onclick="editNickname()">編輯暱稱</button>';
-    html+='</div>';
     
-    if(my.length===0){html+='<p class="text-center" style="color:#8a6a6a">尚無預約</p>'}
-    else{
+    if(my.length===0){var html='<p class="text-center" style="color:#8a6a6a">尚無預約</p>'}else{var html='';
         my.forEach(function(b){
             html+='<div class="booking">';
             html+='<div class="booking-date">📅 '+b.date+' '+(b.time||'15:00-16:00')+'</div>';
