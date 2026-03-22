@@ -450,27 +450,32 @@ function lineLogin(){
 function getLineProfile(){
     liff.getProfile().then(function(profile){
         var lineUserId=profile.userId;
-        var displayName=profile.displayName || 'LINE會員';
+        var displayName=profile.displayName;
         var picUrl=profile.pictureUrl||'';
         
-        // 用 LINE User ID 作為顯示名字
-        var showName=displayName+' ('+lineUserId.substring(0,8)+')';
+        alert('LINE資料：\nID：'+lineUserId+'\n名字：'+displayName);
         
-        // 更新用戶資料
+        // 用 LINE User ID 作為顯示名字
+        var showName=(displayName || 'LINE會員')+' ('+lineUserId.substring(0,8)+')';
+        
+        // 尋找已存在的用戶（用 lineId 比對）
         var existingUser=users.find(function(u){return u.lineId===lineUserId});
+        
         if(existingUser){
             existingUser.name=showName;
             existingUser.picUrl=picUrl;
             currentUser=existingUser;
+            saveData();
+            showMemberUI();
         }else{
             var newUser={id:Date.now(),name:showName,phone:'',pw:'',lineId:lineUserId,picUrl:picUrl};
             users.push(newUser);
+            saveData();
             currentUser=newUser;
+            showMemberUI();
         }
-        saveData();
-        showMemberUI();
     }).catch(function(err){
-        console.log('Get profile error:',err);
+        alert('取得LINE資料失敗：'+err);
         checkLogin();
     });
 }
