@@ -436,9 +436,11 @@ function processLineLogin(code){
         }
     }
     
-    // 檢查是否已有暱稱
-    var existingUser=users.find(function(u){return u.lineId===lineUserId});
+    // 檢查是否已有暱稱（檢查所有有 lineId 的用戶）
+    var existingUser=users.find(function(u){return u.lineId && u.lineId.startsWith('LINE_')});
     if(existingUser && existingUser.name && !existingUser.name.startsWith('LINE:')){
+        // 更新 lineId 為新的
+        existingUser.lineId=lineUserId;
         currentUser=existingUser;
         saveData();
         window.history.replaceState({},document.title,window.location.pathname);
@@ -466,9 +468,11 @@ function submitNickname(lineUserId){
         return;
     }
     
-    var existingUser=users.find(function(u){return u.lineId===lineUserId});
+    // 檢查是否已有用戶
+    var existingUser=users.find(function(u){return u.lineId && u.lineId.startsWith('LINE_')});
     if(existingUser){
         existingUser.name=nickname;
+        existingUser.lineId=lineUserId;
         currentUser=existingUser;
     }else{
         var newUser={id:Date.now(),name:nickname,phone:'',pw:'',lineId:lineUserId};
