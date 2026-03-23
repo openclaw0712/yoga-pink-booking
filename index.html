@@ -32,6 +32,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 .course{background:#fff0f5;border-radius:16px;padding:18px;margin-bottom:14px;border-left:5px solid #ff6b8f}
 .course-name{font-size:17px;font-weight:700;color:#d63384}
 .course-info{font-size:14px;color:#8a6a6a;margin-top:6px}
+.waitlist-btn{display:inline-block;margin-left:8px;padding:8px 14px;background:#ff8c00;color:white;border-radius:10px;font-size:13px;font-weight:600}
 .course-cap{display:inline-block;padding:4px 12px;background:#ffe5ec;color:#d63384;border-radius:20px;font-size:13px;font-weight:600;margin-top:10px}
 .course .btn{margin-top:14px;padding:14px}
 .booking{background:#fff5f8;border-radius:14px;padding:16px;margin-bottom:12px}
@@ -216,5 +217,35 @@ function delMember(id){if(confirm('刪除此會員？')){var u=U.find(function(x
 function hideLoading(){document.getElementById('loadingOverlay').style.display='none'}
 init();
 </script>
-</body>
+<script>
+var W=JSON.parse(localStorage.getItem('waitlist')||'[]');
+function getW(c,d){return W.filter(function(w){return w.c===c&&w.d===d}).length}
+var oldR=renderCourses;
+renderCourses=function(){
+var g=getFridays(),n=g[0],h='';
+C.forEach(function(c){
+var bc=B.filter(function(x){return x.courseId===c.id&&x.date===n&&x.status!=='cancelled'}).length;
+var r=c.capacity-bc;
+var w=getW(c.id,n);
+h+='<div class="course"><div class="course-name">'+c.name+'</div><div class="course-info">👩🏫 '+c.teacher+' | 每週五 '+c.time+'</div><div class="course-info">名額 '+c.capacity+' 人</div>';
+if(r>0){
+h+='<button class="btn btn-primary" onclick="goBook('+c.id+')">預約</button>';
+}else{
+h+='<span class="course-cap">已額滿</span>';
+if(w>0)h+=' <span class="waitlist-btn">候補 '+w+'人</span>';
+h+=' <button class="btn" style="margin-top:10px;background:#ff8c00;color:white" onclick="addW('+c.id+',''+n+'')">加入候補</button>';
+}
+h+='</div>';
+});
+document.getElementById('courseList').innerHTML=h;
+};
+function addW(cid,date){
+if(!CU){alert('請先登入');return}
+if(W.some(function(w){return w.c===cid&&w.d===date&&w.p===CU.phone})){alert('已在候補');return}
+W.push({c:cid,d:date,p:CU.phone,n:CU.name,t:Date.now()});
+localStorage.setItem('waitlist',JSON.stringify(W));
+alert('已加入候補');
+renderCourses();
+}
+<\/script></body>
 </html>
