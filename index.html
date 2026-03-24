@@ -97,7 +97,7 @@
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px; border-bottom: 1px solid #ffe5ec;
         }
-    .notify-toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ff6b8f;color:#fff;padding:12px 24px;border-radius:12px;z-index:9999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.2)}</style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -593,15 +593,5 @@ function delCourse(id) {
 
 init();
 </script>
-<script>
-var N=JSON.parse(localStorage.getItem('notifications')||'[]');
-function showToast(m){var t=document.createElement('div');t.className='notify-toast';t.innerText=m;document.body.appendChild(t);t.style.display='block';setTimeout(function(){t.remove()},5000);}
-function checkN(){var u=N.filter(function(n){return !n.read});if(u.length>0){showToast('📢 停課通知：'+u[0].date+' '+u[0].course);u.forEach(function(x){x.read=true});localStorage.setItem('notifications',JSON.stringify(N));}}
-function addN(date,course){N.push({date:date,course:course,time:Date.now(),read:false});localStorage.setItem('notifications',JSON.stringify(N));alert('已發送停課通知');}
-function showNotifyForm(){var h='<h3>📢 發布停課通知</h3><p><label>日期：</label><select id="nDate"></select></p><p><label>課程：</label><select id="nCourse"></select></p><button onclick="submitN()">發送通知</button><button onclick="showPage('teacher')">返回</button>';
- document.getElementById('content').innerHTML=h;
- var ds=getFridays(),o='';ds.slice(0,4).forEach(function(d){var dd=new Date(d);o+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+'</option>'});document.getElementById('nDate').innerHTML=o;
- var c='';C.forEach(function(x){c+='<option value="'+x.name+'">'+x.name+'</option>'});document.getElementById('nCourse').innerHTML=c;}
-function submitN(){var d=document.getElementById('nDate').value;var c=document.getElementById('nCourse').value;if(d&&c){addN(d,c);showPage('teacher');}}
-</script></body></body>
+</body>
 </html>
