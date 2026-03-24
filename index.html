@@ -54,7 +54,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 #loadingOverlay .spinner{width:40px;height:40px;border:4px solid #ffc2d1;border-top:4px solid #ff6b8f;border-radius:50%;animation:spin 1s linear infinite}
 #loadingOverlay p{color:#ff6b8f;margin-top:16px;font-size:16px;font-weight:600}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-</style>
+.notify-badge{background:#ff4444;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:8px}.notify-toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ff6b8f;color:#fff;padding:12px 24px;border-radius:12px;z-index:9999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.2)}</style>
 </head>
 <body>
 <div id="loadingOverlay" style="display:none"><div class="spinner"></div><p>載入中...</p></div>
@@ -157,7 +157,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 <h2 class="mb-12" style="color:#ff6b8f;font-size:18px">👩‍🏫 老師後台</h2>
 <div class="tabs">
 <button class="active" onclick="showTeacherTab('members')">會員</button>
-<button onclick="showTeacherTab('bookings')">預約</button>
+<button onclick="showTeacherTab('bookings')">預約</button><button class="btn btn-secondary" style="margin-left:8px" onclick="showNotifyForm()">發停課通知">預約</button>
 <button onclick="showTeacherTab('courses')">課程</button>
 </div>
 <div id="teacherMembers"></div>
@@ -183,7 +183,7 @@ function showPage(p){['login','register','courses','my','book','teacher-login','
 function switchTab(tab){showPage(tab);if(tab==='courses')renderCourses();else if(tab==='my'){document.querySelector('#tab-my .card h2').style.display='block';renderMyBookings()}}
 function updateNav(p){var n=document.getElementById('mainNav');if(!n)return;n.querySelectorAll('button').forEach(function(b,i){var tn=i===0?'courses':'my';b.classList.toggle('active',tn===p)})}
 function showLoginPage(){showPage('login');document.getElementById('mainNav').style.display='none'}
-function showMemberUI(){document.getElementById('mainNav').style.display='flex';if(IL)document.getElementById('shareBtn').style.display='inline-block';var h=document.querySelector('.header');if(CU&&h){var en=h.querySelector('.user-name');if(!en){var ne=document.createElement('p');ne.className='user-name';ne.style.cssText='color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';ne.innerHTML='👤 '+CU.name;h.appendChild(ne);var eb=document.createElement('span');eb.style.cssText='color:rgba(255,255,255,0.8);font-size:13px;margin-left:8px;text-decoration:underline;cursor:pointer';eb.innerHTML='[編輯]';eb.onclick=editNickname;ne.appendChild(eb);var ie=document.createElement('p');ie.className='user-id';ie.style.cssText='color:rgba(255,255,255,0.7);font-size:12px;margin-top:4px';ie.innerHTML=CU.persistentId||'';h.appendChild(ie)}}showPage('courses');renderCourses()}
+function showMemberUI(){document.getElementById('mainNav').style.display='flex';if(IL)document.getElementById('shareBtn').style.display='inline-block';var h=document.querySelector('.header');if(CU&&h){var en=h.querySelector('.user-name');if(!en){var ne=document.createElement('p');ne.className='user-name';ne.style.cssText='color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';ne.innerHTML='👤 '+CU.name;h.appendChild(ne);var eb=document.createElement('span');eb.style.cssText='color:rgba(255,255,255,0.8);font-size:13px;margin-left:8px;text-decoration:underline;cursor:pointer';eb.innerHTML='[編輯]';eb.onclick=editNickname;ne.appendChild(eb);var ie=document.createElement('p');ie.className='user-id';ie.style.cssText='color:rgba(255,255,255,0.7);font-size:12px;margin-top:4px';ie.innerHTML=CU.persistentId||'';h.appendChild(ie)}}showPage('courses');renderCourses();checkNotify()}
 function shareToLine(){if(typeof liff!=='undefined'){liff.shareTargetPicker([{type:'text',text:'🧘 九容瑜伽預約\n\n歡迎預約瑜伽課程！\nhttps://openclaw0712.github.io/yoga-pink-booking/'}]).then(function(r){if(r)console.log('Share success')}).catch(function(e){console.log('Share error:',e)})}}
 function showRegister(){showPage('register')}
 function showLogin(){showPage('login')}
@@ -197,9 +197,10 @@ function checkTeacherLogin(){if(localStorage.getItem('yoga_teacher_logged_in')==
 function loadTeacherCredentials(){var sp=localStorage.getItem('yoga_teacher_pw');if(sp){document.getElementById('teacherId').value='teacher';document.getElementById('teacherPw').value=sp}}
 function getFridays(){var d=[],dd=new Date();while(d.length<12){if(dd.getDay()===5)d.push(dd.toISOString().split('T')[0]);dd.setDate(dd.getDate()+1)}return d}
 function renderCourses(){var dates=getFridays(),next=dates[0],h='';C.forEach(function(c){var bc=B.filter(function(x){return x.courseId===c.id&&x.date===next&&x.status!=='cancelled'}).length,r=c.capacity-bc;h+='<div class="course"><div class="course-name">'+c.name+'</div><div class="course-info">👩‍🏫 '+c.teacher+' | 每週五 '+c.time+'</div><div class="course-info">名額 '+c.capacity+' 人</div>';if(r>0){h+='<button class="btn btn-primary" onclick="goBook('+c.id+')">預約</button>'}h+='</div>'});document.getElementById('courseList').innerHTML=h}
-function goBook(id){SC=id;var c=C.find(function(x){return x.id===id});var h='<div style="margin-bottom:16px;padding:16px;background:#fff0f5;border-radius:12px;text-align:center"><h3 style="color:#ff6b8f;margin-bottom:8px">'+c.name+'</h3><p style="color:#8a6a6a;font-size:14px">'+c.teacher+' | 每週五 '+c.time+'</p></div><div class="form-group"><label>選擇日期</label><select id="bookDate" onchange="updateRemaining()"></select></div><p id="remainingInfo" class="text-center mb-12" style="font-weight:600;color:#ff6b8f"></p><button class="btn btn-primary" onclick="confirmBook()">確認預約</button><button class="btn btn-secondary mt-16" onclick="showPage(\'courses\')">返回</button>';document.getElementById('tab-book').innerHTML=h;var dates=getFridays(),opt='';dates.forEach(function(d){var dd=new Date(d);opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' 週五</option>'});document.getElementById('bookDate').innerHTML=opt;updateRemaining();showPage('book')}
+function showNotifyForm(){var h='<div style="padding:16px"><h3>📢 發布停課通知</h3><div class="form-group"><label>選擇日期</label><select id="notifyDate"></select></div><div class="form-group"><label>課程</label><select id="notifyCourse"></select></div><button class="btn btn-primary" onclick="submitNotify()">發送通知</button><button class="btn btn-secondary mt-16" onclick="showTeacherTab(\'bookings\')">返回</button></div>';document.getElementById('tab-teacher').innerHTML=h;var dates=getFridays(),opt='';dates.slice(0,4).forEach(function(d){var dd=new Date(d);opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+'</option>'});document.getElementById('notifyDate').innerHTML=opt;var copt='';C.forEach(function(c){copt+='<option value="'+c.name+'">'+c.name+'</option>'});document.getElementById('notifyCourse').innerHTML=copt}
+function submitNotify(){var d=document.getElementById('notifyDate').value;var c=document.getElementById('notifyCourse').value;addNotify(d,c);showTeacherTab('bookings')}function goBook(id){SC=id;var c=C.find(function(x){return x.id===id});var h='<div style="margin-bottom:16px;padding:16px;background:#fff0f5;border-radius:12px;text-align:center"><h3 style="color:#ff6b8f;margin-bottom:8px">'+c.name+'</h3><p style="color:#8a6a6a;font-size:14px">'+c.teacher+' | 每週五 '+c.time+'</p></div><div class="form-group"><label>選擇日期</label><select id="bookDate" onchange="updateRemaining()"></select></div><p id="remainingInfo" class="text-center mb-12" style="font-weight:600;color:#ff6b8f"></p><button class="btn btn-primary" onclick="confirmBook()">確認預約</button><button class="btn btn-secondary mt-16" onclick="showPage(\'courses\')">返回</button>';document.getElementById('tab-book').innerHTML=h;var dates=getFridays(),opt='';dates.forEach(function(d){var dd=new Date(d);opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' 週五</option>'});document.getElementById('bookDate').innerHTML=opt;updateRemaining();showPage('book')}
 function updateRemaining(){var c=C.find(function(x){return x.id===SC}),date=document.getElementById('bookDate').value;var bc=B.filter(function(x){return x.courseId===SC&&x.date===date&&x.status!=='cancelled'}).length,r=c.capacity-bc;document.getElementById('remainingInfo').innerHTML=r>0?'剩餘名額：<span style="color:#22c55e">'+r+'</span> / '+c.capacity:'<span style="color:#c62828">已額滿</span>'}
-function confirmBook(){var c=C.find(function(x){return x.id===SC}),date=document.getElementById('bookDate').value;if(B.some(function(x){return x.phone===(CU.persistentId||CU.phone)&&x.courseId===SC&&x.date===date&&x.status!=='cancelled'})){alert('您已預約過');return}var bc=B.filter(function(x){return x.courseId===SC&&x.date===date&&x.status!=='cancelled'}).length;if(bc>=c.capacity){alert('名額已滿');return}B.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:CU.name,phone:CU.persistentId||CU.phone||'guest',status:'confirmed'});saveData();alert('預約成功！');if(IL&&typeof liff!=='undefined'){var m='✅ 預約成功\n\n📅 日期：'+date+'\n🧘 課程：'+c.name+'\n⏰ 時間：每週五 '+(c.time||'15:00-16:00')+'\n👤 姓名：'+CU.name;liff.sendMessages([{type:'text',text:m}]).then(function(){}).catch(function(){})}showPage('courses');renderCourses()}
+function confirmBook(){var c=C.find(function(x){return x.id===SC}),date=document.getElementById('bookDate').value;if(B.some(function(x){return x.phone===(CU.persistentId||CU.phone)&&x.courseId===SC&&x.date===date&&x.status!=='cancelled'})){alert('您已預約過');return}var bc=B.filter(function(x){return x.courseId===SC&&x.date===date&&x.status!=='cancelled'}).length;if(bc>=c.capacity){alert('名額已滿');return}B.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:CU.name,phone:CU.persistentId||CU.phone||'guest',status:'confirmed'});saveData();alert('預約成功！');if(IL&&typeof liff!=='undefined'){var m='✅ 預約成功\n\n📅 日期：'+date+'\n🧘 課程：'+c.name+'\n⏰ 時間：每週五 '+(c.time||'15:00-16:00')+'\n👤 姓名：'+CU.name;liff.sendMessages([{type:'text',text:m}]).then(function(){}).catch(function(){})}showPage('courses');renderCourses();checkNotify()}
 function renderMyBookings(){var my=B.filter(function(x){return x.phone===(CU.persistentId||CU.phone)&&x.status!=='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});if(my.length===0){var h='<p class="text-center" style="color:#8a6a6a">尚無預約</p>'}else{var h='';my.forEach(function(b){h+='<div class="booking"><div class="booking-date">📅 '+b.date+' 每週五 '+(b.time||'15:00-16:00')+'</div><div class="booking-info">'+b.courseName+' - '+b.teacher+'</div><button class="btn btn-secondary" onclick="cancelBook('+b.id+')">取消預約</button></div>'})}document.getElementById('myList').innerHTML=h}
 function editNickname(){var h='<div class="card"><h2 class="text-center mb-12" style="color:#ff6b8f">修改暱稱</h2><div class="form-group"><input type="text" id="editNickname" value="'+CU.name+'" maxlength="20"></div><button class="btn btn-primary" onclick="saveNickname()">儲存</button><button class="btn btn-secondary mt-16" onclick="switchTab(\'my\')">返回</button></div>';document.getElementById('myList').innerHTML=h;document.querySelector('#tab-my .card h2').style.display='none';showPage('my')}
 function saveNickname(){var n=document.getElementById('editNickname').value.trim();if(!n){alert('請輸入暱稱');return}CU.name=n;saveData();alert('暱稱已更新！');var ne=document.querySelector('.user-name');if(ne){ne.innerHTML='👤 '+CU.name;var eb=document.createElement('span');eb.style.cssText='color:rgba(255,255,255,0.8);font-size:13px;margin-left:8px;text-decoration:underline;cursor:pointer';eb.innerHTML='[編輯]';eb.onclick=editNickname;ne.appendChild(eb)}document.querySelector('#tab-my .card h2').style.display='block';switchTab('my');renderMyBookings()}
@@ -216,5 +217,29 @@ function delMember(id){if(confirm('刪除此會員？')){var u=U.find(function(x
 function hideLoading(){document.getElementById('loadingOverlay').style.display='none'}
 init();
 </script>
-</body>
+<script>
+var N=JSON.parse(localStorage.getItem('notifications')||'[]');
+function showNotifyToast(msg){
+  var t=document.createElement('div');
+  t.className='notify-toast';
+  t.innerHTML=msg;
+  document.body.appendChild(t);
+  t.style.display='block';
+  setTimeout(function(){t.remove()},5000);
+}
+function checkNotify(){
+  var unread=N.filter(function(n){return !n.read});
+  if(unread.length>0){
+    var m='📢 停課通知：'+unread[0].date+' '+unread[0].course;
+    showNotifyToast(m);
+    unread.forEach(function(u){u.read=true});
+    localStorage.setItem('notifications',JSON.stringify(N));
+  }
+}
+function addNotify(date,course){
+  N.push({date:date,course:course,time:Date.now(),read:false});
+  localStorage.setItem('notifications',JSON.stringify(N));
+  alert('已發布停課通知');
+}
+<\/script></body>
 </html>
