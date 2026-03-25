@@ -4,11 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>九容瑜伽</title>
-<script charset="utf-8" src="https://d.line-scdn.net/liff/1.0/sdk.js">
-function cancelCourse(id){var reason=prompt('請輸入停課原因（例如：老師請假、國定假日）');if(reason===null)return;if(!reason.trim()){alert('請輸入停課原因');return}var c=C.find(function(x){return x.id===id});if(!c)return;c.cancelled=true;c.cancelReason=reason.trim();c.cancelDate=new Date().toISOString();B.filter(function(b){return b.courseId===id&&b.status!=='cancelled'}).forEach(function(b){b.status='cancelled';b.cancelReason=reason.trim()});saveData();alert('已停課：'+c.name+'\n原因：'+reason);renderTeacherCourses()}
-function restoreCourse(id){var c=C.find(function(x){return x.id===id});if(!c)return;if(!confirm('確定要恢復此課程？'))return;c.cancelled=false;c.cancelReason=null;c.cancelDate=null;saveData();renderTeacherCancellations()}
-function renderTeacherCancellations(){var cancelled=C.filter(function(c){return c.cancelled});var h='<h3 style="color:#c62828;margin-bottom:12px;font-size:15px">已停課程</h3>';if(cancelled.length===0){h+='<p class="text-center" style="color:#8a6a6a">目前沒有停課記錄</p>'}else{cancelled.forEach(function(c){var bc=B.filter(function(b){return b.courseId===c.id&&b.status==='cancelled'}).length;h+='<div class="course course-cancelled"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="course-name">'+c.name+'</div><div class="course-info">'+c.teacher+' | 每週五 '+(c.time||'15:00-16:00')+'</div></div><button onclick="restoreCourse('+c.id+')" style="background:#2e7d32;color:white;border:none;padding:8px 12px;border-radius:8px;font-size:12px">恢復</button></div><div class="cancel-reason">停課原因：'+c.cancelReason+'</div><div style="font-size:13px;color:#666;margin-top:8px">受影響報名人數：'+bc+' 人</div></div>'})}document.getElementById('teacherCancellations').innerHTML=h}
-</script>
+<script charset="utf-8" src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;overflow-x:hidden}
@@ -224,7 +220,48 @@ init();
 
 function cancelCourse(id){var reason=prompt('請輸入停課原因（例如：老師請假、國定假日）');if(reason===null)return;if(!reason.trim()){alert('請輸入停課原因');return}var c=C.find(function(x){return x.id===id});if(!c)return;c.cancelled=true;c.cancelReason=reason.trim();c.cancelDate=new Date().toISOString();B.filter(function(b){return b.courseId===id&&b.status!=='cancelled'}).forEach(function(b){b.status='cancelled';b.cancelReason=reason.trim()});saveData();alert('已停課：'+c.name+'\n原因：'+reason);renderTeacherCourses()}
 function restoreCourse(id){var c=C.find(function(x){return x.id===id});if(!c)return;if(!confirm('確定要恢復此課程？'))return;c.cancelled=false;c.cancelReason=null;c.cancelDate=null;saveData();renderTeacherCancellations()}
-function renderTeacherCancellations(){var cancelled=C.filter(function(c){return c.cancelled});var h='<h3 style="color:#c62828;margin-bottom:12px;font-size:15px">已停課程</h3>';if(cancelled.length===0){h+='<p class="text-center" style="color:#8a6a6a">目前沒有停課記錄</p>'}else{cancelled.forEach(function(c){var bc=B.filter(function(b){return b.courseId===c.id&&b.status==='cancelled'}).length;h+='<div class="course course-cancelled"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="course-name">'+c.name+'</div><div class="course-info">'+c.teacher+' | 每週五 '+(c.time||'15:00-16:00')+'</div></div><button onclick="restoreCourse('+c.id+')" style="background:#2e7d32;color:white;border:none;padding:8px 12px;border-radius:8px;font-size:12px">恢復</button></div><div class="cancel-reason">停課原因：'+c.cancelReason+'</div><div style="font-size:13px;color:#666;margin-top:8px">受影響報名人數：'+bc+' 人</div></div>'})}document.getElementById('teacherCancellations').innerHTML=h}
+function renderTeacherCancellations(){
+    // 新增停課表單
+    var h='<h3 style="color:#c62828;margin-bottom:12px;font-size:15px">新增停課</h3>';
+    h+='<div class="form-group"><label>選擇課程</label><select id="cancelCourseSelect">';
+    C.forEach(function(c){h+='<option value="'+c.id+'">'+c.name+' - '+c.teacher+'</option>'});
+    h+='</select></div>';
+    var dates=getFridays();
+    h+='<div class="form-group"><label>選擇日期（週五）</label><select id="cancelDateSelect">';
+    dates.forEach(function(d){var dd=new Date(d);h+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' 週五</option>'});
+    h+='</select></div>';
+    h+='<div class="form-group"><label>停課原因</label><input type="text" id="cancelReasonInput" placeholder="例如：老師請假、國定假日"></div>';
+    h+='<button class="btn btn-primary" style="background:#c62828" onclick="submitCancellation()">確認停課</button>';
+    
+    // 已停課程列表
+    var cancelled=C.filter(function(c){return c.cancelled});
+    h+='<h3 style="color:#c62828;margin:20px 0 12px;font-size:15px">已停課程</h3>';
+    if(cancelled.length===0){
+        h+='<p class="text-center" style="color:#8a6a6a">目前沒有停課記錄</p>';
+    }else{
+        cancelled.forEach(function(c){
+            var bc=B.filter(function(b){return b.courseId===c.id&&b.status==='cancelled'}).length;
+            h+='<div class="course course-cancelled"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="course-name">'+c.name+'</div><div class="course-info">'+c.teacher+' | 每週五 '+(c.time||'15:00-16:00')+'</div></div><button onclick="restoreCourse('+c.id+')" style="background:#2e7d32;color:white;border:none;padding:8px 12px;border-radius:8px;font-size:12px">恢復</button></div><div class="cancel-reason">停課原因：'+c.cancelReason+'</div><div style="font-size:13px;color:#666;margin-top:8px">受影響報名人數：'+bc+' 人</div></div>';
+        });
+    }
+    document.getElementById('teacherCancellations').innerHTML=h;
+}
+function submitCancellation(){
+    var cid=parseInt(document.getElementById('cancelCourseSelect').value);
+    var date=document.getElementById('cancelDateSelect').value;
+    var reason=document.getElementById('cancelReasonInput').value.trim();
+    if(!reason){alert('請輸入停課原因');return}
+    var c=C.find(function(x){return x.id===cid});
+    if(!c)return;
+    c.cancelled=true;
+    c.cancelReason=reason;
+    c.cancelDate=new Date().toISOString();
+    c.cancelDateSelected=date;
+    B.filter(function(b){return b.courseId===cid&&b.date===date&&b.status!=='cancelled'}).forEach(function(b){b.status='cancelled';b.cancelReason=reason});
+    saveData();
+    alert('已停課：'+c.name+'\n日期：'+date+'\n原因：'+reason);
+    renderTeacherCancellations();
+}
 </script>
 </body>
 </html>
