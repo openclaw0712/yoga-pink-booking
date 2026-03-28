@@ -4,149 +4,64 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>九容瑜伽</title>
-<script charset="utf-8" src="https://d.line-scdn.net/liff/1.0/sdk.js" onerror="window.__LIFF_LOAD_ERROR__=true"></script>
+<script charset="utf-8" src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;overflow-x:hidden}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue",sans-serif;background:linear-gradient(180deg,#fff9fb 0%,#fce4ec 50%,#f8bbd9 100%);min-height:100vh;color:#5a3a3a;font-size:16px;line-height:1.6}
-
-/* ===== HEADER ===== */
-.header{position:relative;background:linear-gradient(145deg,#fce4ec 0%,#f8bbd9 30%,#ec407a 70%,#d81b60 100%);padding:40px 20px 50px;text-align:center;border-radius:0 0 40px 40px;box-shadow:0 12px 40px rgba(236,64,122,0.25),0 4px 12px rgba(236,64,122,0.15),inset 0 -4px 20px rgba(214,27,96,0.1)}
-.header::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:80px;height:4px;background:linear-gradient(90deg,transparent,#fff 20%,#fff 80%,transparent);border-radius:2px}
-.header-decoration{position:absolute;top:15px;right:20px;font-size:24px;opacity:0.3}
-.header-decoration-left{position:absolute;top:20px;left:20px;font-size:18px;opacity:0.25}
-.header-lotus{display:inline-block;font-size:28px;margin-bottom:8px;animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.header h1{font-size:32px;color:white;font-weight:700;letter-spacing:2px;text-shadow:0 2px 10px rgba(214,27,96,0.3);margin-bottom:6px}
-.header p{font-size:15px;color:rgba(255,255,255,0.92);font-weight:300;letter-spacing:1px}
-.header .user-welcome{background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border-radius:20px;padding:10px 20px;margin-top:16px;display:inline-block}
-.header .user-welcome span{color:white;font-size:14px}
-.header .user-welcome .edit-btn{color:rgba(255,255,255,0.8);text-decoration:underline;cursor:pointer;font-size:13px;margin-left:8px}
-.container{max-width:100%;padding:0 16px 100px}
-
-/* ===== CARDS ===== */
-.card{position:relative;background:white;border-radius:28px;padding:28px 22px;margin-bottom:18px;box-shadow:0 4px 20px rgba(236,64,122,0.08),0 1px 3px rgba(0,0,0,0.04);overflow:hidden;transition:transform 0.3s ease,box-shadow 0.3s ease}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(236,64,122,0.12),0 2px 6px rgba(0,0,0,0.04)}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#f8bbd9,#ec407a,#f8bbd9);border-radius:28px 28px 0 0}
-.card-title{font-size:19px;color:#d63384;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.card-title::before{content:'';display:inline-block;width:4px;height:20px;background:linear-gradient(180deg,#ec407a,#f8bbd9);border-radius:2px}
-/* ===== FLOATING LABELS ===== */
-.form-group{position:relative;margin-bottom:24px}
-.form-group label{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:15px;color:#b08585;pointer-events:none;transition:all 0.25s ease;background:#fffafc;padding:0 6px;border-radius:4px}
-.form-group label.active{top:0;font-size:12px;color:#d63384;font-weight:600}
-.form-group input,.form-group select{width:100%;padding:18px 16px 10px;font-size:16px;border:2px solid #f0d4dc;border-radius:18px;background:#fffafc;transition:all 0.3s ease;outline:none}
-.form-group input:focus,.form-group select:focus{border-color:#ec407a;box-shadow:0 0 0 4px rgba(236,64,122,0.1);background:white}
-.form-group input::placeholder{color:#c9a0a0;opacity:0;transition:opacity 0.3s}
-.form-group input:focus::placeholder{opacity:1}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue",sans-serif;background:linear-gradient(180deg,#fef9f9 0%,#fce4ec 100%);min-height:100vh;color:#5a3a3a;font-size:16px;line-height:1.5}
+.header{background:linear-gradient(135deg,#f8bbd9 0%,#ec407a 100%);padding:32px 20px;text-align:center;border-radius:0 0 24px 24px;box-shadow:0 8px 32px rgba(236,64,122,0.15)}
+.header h1{font-size:34px;color:white;font-weight:700}
+.header p{font-size:14px;color:rgba(255,255,255,0.9);margin-top:4px}
+.container{max-width:100%;padding:20px 16px}
+.card{background:white;border-radius:24px;padding:24px 20px;margin-bottom:16px;box-shadow:0 4px 16px rgba(236,64,122,0.1)}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:15px;font-weight:600;color:#d63384;margin-bottom:8px}
+.form-group input,.form-group select{width:100%;padding:16px;font-size:16px;border:2px solid #ffc2d1;border-radius:16px;background:#fffafc;transition:border-color 0.2s}
+.form-group input:focus{outline:none;border-color:#ff6b8f}
 .checkbox-group{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .checkbox-group input[type="checkbox"]{width:22px;height:22px;accent-color:#ff6b8f}
 .checkbox-group label{font-size:15px;color:#5a3a3a;user-select:none}
-/* ===== BUTTONS ===== */
-.btn{width:100%;padding:16px 24px;font-size:17px;font-weight:600;border:none;border-radius:18px;cursor:pointer;transition:all 0.2s}
-/* btn shine removed */
-/* btn shine hover removed */
-.btn:active{transform:scale(0.97) translateY(1px);transition:transform 0.1s ease}
-.btn-primary{background:linear-gradient(135deg,#ff6b8f 0%,#e85a7e 50%,#d63384 100%);color:white;box-shadow:0 6px 20px rgba(236,64,122,0.35),0 2px 6px rgba(236,64,122,0.2);text-shadow:0 1px 2px rgba(0,0,0,0.1)}
-.btn-primary:hover{box-shadow:0 8px 28px rgba(236,64,122,0.45),0 4px 10px rgba(236,64,122,0.25);transform:translateY(-2px)}
-.btn-primary:active{transform:scale(0.97) translateY(1px);box-shadow:0 3px 10px rgba(236,64,122,0.3)}
-.btn-secondary{background:#fff5f8;color:#d63384;border:2px solid #f0d4dc}
-.btn-secondary:hover{background:#fff0f5;border-color:#ec407a}
+.btn{width:100%;padding:16px 24px;font-size:17px;font-weight:600;border:none;border-radius:16px;cursor:pointer;transition:all 0.2s}
+.btn:active{transform:scale(0.97);transition:transform 0.15s ease}
+.btn-primary{background:linear-gradient(135deg,#ff6b8f 0%,#e85a7e 100%);color:white;box-shadow:0 4px 14px rgba(255,107,143,0.35)}
+.btn-secondary{background:#f5f5f5;color:#666}
 .btn-outline{background:transparent;border:2px solid #ff6b8f;color:#ff6b8f}
-.btn-outline:hover{background:rgba(255,107,143,0.08)}
-.btn-line{background:linear-gradient(135deg,#00B900,#008800);color:white;box-shadow:0 4px 15px rgba(0,185,0,0.25)}
-.btn-line:hover{box-shadow:0 6px 20px rgba(0,185,0,0.35);transform:translateY(-2px)}
-/* ===== NAVIGATION TABS ===== */
-.nav{display:flex;gap:12px;margin-bottom:20px;background:white;border-radius:20px;padding:6px;box-shadow:0 2px 12px rgba(236,64,122,0.08)}
-.nav button{flex:1;padding:14px;border:none;border-radius:16px;background:transparent;color:#b08585;font-size:15px;font-weight:600;transition:all 0.3s ease}
-.nav button.active{background:linear-gradient(135deg,#ff6b8f,#ec407a);color:white;box-shadow:0 4px 15px rgba(236,64,122,0.3)}
-.nav button:not(.active):hover{background:#fff5f8;color:#d63384}
-
-/* ===== TABS (inner) ===== */
-.tabs{display:flex;gap:6px;margin-bottom:16px;background:#fce4ec;border-radius:14px;padding:4px}
-.tabs button{flex:1;padding:10px 8px;border:none;border-radius:10px;background:transparent;color:#d63384;font-size:13px;font-weight:600;transition:all 0.2s ease}
-.tabs button.active{background:white;color:#d63384;box-shadow:0 2px 8px rgba(236,64,122,0.15)}
-
-/* ===== COURSE CARDS ===== */
-.course{position:relative;background:linear-gradient(135deg,#fff9fb,#fff0f5);border-radius:22px;padding:22px 18px;margin-bottom:16px;border:1px solid #ffe5ec;overflow:hidden;transition:all 0.3s ease}
-.course:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(236,64,122,0.12);border-color:#f8bbd9}
-.course::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,#f8bbd9,#ec407a,#d63384)}
-.course-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.course-name{font-size:18px;font-weight:700;color:#d63384;line-height:1.3}
-.course-badge{background:linear-gradient(135deg,#ec407a,#d63384);color:white;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
-.course-info{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:#8a6a6a;margin:10px 0}
-.course-info span{display:flex;align-items:center;gap:4px}
-.course-capacity{margin-top:14px;padding-top:14px;border-top:1px dashed #f0d4dc}
-.capacity-bar{height:8px;background:#f0d4dc;border-radius:4px;overflow:hidden;margin-top:8px}
-.capacity-fill{height:100%;background:linear-gradient(90deg,#66bb6a,#43a047);border-radius:4px;transition:width 0.5s ease}
-.capacity-fill.warning{background:linear-gradient(90deg,#ffa726,#ff9800)}
-.capacity-fill.full{background:linear-gradient(90deg,#ef5350,#e53935)}
-.capacity-text{font-size:13px;color:#8a6a6a;margin-top:6px;display:flex;justify-content:space-between}
-.course .btn{margin-top:14px;width:100%}
-.course-full-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#ffcdd2,#ef9a9a);color:#c62828;padding:10px 16px;border-radius:16px;font-size:14px;font-weight:600;margin-top:12px}
-.course-cancelled{opacity:0.7;background:linear-gradient(135deg,#f5f5f5,#eeeeee)}
-
-/* ===== BOOKING CARDS ===== */
-.booking{background:linear-gradient(135deg,#fff9fb,#fff5f8);border-radius:18px;padding:18px;margin-bottom:14px;border:1px solid #ffe5ec;position:relative}
-.booking::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#f8bbd9,#ec407a);border-radius:18px 0 0 18px}
-.booking-date{font-size:15px;font-weight:700;color:#d63384;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.booking-info{font-size:14px;color:#8a6a6a}
+.nav{display:flex;gap:10px;margin-bottom:16px}
+.nav button{flex:1;padding:14px;border:2px solid #ffc2d1;border-radius:16px;background:white;color:#ff6b8f;font-size:15px;font-weight:600}
+.nav button.active{background:#ff6b8f;border-color:#ff6b8f;color:white}
+.course{background:#fff0f5;border-radius:16px;padding:18px;margin-bottom:14px;border-left:4px solid #ec407a}
+.course-name{font-size:17px;font-weight:700;color:#d63384}
+.course-info{font-size:14px;color:#8a6a6a;margin-top:6px}
+.course-cap{display:inline-block;padding:4px 12px;background:#ffe5ec;color:#d63384;border-radius:24px;font-size:13px;font-weight:600;margin-top:10px}
+.course .btn{margin-top:14px;padding:14px}
+.booking{background:#fff5f8;border-radius:16px;padding:16px;margin-bottom:12px}
+.booking-date{font-size:14px;font-weight:700;color:#ff6b8f}
+.booking-info{font-size:14px;color:#8a6a6a;margin-top:4px}
 .booking .btn{margin-top:12px}
-/* ===== LINKS ===== */
-.link{color:#ec407a;text-decoration:none;font-weight:600;cursor:pointer;position:relative}
-.link::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:#ec407a;transform:scaleX(0);transition:transform 0.2s ease}
-.link:hover::after{transform:scaleX(1)}
-
-/* ===== FOOTER ===== */
-.footer{text-align:center;margin-top:24px;padding-bottom:20px}
-.footer-divider{width:60px;height:3px;background:linear-gradient(90deg,#f8bbd9,#ec407a);border-radius:2px;margin:0 auto 20px}
-
-/* ===== UTILITIES ===== */
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tabs button{flex:1;padding:12px;border:none;border-radius:10px;background:#ffe5ec;color:#d63384;font-size:14px;font-weight:600}
+.tabs button.active{background:#ff6b8f;color:white}
+.link{color:#ff6b8f;text-decoration:underline;cursor:pointer}
+.footer{text-align:center;margin-top:24px}
 .text-center{text-align:center}
-.text-error{color:#c62828;font-size:14px;margin-top:12px}
+.text-error{color:#c62828}
 .mt-16{margin-top:16px}
-.mt-20{margin-top:20px}
 .mb-12{margin-bottom:12px}
 .hidden{display:none!important}
 .tab-content{display:none}
 .tab-content.active{display:block}
-.page-title{text-align:center;font-size:20px;color:#d63384;font-weight:700;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px}
-
-/* ===== LOADING ===== */
-#loadingOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
-#loadingOverlay .spinner{width:48px;height:48px;border:4px solid #fce4ec;border-top:4px solid #ec407a;border-radius:50%;animation:spin 1s linear infinite}
-#loadingOverlay p{color:#d63384;margin-top:20px;font-size:16px;font-weight:600;letter-spacing:1px}
+#loadingOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+#loadingOverlay .spinner{width:40px;height:40px;border:4px solid #f8bbd9;border-top:4px solid #ec407a;border-radius:50%;animation:spin 1s linear infinite}
+#loadingOverlay p{color:#ff6b8f;margin-top:16px;font-size:16px;font-weight:600}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:380px){.header h1{font-size:28px}.card{padding:22px 16px}.course{padding:18px 14px}}
 </style>
 </head>
 <body>
 <div id="loadingOverlay"><div class="spinner"></div><p>載入中...</p></div>
-<script>
-(function() {
-    var overlay = document.getElementById('loadingOverlay');
-    if (overlay) {
-        overlay.style.display = 'none';
-    }
-    // Fallback in case DOM isn't ready
-    setTimeout(function() {
-        var el = document.getElementById('loadingOverlay');
-        if (el) el.style.display = 'none';
-    }, 500);
-})();
-</script>
 <div class="header">
-<span class="header-decoration-left">🌸</span>
-<span class="header-decoration">🌺</span>
-<div class="header-lotus">🪷</div>
-<h1>九容瑜伽</h1>
-<p>靜而有容，修身於形</p>
-<div id="userWelcome" class="user-welcome" style="display:none">
-<span id="userName"></span>
-<span class="edit-btn" onclick="editNickname()">[編輯]</span>
-</div>
-<button id="shareBtn" onclick="shareToLine()">📤 分享給朋友</button>
+<h1>🧘 九容瑜伽</h1>
+<p>靜而有容，修身於形。</p>
+<button id="shareBtn" class="btn btn-secondary" style="margin-top:12px;padding:10px 20px;font-size:14px;display:none" onclick="shareToLine()">📤 分享給朋友</button>
 </div>
 <div class="container">
 <div class="nav" id="mainNav" style="display:none">
@@ -155,7 +70,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 </div>
 <div id="tab-login" class="tab-content active">
 <div class="card">
-<h2 class="page-title">✨ 會員登入</h2>
+<h2 class="text-center mb-12" style="color:#ff6b8f;font-size:20px">會員登入</h2>
 <div class="form-group">
 <label>手機號碼</label>
 <input type="tel" id="loginPhone" placeholder="09xxxxxxxx" autocomplete="tel">
@@ -168,7 +83,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 <input type="checkbox" id="remember">
 <label for="remember">記住登入</label>
 </div>
-<button id="lineLoginBtn" class="btn btn-line mt-16" onclick="lineLogin()">✅ 用 LINE 帳號登入</button>
+<button id="lineLoginBtn" class="btn" style="background:linear-gradient(135deg,#00B900,#00a000);color:white;margin-top:12px;width:100%;padding:16px 24px;font-size:17px;border-radius:16px" onclick="lineLogin()">✅ 用 LINE 帳號登入</button>
 <button class="btn btn-primary" onclick="login()">登入</button>
 <p id="loginError" class="text-center text-error mt-16" style="font-size:14px"></p>
 <p class="text-center mt-16" style="font-size:14px;color:#8a6a6a">還沒帳號？<span class="link" onclick="showRegister()">立即註冊</span></p>
@@ -180,7 +95,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 </div>
 <div id="tab-register" class="tab-content">
 <div class="card">
-<h2 class="page-title">🌷 註冊會員</h2>
+<h2 class="text-center mb-12" style="color:#ff6b8f;font-size:20px">註冊會員</h2>
 <div class="form-group">
 <label>姓名</label>
 <input type="text" id="regName" placeholder="請輸入姓名">
@@ -200,7 +115,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 </div>
 <div id="tab-courses" class="tab-content">
 <div class="card">
-<h2 class="card-title">每週課程</h2>
+<h2 class="mb-12" style="color:#ff6b8f;font-size:18px">📅 每週課程</h2>
 <div id="courseList"></div>
 </div>
 <div class="footer">
@@ -209,7 +124,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 </div>
 <div id="tab-my" class="tab-content">
 <div class="card">
-<h2 class="card-title">我的預約</h2>
+<h2 class="mb-12" style="color:#ff6b8f;font-size:18px">📋 我的預約</h2>
 <div id="myList"></div>
 </div>
 <div class="footer">
@@ -218,13 +133,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 </div>
 <div id="tab-book" class="tab-content">
 <div class="card">
-<h2 class="card-title">預約報名</h2>
+<h2 class="mb-12" style="color:#ff6b8f;font-size:18px">📝 預約報名</h2>
 <div id="bookInfo" style="display:none"></div>
 </div>
 </div>
 <div id="tab-teacher-login" class="tab-content">
 <div class="card">
-<h2 class="page-title">👩‍🏫 老師登入</h2>
+<h2 class="text-center mb-12" style="color:#ff6b8f;font-size:20px">👩‍🏫 老師登入</h2>
 <div class="form-group">
 <label>帳號</label>
 <input type="text" id="teacherId" value="teacher">
@@ -239,7 +154,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 </div>
 <div id="tab-teacher" class="tab-content">
 <div class="card">
-<h2 class="card-title">老師後台</h2>
+<h2 class="mb-12" style="color:#ff6b8f;font-size:18px">👩‍🏫 老師後台</h2>
 <div class="tabs">
 <button class="active" onclick="showTeacherTab('members')">會員</button>
 <button onclick="showTeacherTab('bookings')">預約</button>
@@ -258,16 +173,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 </div>
 <script>
 var U=[],B=[],C=[],CU=null,SC=null,IL=false;
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        var overlay = document.getElementById('loadingOverlay');
-        if (overlay) overlay.style.display = 'none';
-    }, 100);
-});
-
-function init(){showLoading();loadData();hideLoading();setupFloatingLabels();setTimeout(function(){try{hideLoading()}catch(e){}},3000);var p=new URLSearchParams(window.location.search),c=p.get('code'),s=p.get('state'),e=p.get('error');if(e){alert('LINE登入失敗：'+e);showLoginPage();return}if(c&&s==='yoga123'){processLineLogin(c);return}checkLogin();var b=document.getElementById('lineLoginBtn');if(b)b.style.display='block'}
-function setupFloatingLabels(){document.querySelectorAll('.form-group input,.form-group select').forEach(function(input){if(input.value)input.previousElementSibling.classList.add('active');input.addEventListener('focus',function(){this.previousElementSibling.classList.add('active')});input.addEventListener('blur',function(){if(!this.value)this.previousElementSibling.classList.remove('active')})})}
-function processLineLogin(code){var pid=localStorage.getItem('yoga_persistent_id'),eu=null;if(pid){eu=U.find(function(u){return u.persistentId===pid})}if(eu){CU=eu;localStorage.setItem('yoga_current',JSON.stringify(CU));saveData();window.history.replaceState({},document.title,window.location.pathname);showMemberUI();return}var npid='ID_'+Date.now();localStorage.setItem('yoga_persistent_id',npid);var h='<div class="card"><h2 class="page-title">請輸入您的暱稱</h2><div class="form-group"><label>暱稱</label><input type="text" id="firstNickname" placeholder=" " maxlength="20"></div><button class="btn btn-primary" onclick="submitFirstNickname(\''+npid+'\')">確定</button></div>';document.getElementById('tab-login').innerHTML=h;setupFloatingLabels()}
+function init(){loadData();hideLoading();var p=new URLSearchParams(window.location.search),c=p.get('code'),s=p.get('state'),e=p.get('error');if(e){alert('LINE登入失敗：'+e);showLoginPage();return}if(c&&s==='yoga123'){processLineLogin(c);return}checkLogin();var b=document.getElementById('lineLoginBtn');if(b)b.style.display='block'}
+function processLineLogin(code){var pid=localStorage.getItem('yoga_persistent_id'),eu=null;if(pid){eu=U.find(function(u){return u.persistentId===pid})}if(eu){CU=eu;localStorage.setItem('yoga_current',JSON.stringify(CU));saveData();window.history.replaceState({},document.title,window.location.pathname);showMemberUI();return}var npid='ID_'+Date.now();localStorage.setItem('yoga_persistent_id',npid);var h='<div class="card"><h2 class="text-center mb-12" style="color:#ff6b8f">請輸入您的暱稱</h2><div class="form-group"><input type="text" id="firstNickname" placeholder="例如：葉小欣" maxlength="20"></div><button class="btn btn-primary" onclick="submitFirstNickname(\''+npid+'\')">確定</button></div>';document.getElementById('tab-login').innerHTML=h}
 function submitFirstNickname(pid){var n=document.getElementById('firstNickname').value.trim();if(!n){alert('請輸入暱稱');return}var ex=U.find(function(u){return u.persistentId===pid});if(ex){ex.name=n;CU=ex}else{var nu={id:Date.now(),name:n,phone:'',pw:'',persistentId:pid};U.push(nu);CU=nu}saveData();localStorage.setItem('yoga_current',JSON.stringify(CU));window.history.replaceState({},document.title,window.location.pathname);showMemberUI()}
 function lineLogin(){var ci='2009559768',ru=encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/'),lu='https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id='+ci+'&redirect_uri='+ru+'&state=yoga123&scope=openid%20profile';window.location.href=lu}
 function getLineProfileDirect(){if(typeof liff!=='undefined'){liff.getProfile().then(function(p){var lid=p.userId,dn=p.displayName||'';if(dn&&dn!=='LINE User'){var sn=dn;createOrUpdateUser(lid,sn,'')}else{var sn='LINE:'+lid.substring(0,8);createOrUpdateUser(lid,sn,'')}}).catch(function(e){var sn='LINE:user';createOrUpdateUser('unknown',sn,'')})}}
@@ -279,22 +186,22 @@ function showPage(p){['login','register','courses','my','book','teacher-login','
 function switchTab(tab){showPage(tab);if(tab==='courses')renderCourses();else if(tab==='my'){document.querySelector('#tab-my .card h2').style.display='block';renderMyBookings()}}
 function updateNav(p){var n=document.getElementById('mainNav');if(!n)return;n.querySelectorAll('button').forEach(function(b,i){var tn=i===0?'courses':'my';b.classList.toggle('active',tn===p)})}
 function showLoginPage(){showPage('login');document.getElementById('mainNav').style.display='none'}
-function showMemberUI(){document.getElementById('mainNav').style.display='flex';document.getElementById('userWelcome').style.display='inline-block';document.getElementById('userName').textContent='👤 '+CU.name;if(IL)document.getElementById('shareBtn').style.display='inline-block';showPage('courses');renderCourses()}
+function showMemberUI(){document.getElementById('mainNav').style.display='flex';if(IL)document.getElementById('shareBtn').style.display='inline-block';var h=document.querySelector('.header');if(CU&&h){var en=h.querySelector('.user-name');if(!en){var ne=document.createElement('p');ne.className='user-name';ne.style.cssText='color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';ne.innerHTML='👤 '+CU.name;h.appendChild(ne);var eb=document.createElement('span');eb.style.cssText='color:rgba(255,255,255,0.8);font-size:13px;margin-left:8px;text-decoration:underline;cursor:pointer';eb.innerHTML='[編輯]';eb.onclick=editNickname;ne.appendChild(eb);var ie=document.createElement('p');ie.className='user-id';ie.style.cssText='color:rgba(255,255,255,0.7);font-size:12px;margin-top:4px';ie.innerHTML=CU.persistentId||'';h.appendChild(ie)}}showPage('courses');renderCourses()}
 function shareToLine(){if(typeof liff!=='undefined'){liff.shareTargetPicker([{type:'text',text:'🧘 九容瑜伽預約\n\n歡迎預約瑜伽課程！\nhttps://openclaw0712.github.io/yoga-pink-booking/'}]).then(function(r){if(r)console.log('Share success')}).catch(function(e){console.log('Share error:',e)})}}
-function showRegister(){showPage('register');setupFloatingLabels()}
-function showLogin(){showPage('login');setupFloatingLabels()}
+function showRegister(){showPage('register')}
+function showLogin(){showPage('login')}
 function showTeacherLogin(){if(checkTeacherLogin())return;showPage('teacher-login');loadTeacherCredentials()}
 function register(){var n=document.getElementById('regName').value.trim(),p=document.getElementById('regPhone').value.trim(),pw=document.getElementById('regPw').value;if(!n||!p||!pw){document.getElementById('regError').innerText='請填寫完整';return}if(U.some(function(u){return u.phone===p})){document.getElementById('regError').innerText='此手機已註冊';return}U.push({id:Date.now(),name:n,phone:p,pw:pw});saveData();alert('註冊成功！請登入');showLogin()}
 function login(){var p=document.getElementById('loginPhone').value.trim(),pw=document.getElementById('loginPw').value,r=document.getElementById('remember').checked,u=U.find(function(x){return x.phone===p&&x.pw===pw});if(u){CU=u;if(r){localStorage.setItem('yoga_current',JSON.stringify(u))}showMemberUI()}else{document.getElementById('loginError').innerText='帳號或密碼錯誤'}}
 function checkLogin(){var s=localStorage.getItem('yoga_current');if(s){try{var u=JSON.parse(s);if(U.some(function(x){return x.id===u.id})){CU=u;showMemberUI();return}}catch(e){}}showLoginPage()}
-function logout(){CU=null;localStorage.removeItem('yoga_current');localStorage.removeItem('yoga_teacher_logged_in');document.getElementById('userWelcome').style.display='none';var mt=document.querySelector('#tab-my .card h2');if(mt)mt.style.display='block';location.reload()}
+function logout(){CU=null;localStorage.removeItem('yoga_current');localStorage.removeItem('yoga_teacher_logged_in');var h=document.querySelector('.header');if(h){var un=h.querySelector('.user-name');if(un)un.remove();var uid=h.querySelector('.user-id');if(uid)uid.remove()}var mt=document.querySelector('#tab-my .card h2');if(mt)mt.style.display='block';location.reload()}
 function teacherLogin(){var id=document.getElementById('teacherId').value,pw=document.getElementById('teacherPw').value;if(id==='teacher'&&pw==='yoga9527'){localStorage.setItem('yoga_teacher_pw',pw);localStorage.setItem('yoga_teacher_logged_in','true');document.getElementById('mainNav').style.display='none';showPage('teacher');renderTeacher()}else{alert('帳號或密碼錯誤')}}
 function checkTeacherLogin(){if(localStorage.getItem('yoga_teacher_logged_in')==='true'){document.getElementById('mainNav').style.display='none';showPage('teacher');renderTeacher();return true}return false}
 function loadTeacherCredentials(){var sp=localStorage.getItem('yoga_teacher_pw');if(sp){document.getElementById('teacherId').value='teacher';document.getElementById('teacherPw').value=sp}}
 function getFridays(){var d=[],dd=new Date();while(d.length<12){if(dd.getDay()===5)d.push(dd.toISOString().split('T')[0]);dd.setDate(dd.getDate()+1)}return d}
-function renderCourses(){var dates=getFridays(),next=dates[0],h='';C.forEach(function(c){var bc=B.filter(function(x){return x.courseId===c.id&&x.date===next&&x.status!=='cancelled'}).length,r=c.capacity-bc,pct=(bc/c.capacity*100).toFixed(0),capClass=pct>=100?'full':pct>=70?'warning':'';h+='<div class="course">';h+='<div class="course-header"><div class="course-name">'+c.name+'</div>';if(r<=0){h+='<span class="course-badge">已額滿</span>'}h+='</div>';h+='<div class="course-info"><span>👩‍🏫 '+c.teacher+'</span><span>🕐 每週五 '+c.time+'</span></div>';h+='<div class="course-capacity"><div class="capacity-text"><span>報名進度</span><span>'+bc+' / '+c.capacity+' 人</span></div>';h+='<div class="capacity-bar"><div class="capacity-fill '+capClass+'" style="width:'+Math.min(pct,100)+'%"></div></div></div>';if(r>0){h+='<button class="btn btn-primary" onclick="goBook('+c.id+')">立即預約</button>'}else{h+='<div class="course-full-badge">😢 已額滿</div>';if(!inWl){h+='<button class="btn btn-secondary mt-16" onclick="goWaitlist('+c.id+')">加入候補</button>'}}}h+='</div>'});document.getElementById('courseList').innerHTML=h}
-function goBook(id){SC=id;var c=C.find(function(x){return x.id===id});var h='<div class="course" style="margin-bottom:20px"><div class="course-header"><div class="course-name">'+c.name+'</div></div><div class="course-info"><span>👩‍🏫 '+c.teacher+'</span><span>🕐 每週五 '+c.time+'</span></div></div>';h+='<div class="form-group"><label>選擇日期</label><select id="bookDate" onchange="updateRemaining()"></select></div>';h+='<p id="remainingInfo" class="text-center mb-12" style="font-weight:600;color:#d63384;font-size:15px"></p>';h+='<button class="btn btn-primary" onclick="confirmBook()">確認預約</button>';h+='<button class="btn btn-secondary mt-16" onclick="showPage(\'courses\')">返回</button>';document.getElementById('tab-book').innerHTML=h;var dates=getFridays(),opt='';dates.forEach(function(d){var dd=new Date(d);opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' 週五</option>'});document.getElementById('bookDate').innerHTML=opt;updateRemaining();setupFloatingLabels();showPage('book')}
-function updateRemaining(){var c=C.find(function(x){return x.id===SC}),date=document.getElementById('bookDate').value;var bc=B.filter(function(x){return x.courseId===SC&&x.date===date&&x.status!=='cancelled'}).length,r=c.capacity-bc;document.getElementById('remainingInfo').innerHTML=r>0?'✨ 剩餘名額：<span style="color:#22c55e">'+r+'</span> / '+c.capacity:'<span style="color:#c62828">已額滿</span>'}
+function renderCourses(){var dates=getFridays(),next=dates[0],h='';C.forEach(function(c){var bc=B.filter(function(x){return x.courseId===c.id&&x.date===next&&x.status!=='cancelled'}).length,r=c.capacity-bc;h+='<div class="course"><div class="course-name">'+c.name+'</div><div class="course-info">👩‍🏫 '+c.teacher+' | 每週五 '+c.time+'</div><div class="course-info">名額 '+c.capacity+' 人</div>';if(r>0){h+='<button class="btn btn-primary" onclick="goBook('+c.id+')">預約</button>'}else{h+='<span class="course-cap full">已額滿</span>';if(!inWl){h+='<button class="btn btn-waitlist" style="margin-top:10px" onclick="goWaitlist('+c.id+')">加入候補</button>'}else{h+='<button class="btn btn-secondary" style="margin-top:10px" disabled>已加入候補</button>'}}h+='</div>'});document.getElementById('courseList').innerHTML=h}
+function goBook(id){SC=id;var c=C.find(function(x){return x.id===id});var h='<div style="margin-bottom:16px;padding:16px;background:#fff0f5;border-radius:16px;text-align:center"><h3 style="color:#ff6b8f;margin-bottom:8px">'+c.name+'</h3><p style="color:#8a6a6a;font-size:14px">'+c.teacher+' | 每週五 '+c.time+'</p></div><div class="form-group"><label>選擇日期</label><select id="bookDate" onchange="updateRemaining()"></select></div><p id="remainingInfo" class="text-center mb-12" style="font-weight:600;color:#ff6b8f"></p><button class="btn btn-primary" onclick="confirmBook()">確認預約</button><button class="btn btn-secondary mt-16" onclick="showPage(\'courses\')">返回</button>';document.getElementById('tab-book').innerHTML=h;var dates=getFridays(),opt='';dates.forEach(function(d){var dd=new Date(d);opt+='<option value="'+d+'">'+(dd.getMonth()+1)+'/'+dd.getDate()+' 週五</option>'});document.getElementById('bookDate').innerHTML=opt;updateRemaining();showPage('book')}
+function updateRemaining(){var c=C.find(function(x){return x.id===SC}),date=document.getElementById('bookDate').value;var bc=B.filter(function(x){return x.courseId===SC&&x.date===date&&x.status!=='cancelled'}).length,r=c.capacity-bc;document.getElementById('remainingInfo').innerHTML=r>0?'剩餘名額：<span style="color:#22c55e">'+r+'</span> / '+c.capacity:'<span style="color:#c62828">已額滿</span>'}
 function confirmBook(){var c=C.find(function(x){return x.id===SC}),date=document.getElementById('bookDate').value;if(B.some(function(x){return x.phone===(CU.persistentId||CU.phone)&&x.courseId===SC&&x.date===date&&x.status!=='cancelled'})){alert('您已預約過');return}var bc=B.filter(function(x){return x.courseId===SC&&x.date===date&&x.status!=='cancelled'}).length;if(bc>=c.capacity){alert('名額已滿');return}B.push({id:Date.now(),courseId:c.id,courseName:c.name,teacher:c.teacher,date:date,time:c.time,name:CU.name,phone:CU.persistentId||CU.phone||'guest',status:'confirmed'});saveData();alert('✅ 預約成功！\n\n即將返回課程頁面');if(IL&&typeof liff!=='undefined'){var m='✅ 預約成功\n\n📅 日期：'+date+'\n🧘 課程：'+c.name+'\n⏰ 時間：每週五 '+(c.time||'15:00-16:00')+'\n👤 姓名：'+CU.name;liff.sendMessages([{type:'text',text:m}]).then(function(){}).catch(function(){})}showPage('courses');renderCourses()}
 function renderMyBookings(){var my=B.filter(function(x){return x.phone===(CU.persistentId||CU.phone)&&x.status!=='cancelled'}).sort(function(a,b){return new Date(b.date)-new Date(a.date)});if(my.length===0){var h='<p class="text-center" style="color:#8a6a6a">尚無預約</p>'}else{var h='';my.forEach(function(b){h+='<div class="booking"><div class="booking-date">📅 '+b.date+' 每週五 '+(b.time||'15:00-16:00')+'</div><div class="booking-info">'+b.courseName+' - '+b.teacher+'</div><button class="btn btn-secondary" onclick="cancelBook('+b.id+')">取消預約</button></div>'})}document.getElementById('myList').innerHTML=h}
 function editNickname(){var h='<div class="card"><h2 class="text-center mb-12" style="color:#ff6b8f">修改暱稱</h2><div class="form-group"><input type="text" id="editNickname" value="'+CU.name+'" maxlength="20"></div><button class="btn btn-primary" onclick="saveNickname()">儲存</button><button class="btn btn-secondary mt-16" onclick="switchTab(\'my\')">返回</button></div>';document.getElementById('myList').innerHTML=h;document.querySelector('#tab-my .card h2').style.display='none';showPage('my')}
@@ -309,18 +216,7 @@ function renderTeacherCourses(){var h='<h3 style="color:#5a3a3a;margin-bottom:12
 function addCourse(){var n=document.getElementById('newCourseName').value.trim(),t=document.getElementById('newCourseTeacher').value.trim(),ti=document.getElementById('newCourseTime').value.trim(),c=parseInt(document.getElementById('newCourseCapacity').value)||8;if(!n||!t||!ti){alert('請填寫課程名稱、老師、時間');return}C.push({id:Date.now(),name:n,teacher:t,time:ti,capacity:c});saveData();document.getElementById('newCourseName').value='';document.getElementById('newCourseTeacher').value='';document.getElementById('newCourseTime').value='';alert('課程已新增！');renderTeacherCourses()}
 function delCourse(id){if(confirm('刪除此課程？')){C=C.filter(function(x){return x.id!==id});saveData();renderTeacherCourses()}}
 function delMember(id){if(confirm('刪除此會員？')){var u=U.find(function(x){return x.id===id});U=U.filter(function(x){return x.id!==id});B=B.filter(function(x){return x.phone!==u.phone});saveData();renderTeacherMembers()}}
-function hideLoading(){var el=document.getElementById('loadingOverlay');if(el)el.style.display='none';}function showLoading(){var el=document.getElementById('loadingOverlay');if(el)el.style.display='flex';}
-// LIFF loading fallback
-window.addEventListener('load', function() {
-    setTimeout(function() {
-        try {
-            var overlay = document.getElementById('loadingOverlay');
-            if (overlay && overlay.style.display !== 'none') {
-                overlay.style.display = 'none';
-            }
-        } catch(e) {}
-    }, 2000);
-});
+function hideLoading(){document.getElementById('loadingOverlay').style.display='none'}
 init();
 
 function cancelCourse(id){var reason=prompt('請輸入停課原因（例如：老師請假、國定假日）');if(reason===null)return;if(!reason.trim()){alert('請輸入停課原因');return}var c=C.find(function(x){return x.id===id});if(!c)return;c.cancelled=true;c.cancelReason=reason.trim();c.cancelDate=new Date().toISOString();B.filter(function(b){return b.courseId===id&&b.status!=='cancelled'}).forEach(function(b){b.status='cancelled';b.cancelReason=reason.trim()});saveData();alert('已停課：'+c.name+'\n原因：'+reason);renderTeacherCourses()}
