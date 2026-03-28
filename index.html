@@ -245,6 +245,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Helvetica Neue"
 </div>
 <script>
 var U=[],B=[],C=[],CU=null,SC=null,IL=false;
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        var overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.style.display = 'none';
+    }, 100);
+});
+
 function init(){loadData();hideLoading();setupFloatingLabels();setTimeout(function(){try{hideLoading()}catch(e){}},3000);var p=new URLSearchParams(window.location.search),c=p.get('code'),s=p.get('state'),e=p.get('error');if(e){alert('LINE登入失敗：'+e);showLoginPage();return}if(c&&s==='yoga123'){processLineLogin(c);return}checkLogin();var b=document.getElementById('lineLoginBtn');if(b)b.style.display='block'}
 function setupFloatingLabels(){document.querySelectorAll('.form-group input,.form-group select').forEach(function(input){if(input.value)input.previousElementSibling.classList.add('active');input.addEventListener('focus',function(){this.previousElementSibling.classList.add('active')});input.addEventListener('blur',function(){if(!this.value)this.previousElementSibling.classList.remove('active')})})}
 function processLineLogin(code){var pid=localStorage.getItem('yoga_persistent_id'),eu=null;if(pid){eu=U.find(function(u){return u.persistentId===pid})}if(eu){CU=eu;localStorage.setItem('yoga_current',JSON.stringify(CU));saveData();window.history.replaceState({},document.title,window.location.pathname);showMemberUI();return}var npid='ID_'+Date.now();localStorage.setItem('yoga_persistent_id',npid);var h='<div class="card"><h2 class="page-title">請輸入您的暱稱</h2><div class="form-group"><label>暱稱</label><input type="text" id="firstNickname" placeholder=" " maxlength="20"></div><button class="btn btn-primary" onclick="submitFirstNickname(\''+npid+'\')">確定</button></div>';document.getElementById('tab-login').innerHTML=h;setupFloatingLabels()}
