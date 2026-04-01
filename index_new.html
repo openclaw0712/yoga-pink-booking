@@ -879,26 +879,31 @@ function logout() {
 
 // Init
 window.onload = function() {
-  // Check for LINE OAuth callback
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('code')) {
-    // LINE OAuth callback - try to initialize LIFF
-    if (typeof liff !== 'undefined') {
-      liff.init({ liffId: '2009559768' }).then(() => {
-        getLineProfile();
-      }).catch(() => {
-        // LIFF init failed, just show login
-        checkLogin();
-      });
+  try {
+    // Check for LINE OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('code')) {
+      if (typeof liff !== 'undefined') {
+        liff.init({ liffId: '2009559768' }).then(() => {
+          getLineProfile();
+        }).catch(function() {
+          showLogin();
+        });
+      } else {
+        showLogin();
+      }
     } else {
       checkLogin();
     }
-  } else {
-    checkLogin();
+  } catch(e) {
+    console.log('Init error:', e);
+    showLogin();
   }
-  setTimeout(() => {
-    document.getElementById('loadingOverlay').style.display = 'none';
-  }, 800);
+  // Always hide loading after 1s max
+  setTimeout(function() {
+    var overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.style.display = 'none';
+  }, 1000);
 };
 </script>
 </body>
