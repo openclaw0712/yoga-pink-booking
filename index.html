@@ -516,6 +516,7 @@ body {
       <label>密碼</label>
       <input type="password" id="loginPw" placeholder="請輸入密碼" autocomplete="current-password">
     </div>
+    <button class="btn btn-line" onclick="lineLogin()" style="margin-top:12px">🌿 用 LINE 登入</button>
     <button class="btn btn-primary" onclick="login()">登入</button>
     <p id="loginError" class="text-error text-center" style="display:none"></p>
     <p class="text-center text-muted mt-16">還沒有帳號？<span class="link" onclick="showRegister()">立即註冊</span></p>
@@ -657,7 +658,13 @@ function switchTab(tab) {
   event?.target?.classList.add('active');
 }
 
-function showLogin() { switchTab('login'); document.getElementById('mainNav').style.display = 'none'; }
+function showLogin() {
+  switchTab('login');
+  document.getElementById('mainNav').style.display = 'none';
+  var header = document.querySelector('.hero');
+  var un = header?.querySelector('.user-name');
+  if (un) un.remove();
+}
 function showRegister() { switchTab('register'); }
 function showTeacherLogin() { switchTab('teacher'); }
 
@@ -696,15 +703,13 @@ function login() {
     loadTeacherDash();
     return;
   }
-  const users = JSON.parse(localStorage.getItem('yoga_users') || '{}');
-  if (users[phone] && users[phone].pw === pw) {
-    currentUser = users[phone];
-    currentUser.phone = phone;
+  const users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
+  const user = users.find(function(u) { return u.phone === phone && u.pw === pw; });
+  if (user) {
+    currentUser = user;
     err.style.display = 'none';
-    switchTab('courses');
-    loadCourses();
-    loadMyBookings();
-    document.getElementById('shareBtn').style.display = 'inline-block';
+    localStorage.setItem('yoga_current', JSON.stringify(user));
+    showMemberUI();
   } else {
     err.textContent = '帳號或密碼錯誤';
     err.style.display = 'block';
@@ -716,9 +721,12 @@ function register() {
   const phone = document.getElementById('regPhone').value;
   const pw = document.getElementById('regPw').value;
   if (!name || !phone || !pw) { alert('請填寫所有欄位'); return; }
-  const users = JSON.parse(localStorage.getItem('yoga_users') || '{}');
-  if (users[phone]) { alert('此帳號已註冊'); return; }
-  users[phone] = { name, pw };
+  const users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
+  if (users.some(function(u) { return u.phone === phone; })) {
+    alert('此帳號已註冊');
+    return;
+  }
+  users.push({ id: Date.now(), name: name, phone: phone, pw: pw });
   localStorage.setItem('yoga_users', JSON.stringify(users));
   alert('註冊成功！');
   showLogin();
@@ -791,8 +799,103 @@ function shareToLine() {
   }
 }
 
+// LINE Login
+function lineLogin() {
+  var clientId = '2009559768';
+  var redirectUri = encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/');
+  var lineAuthUrl = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectUri + '&state=yoga123&scope=openid%20profile';
+  window.location.href = lineAuthUrl;
+}
+
+function getLineProfile() {
+  liff.getProfile().then(function(profile) {
+    var lineId = profile.userId;
+    var displayName = profile.displayName || '';
+    if (!displayName || displayName === 'LINE User') {
+      var name = 'LINE:' + lineId.substring(0, 12);
+    } else {
+      var name = displayName + ' (LINE)';
+    }
+    createOrUpdateUser(lineId, name, '');
+  }).catch(function(e) {
+    console.log('Get profile error:', e);
+    checkLogin();
+  });
+}
+
+function createOrUpdateUser(lineId, name, picUrl) {
+  var users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
+  var existingUser = users.find(function(u) { return u.lineId === lineId; });
+  if (existingUser) {
+    existingUser.name = name;
+    currentUser = existingUser;
+  } else {
+    var newUser = { id: Date.now(), name: name, phone: '', pw: '', lineId: lineId, picUrl: picUrl };
+    users.push(newUser);
+    currentUser = newUser;
+  }
+  localStorage.setItem('yoga_users', JSON.stringify(users));
+  localStorage.setItem('yoga_current', JSON.stringify(currentUser));
+  showMemberUI();
+}
+
+function showMemberUI() {
+  document.getElementById('mainNav').style.display = 'flex';
+  document.getElementById('shareBtn').style.display = 'inline-block';
+  var header = document.querySelector('.hero');
+  if (currentUser && header) {
+    var userName = document.createElement('p');
+    userName.className = 'user-name';
+    userName.style.cssText = 'color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';
+    userName.innerHTML = '👤 ' + currentUser.name;
+    header.appendChild(userName);
+  }
+  switchTab('courses');
+  loadCourses();
+  loadMyBookings();
+}
+
+function checkLogin() {
+  var stored = localStorage.getItem('yoga_current');
+  if (stored) {
+    try {
+      var user = JSON.parse(stored);
+      var users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
+      if (users.some(function(u) { return u.id === user.id; })) {
+        currentUser = user;
+        showMemberUI();
+        return;
+      }
+    } catch (e) {}
+  }
+  showLogin();
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('yoga_current');
+  location.reload();
+}
+
 // Init
 window.onload = function() {
+  // Check for LINE OAuth callback
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('code')) {
+    // LINE OAuth callback - try to initialize LIFF
+    if (typeof liff !== 'undefined') {
+      liff.init({ liffId: '2009559768' }).then(() => {
+        getLineProfile();
+      }).catch(() => {
+        // LIFF init failed, just show login
+        checkLogin();
+      });
+    } else {
+      checkLogin();
+    }
+  } else {
+    checkLogin();
+  }
   setTimeout(() => {
     document.getElementById('loadingOverlay').style.display = 'none';
   }, 800);
