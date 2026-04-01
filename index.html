@@ -877,14 +877,22 @@ function logout() {
   location.reload();
 }
 
+// Force hide loading after 2s regardless
+var loadingTimer = setInterval(function() {
+  var overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+    clearInterval(loadingTimer);
+  }
+}, 2000);
+
 // Init
 window.onload = function() {
   try {
-    // Check for LINE OAuth callback
-    const urlParams = new URLSearchParams(window.location.search);
+    var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('code')) {
       if (typeof liff !== 'undefined') {
-        liff.init({ liffId: '2009559768' }).then(() => {
+        liff.init({ liffId: '2009559768' }).then(function() {
           getLineProfile();
         }).catch(function() {
           showLogin();
@@ -899,11 +907,6 @@ window.onload = function() {
     console.log('Init error:', e);
     showLogin();
   }
-  // Always hide loading after 1s max
-  setTimeout(function() {
-    var overlay = document.getElementById('loadingOverlay');
-    if (overlay) overlay.style.display = 'none';
-  }, 1000);
 };
 </script>
 </body>
