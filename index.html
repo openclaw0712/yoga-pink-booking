@@ -979,6 +979,11 @@ function lineLogin() {
 }
 
 function getLineProfile() {
+  if (typeof liff === 'undefined') {
+    console.error('liff SDK not loaded');
+    showLogin();
+    return;
+  }
   liff.getProfile().then(function(profile) {
     var lineId = profile.userId;
     var displayName = profile.displayName || '';
