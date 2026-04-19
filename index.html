@@ -983,9 +983,8 @@ function getLineProfile() {
     showLogin();
     return;
   }
-  liff.init({ liffId: '2009559768-h440a41n' }).then(function() {
-    return liff.getProfile();
-  }).then(function(profile) {
+  // liff.init() 已經在 window.onload 完成了，直接取 profile
+  liff.getProfile().then(function(profile) {
     var lineId = profile.userId;
     var displayName = profile.displayName || '';
     if (!displayName || displayName === 'LINE User') {
