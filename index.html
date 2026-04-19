@@ -1069,7 +1069,7 @@ window.onload = function() {
     if (urlParams.has('code')) {
       // LINE OAuth callback
       if (typeof liff !== 'undefined') {
-        liff.init({ liffId: '2009559768-h440a41n' }).then(function() {
+        liff.init({ liffId: '2009559768' }).then(function() {
           getLineProfile();
         }).catch(function(e) {
           alert('liff init 失敗：' + e.message);
