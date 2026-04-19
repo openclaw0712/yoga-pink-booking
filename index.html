@@ -979,11 +979,13 @@ function lineLogin() {
 
 function getLineProfile() {
   if (typeof liff === 'undefined') {
-    console.error('liff SDK not loaded');
+    alert('LINE SDK 未載入，請在 LINE 內開啟');
     showLogin();
     return;
   }
-  liff.getProfile().then(function(profile) {
+  liff.init({ liffId: '2009559768-h440a41n' }).then(function() {
+    return liff.getProfile();
+  }).then(function(profile) {
     var lineId = profile.userId;
     var displayName = profile.displayName || '';
     if (!displayName || displayName === 'LINE User') {
@@ -993,7 +995,7 @@ function getLineProfile() {
     }
     createOrUpdateUser(lineId, name, '');
   }).catch(function(e) {
-    console.error('Get profile error:', e);
+    alert('LINE 登入失敗：' + e.message);
     checkLogin();
   });
 }
