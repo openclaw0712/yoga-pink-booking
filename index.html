@@ -969,15 +969,12 @@ function shareToLine() {
   }
 }
 
-// LINE Login（使用 LIFF SDK 原生登入）
+// LINE Login（OAuth flow - 舊版可用的方式）
 function lineLogin() {
-  if (typeof liff !== 'undefined') {
-    if (!liff.isLoggedIn()) {
-      liff.login();
-    }
-  } else {
-    alert('LINE 登入功能需要在 LINE 內開啟，請使用手機登入');
-  }
+  var clientId = '2009559768';
+  var redirectUri = encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/');
+  var lineAuthUrl = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectUri + '&state=yoga123&scope=openid%20profile';
+  window.location.href = lineAuthUrl;
 }
 
 function getLineProfile() {
@@ -1067,23 +1064,25 @@ var loadingTimer = setInterval(function() {
 // Init
 window.onload = function() {
   try {
-    if (typeof liff !== 'undefined') {
-      liff.init({ liffId: '2009559768-h440a41n' }).then(function() {
-        if (liff.isLoggedIn()) {
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('code')) {
+      // LINE OAuth callback
+      if (typeof liff !== 'undefined') {
+        liff.init({ liffId: '2009559768-h440a41n' }).then(function() {
           getLineProfile();
-        } else {
-          showLogin();
-        }
-      }).catch(function(e) {
-        console.error('LIFF init error:', e);
-        showLogin();
-      });
+        }).catch(function(e) {
+          console.error('LIFF init error:', e);
+          checkLogin();
+        });
+      } else {
+        checkLogin();
+      }
     } else {
-      showLogin();
+      checkLogin();
     }
   } catch(e) {
     console.error('Init error:', e);
-    showLogin();
+    checkLogin();
   }
 };
 </script>
