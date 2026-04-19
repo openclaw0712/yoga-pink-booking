@@ -1067,21 +1067,27 @@ window.onload = function() {
   try {
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('code')) {
+      alert('偵錯：偵測到 LINE code，準備初始化');
       // LINE OAuth callback
       if (typeof liff !== 'undefined') {
+        alert('偵錯：liff SDK 存在，開始 init');
         liff.init({ liffId: '2009559768-h440a41n' }).then(function() {
+          alert('偵錯：liff init 成功，呼叫 getLineProfile');
           getLineProfile();
         }).catch(function(e) {
-          console.error('LIFF init error:', e);
+          alert('偵錯：liff init 失敗 - ' + e.message);
           checkLogin();
         });
       } else {
+        alert('偵錯：liff SDK 不存在');
         checkLogin();
       }
     } else {
+      alert('偵錯：沒有 code，呼叫 checkLogin');
       checkLogin();
     }
   } catch(e) {
+    alert('偵錯：Init error - ' + e.message);
     console.error('Init error:', e);
     checkLogin();
   }
