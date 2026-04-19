@@ -595,7 +595,7 @@ body {
     <div id="courseDetail"></div>
     <div class="form-group">
       <label>選擇日期</label>
-      <input type="date" id="bookDate">
+      <input type="date" id="bookDate" onchange="onDateChange()">
     </div>
     <div class="form-group">
       <label>選擇時段</label>
@@ -603,7 +603,8 @@ body {
         <option value="">請選擇時段</option>
       </select>
     </div>
-    <button class="btn btn-primary" onclick="submitBooking()">確認預約</button>
+    <button class="btn btn-primary" id="bookingBtn" onclick="submitBooking()">確認預約</button>
+    <p id="bookingMsg" class="text-error" style="display:none"></p>
   </div>
 </div>
 
@@ -628,6 +629,13 @@ body {
       <div class="card-title">老師管理</div>
     </div>
     <div id="teacherCourseList"></div>
+  <div class="card mt-16">
+    <div class="card-header">
+      <div class="card-icon">📋</div>
+      <div class="card-title">所有會員預約</div>
+    </div>
+    <div id="allBookingsList"></div>
+  </div>
   </div>
 </div>
 </div>
@@ -640,6 +648,33 @@ const COURSES = [
   {id:4, name:'療癒瑜伽', emoji:'💆‍♀️', desc:'舒緩壓力與身心修復', dur:'60 min', cap:8, cat:'gentle'},
   {id:5, name:'晨間流動', emoji:'🌅', desc:'喚醒身體的活潑練習', dur:'45 min', cap:15, cat:''},
 ];
+
+function getCourseCapacity(courseId) {
+  const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
+  return bookings.filter(b => b.courseId == courseId).length;
+}
+
+function isAlreadyBooked(courseId, phone) {
+  const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
+  return bookings.some(b => b.courseId == courseId && b.phone === phone);
+}
+
+function setDatePickerRange() {
+  const dateInput = document.getElementById('bookDate');
+  if (!dateInput) return;
+  const today = new Date();
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 7);
+  const fmt = d => d.toISOString().split('T')[0];
+  dateInput.min = fmt(today);
+  dateInput.max = fmt(maxDate);
+}
+
+function getUserName(phone) {
+  const users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
+  const u = users.find(x => x.phone === phone);
+  return u ? u.name : (phone || '未知');
+}
 
 const TIMES = ['09:00','10:30','14:00','16:00','19:00'];
 
@@ -673,17 +708,63 @@ function showBookingForm() {
   const form = document.getElementById('bookingForm');
   if (sel.value) {
     const c = COURSES.find(x => x.id == sel.value);
+    const booked = getCourseCapacity(c.id);
+    const full = booked >= c.cap;
     document.getElementById('courseDetail').innerHTML = `
       <div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius-md);margin-bottom:16px">
         <strong>${c.emoji} ${c.name}</strong><br>
         <span style="font-size:14px;color:var(--text-secondary)">${c.desc}</span><br>
-        <span style="font-size:12px;color:var(--text-muted)">${c.dur} · 名額 ${c.cap} 人</span>
+        <span style="font-size:12px;color:var(--text-muted)">${c.dur}</span> ·
+        <span style="font-size:12px;color:${full ? '#c62828' : 'var(--accent-sage)'}">${booked}/${c.cap} 人</span>
+        ${full ? '<span style="font-size:12px;color:#c62828">　已額滿</span>' : ''}
       </div>`;
     const timeSel = document.getElementById('bookTime');
     timeSel.innerHTML = '<option value="">請選擇時段</option>' + TIMES.map(t => `<option value="${t}">${t}</option>`).join('');
     form.classList.remove('hidden');
+    setDatePickerRange();
+    document.getElementById('bookDate').value = '';
+    document.getElementById('bookTime').value = '';
+    document.getElementById('bookingMsg').style.display = 'none';
+    document.getElementById('bookingBtn').disabled = false;
+    document.getElementById('bookingBtn').textContent = '確認預約';
   } else {
     form.classList.add('hidden');
+  }
+}
+
+function onDateChange() {
+  const btn = document.getElementById('bookingBtn');
+  const msg = document.getElementById('bookingMsg');
+  msg.style.display = 'none';
+  const date = document.getElementById('bookDate').value;
+  if (!date) return;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 7);
+  const selDate = new Date(date + 'T00:00:00');
+  if (selDate < today || selDate > maxDate) {
+    msg.textContent = '⚠️ 只能預約今天起的未來7天內的日期';
+    msg.style.display = 'block';
+    return;
+  }
+  const courseId = document.getElementById('courseSelect').value;
+  if (!courseId) return;
+  const c = COURSES.find(x => x.id == courseId);
+  const booked = getCourseCapacity(c.id);
+  if (booked >= c.cap) {
+    btn.disabled = true;
+    btn.textContent = '已額滿';
+    msg.textContent = '此課程已額滿，請選擇其他課程';
+    msg.style.display = 'block';
+  } else if (currentUser && isAlreadyBooked(c.id, currentUser.phone)) {
+    btn.disabled = true;
+    btn.textContent = '您已預約過';
+    msg.textContent = '⚠️ 您已預約過此課程，請至「我的預約」取消後再重新預約';
+    msg.style.display = 'block';
+  } else {
+    btn.disabled = false;
+    btn.textContent = '確認預約';
   }
 }
 
@@ -758,36 +839,125 @@ function loadMyBookings() {
   if (bookings.length === 0) {
     list.innerHTML = '<p class="text-center text-muted">尚無預約記錄</p>';
   } else {
-    list.innerHTML = bookings.map(b => {
+    list.innerHTML = bookings.map((b) => {
       const c = COURSES.find(x => x.id == b.courseId);
       return `<div class="booking-item">
         <div class="booking-date">${c.emoji} ${c.name}</div>
         <div class="booking-info">${b.date} ${b.time}</div>
+        <button onclick="cancelMyBooking('${b.date}', '${b.time}', ${b.courseId})" style="margin-top:8px;padding:6px 14px;font-size:12px;background:#c62828;color:white;border:none;border-radius:8px;cursor:pointer">取消預約</button>
       </div>`;
     }).join('');
+  }
+}
+
+function cancelMyBooking(date, time, courseId) {
+  if (!confirm('確定要取消這個預約嗎？')) return;
+  try {
+    const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
+    const updated = bookings.filter(b => !(b.courseId == courseId && b.date === date && b.time === time && b.phone === currentUser.phone));
+    localStorage.setItem('yoga_bookings', JSON.stringify(updated));
+    loadMyBookings();
+    alert('已取消預約');
+  } catch(e) {
+    console.error('cancelMyBooking error:', e);
+    alert('取消失敗，請稍後再試');
   }
 }
 
 function loadTeacherDash() {
   const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
   document.getElementById('teacherCourseList').innerHTML = COURSES.map(c => {
-    const count = bookings.filter(b => b.courseId == c.id).length;
+    const courseBookings = bookings.filter(b => b.courseId == c.id);
+    const full = courseBookings.length >= c.cap;
     return `<div style="padding:16px;background:var(--bg-secondary);border-radius:var(--radius-md);margin-bottom:12px">
       <strong>${c.emoji} ${c.name}</strong>
-      <span style="float:right;color:var(--accent-primary)">${count} 人預約</span>
+      <span style="float:right;color:${full ? '#c62828' : 'var(--accent-sage)'}">${courseBookings.length}/${c.cap} 人</span>
+      ${courseBookings.length > 0 ? '<div style="margin-top:10px;font-size:13px;color:var(--text-secondary)">' + courseBookings.map(b => {
+        const name = getUserName(b.phone);
+        return `<span style="display:inline-block;background:white;padding:2px 10px;border-radius:50px;margin:2px">${name} · ${b.date} ${b.time}</span>`;
+      }).join('') + '</div>' : ''}
     </div>`;
   }).join('');
+
+  const allList = document.getElementById('allBookingsList');
+  if (bookings.length === 0) {
+    allList.innerHTML = '<p class="text-center text-muted">尚無任何預約</p>';
+  } else {
+    allList.innerHTML = bookings.map((b) => {
+      const c = COURSES.find(x => x.id == b.courseId);
+      const name = getUserName(b.phone);
+      return `<div class="booking-item" style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="booking-date">${c.emoji} ${c.name}</div>
+          <div class="booking-info">👤 ${name} · ${b.date} ${b.time}</div>
+        </div>
+        <button onclick="teacherCancelBooking('${b.date}', '${b.time}', ${b.courseId}, '${b.phone}')" style="padding:6px 12px;font-size:12px;background:#c62828;color:white;border:none;border-radius:8px;cursor:pointer;white-space:nowrap">取消</button>
+      </div>`;
+    }).join('');
+  }
+}
+
+function teacherCancelBooking(date, time, courseId, phone) {
+  if (!confirm('確定要取消此會員的預約嗎？')) return;
+  try {
+    const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
+    const updated = bookings.filter(b => !(b.courseId == courseId && b.date === date && b.time === time && b.phone === phone));
+    localStorage.setItem('yoga_bookings', JSON.stringify(updated));
+    loadTeacherDash();
+    alert('已取消該會員預約');
+  } catch(e) {
+    console.error('teacherCancelBooking error:', e);
+    alert('取消失敗，請稍後再試');
+  }
 }
 
 function submitBooking() {
   const courseId = document.getElementById('courseSelect').value;
   const date = document.getElementById('bookDate').value;
   const time = document.getElementById('bookTime').value;
-  if (!courseId || !date || !time) { alert('請填寫所有欄位'); return; }
+  const btn = document.getElementById('bookingBtn');
+  const msg = document.getElementById('bookingMsg');
+  if (!courseId || !date || !time) {
+    msg.textContent = '請填寫所有欄位';
+    msg.style.display = 'block';
+    return;
+  }
+  if (!currentUser) {
+    msg.textContent = '請先登入會員';
+    msg.style.display = 'block';
+    return;
+  }
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 7);
+  const selDate = new Date(date + 'T00:00:00');
+  if (selDate < today || selDate > maxDate) {
+    msg.textContent = '只能預約今天起的未來7天內的日期';
+    msg.style.display = 'block';
+    return;
+  }
+  const c = COURSES.find(x => x.id == courseId);
+  const booked = getCourseCapacity(c.id);
+  if (booked >= c.cap) {
+    btn.disabled = true;
+    btn.textContent = '已額滿';
+    msg.textContent = '此課程已額滿，請選擇其他課程';
+    msg.style.display = 'block';
+    return;
+  }
+  if (isAlreadyBooked(c.id, currentUser.phone)) {
+    btn.disabled = true;
+    btn.textContent = '您已預約過';
+    msg.textContent = '您已預約過此課程，請至「我的預約」取消後再重新預約';
+    msg.style.display = 'block';
+    return;
+  }
   const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
-  bookings.push({ courseId: parseInt(courseId), date, time, phone: currentUser?.phone || 'guest' });
+  bookings.push({ courseId: parseInt(courseId), date, time, phone: currentUser.phone, name: currentUser.name });
   localStorage.setItem('yoga_bookings', JSON.stringify(bookings));
   alert('預約成功！');
+  showBookingForm();
   loadMyBookings();
 }
 
@@ -818,7 +988,7 @@ function getLineProfile() {
     }
     createOrUpdateUser(lineId, name, '');
   }).catch(function(e) {
-    console.log('Get profile error:', e);
+    console.error('Get profile error:', e);
     checkLogin();
   });
 }
@@ -904,7 +1074,7 @@ window.onload = function() {
       checkLogin();
     }
   } catch(e) {
-    console.log('Init error:', e);
+    console.error('Init error:', e);
     showLogin();
   }
 };
