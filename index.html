@@ -972,7 +972,9 @@ function shareToLine() {
 // LINE Login（使用 LIFF SDK 原生登入）
 function lineLogin() {
   if (typeof liff !== 'undefined') {
-    liff.login({ redirectUri: location.href });
+    if (!liff.isLoggedIn()) {
+      liff.login();
+    }
   } else {
     alert('LINE 登入功能需要在 LINE 內開啟，請使用手機登入');
   }
