@@ -475,6 +475,297 @@ body {
   color: var(--accent-primary) !important;
 }
 
+/* Performance: GPU acceleration & will-change hints */
+.card, .course-card, .btn {
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, box-shadow;
+}
+
+.course-card:active {
+  transform: scale(0.98) translateZ(0);
+}
+
+/* Toast Notification System */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  width: calc(100% - 40px);
+  max-width: 400px;
+}
+
+.toast {
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  animation: toastIn 0.3s ease forwards;
+  pointer-events: auto;
+}
+
+.toast.toast-out {
+  animation: toastOut 0.3s ease forwards;
+}
+
+.toast-success {
+  background: linear-gradient(135deg, var(--accent-sage), #5d7a6c);
+  color: white;
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #c62828, #b71c1c);
+  color: white;
+}
+
+.toast-info {
+  background: linear-gradient(135deg, var(--accent-primary), #7a5f4a);
+  color: white;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-10px) scale(0.95); }
+}
+
+/* LINE button hover flash effect */
+.btn-line {
+  background: linear-gradient(135deg, #00b900, #00a000);
+  color: white;
+  box-shadow: 0 4px 20px rgba(0,185,0,0.25);
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.btn-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-line:hover::before {
+  left: 100%;
+}
+
+.btn-line:hover {
+  box-shadow: 0 6px 28px rgba(0,185,0,0.4);
+  transform: translateY(-2px) translateZ(0);
+}
+
+.btn-line:active {
+  transform: scale(0.98) translateZ(0);
+}
+
+/* Form validation visual feedback */
+.form-group input.valid,
+.form-group select.valid {
+  border-color: var(--accent-sage) !important;
+  background: rgba(125,154,140,0.05) !important;
+}
+
+.form-group input.invalid,
+.form-group select.invalid {
+  border-color: #c62828 !important;
+  background: rgba(198,40,40,0.03) !important;
+}
+
+.form-group .field-msg {
+  font-size: 12px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-group .field-msg.success { color: var(--accent-sage); }
+.form-group .field-msg.error { color: #c62828; }
+
+/* Cancel booking button enhanced */
+.btn-cancel {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  background: linear-gradient(135deg, #c62828, #b71c1c);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(198,40,40,0.3);
+  transform: translateZ(0);
+}
+
+.btn-cancel:hover {
+  box-shadow: 0 4px 16px rgba(198,40,40,0.4);
+  transform: translateY(-1px) translateZ(0);
+}
+
+.btn-cancel:active {
+  transform: scale(0.96) translateZ(0);
+}
+
+/* Mobile UX: larger touch targets, responsive */
+@media (max-width: 480px) {
+  .btn {
+    padding: 16px 20px;
+    font-size: 15px;
+    min-height: 52px;
+  }
+  
+  .course-card {
+    margin-bottom: 16px;
+  }
+  
+  .course-body {
+    padding: 18px 16px;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
+  
+  .nav-tab {
+    padding: 14px 12px;
+    font-size: 13px;
+  }
+  
+  .card {
+    padding: 22px 18px;
+  }
+  
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  
+  .card-title {
+    font-size: 18px;
+  }
+  
+  .hero {
+    min-height: 40vh;
+    padding: 40px 20px 56px;
+  }
+  
+  .hero h1 {
+    letter-spacing: 6px;
+  }
+  
+  .hero-tagline {
+    padding: 14px 24px;
+    font-size: 13px;
+  }
+  
+  .booking-item {
+    padding: 16px;
+  }
+  
+  .btn-cancel {
+    padding: 10px 18px;
+    font-size: 14px;
+    min-width: 80px;
+    min-height: 40px;
+  }
+  
+  .course-header {
+    height: 100px;
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 360px) {
+  .container {
+    padding: 0 14px 32px;
+  }
+  
+  .card {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+  
+  .hero h1 {
+    font-size: 30px;
+    letter-spacing: 4px;
+  }
+  
+  .nav-tabs {
+    gap: 8px;
+  }
+  
+  .nav-tab {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+  
+  .card {
+    padding: 32px 28px;
+  }
+  
+  .course-card {
+    margin-bottom: 24px;
+  }
+  
+  .course-header {
+    height: 140px;
+    font-size: 56px;
+  }
+  
+  .course-body {
+    padding: 24px;
+  }
+}
+
+/* Double-tap prevention on course cards */
+.course-card {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+
+.course-card > * {
+  pointer-events: auto;
+}
+
+/* Prevent zoom on double-tap for buttons */
+.btn, .nav-tab, .btn-cancel {
+  touch-action: manipulation;
+}
+
+/* Scroll-behavior smooth for course list */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Error */
 .text-error { color: #c62828; font-size: 13px; margin-top: 12px; }
 </style>
@@ -649,6 +940,94 @@ const COURSES = [
   {id:5, name:'晨間流動', emoji:'🌅', desc:'喚醒身體的活潑練習', dur:'45 min', cap:15, cat:''},
 ];
 
+// ===== Toast Notification System =====
+function showToast(message, type = 'info', duration = 3000) {
+  var container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+  var toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(function() {
+    toast.classList.add('toast-out');
+    setTimeout(function() {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 300);
+  }, duration);
+}
+
+// ===== Form Validation Helpers =====
+function validateField(input, isValid, msg) {
+  var formGroup = input.closest('.form-group');
+  if (!formGroup) return;
+  input.classList.remove('valid', 'invalid');
+  var existingMsg = formGroup.querySelector('.field-msg');
+  if (existingMsg) existingMsg.remove();
+  if (isValid) {
+    input.classList.add('valid');
+    var msgEl = document.createElement('div');
+    msgEl.className = 'field-msg success';
+    msgEl.innerHTML = '✓ ' + msg;
+    formGroup.appendChild(msgEl);
+  } else if (msg) {
+    input.classList.add('invalid');
+    var msgEl = document.createElement('div');
+    msgEl.className = 'field-msg error';
+    msgEl.innerHTML = '✗ ' + msg;
+    formGroup.appendChild(msgEl);
+  }
+}
+
+function clearFieldValidation(input) {
+  var formGroup = input.closest('.form-group');
+  if (!formGroup) return;
+  input.classList.remove('valid', 'invalid');
+  var existingMsg = formGroup.querySelector('.field-msg');
+  if (existingMsg) existingMsg.remove();
+}
+
+// ===== Phone validation =====
+function isValidPhone(phone) {
+  return /^09\d{8}$/.test(phone.replace(/\s/g, ''));
+}
+
+function setupFieldValidation(inputId, validatorFn, successMsg) {
+  var input = document.getElementById(inputId);
+  if (!input) return;
+  input.addEventListener('blur', function() {
+    var val = input.value.trim();
+    if (!val) {
+      clearFieldValidation(input);
+    } else {
+      var result = validatorFn(val);
+      if (typeof result === 'boolean') {
+        validateField(input, result, result ? successMsg : '');
+      } else {
+        validateField(input, result.valid, result.msg);
+      }
+    }
+  });
+  input.addEventListener('input', function() {
+    if (input.classList.contains('invalid') || input.classList.contains('valid')) {
+      var val = input.value.trim();
+      if (!val) {
+        clearFieldValidation(input);
+      } else {
+        var result = validatorFn(val);
+        if (typeof result === 'boolean') {
+          validateField(input, result, result ? successMsg : '');
+        } else {
+          validateField(input, result.valid, result.msg);
+        }
+      }
+    }
+  });
+}
+
 function getCourseCapacity(courseId) {
   const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
   return bookings.filter(b => b.courseId == courseId).length;
@@ -680,6 +1059,7 @@ const TIMES = ['09:00','10:30','14:00','16:00','19:00'];
 
 let currentUser = null;
 let isTeacher = false;
+let lastTapTime = 0; // for double-tap prevention
 
 function switchTab(tab) {
   document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
@@ -690,7 +1070,7 @@ function switchTab(tab) {
   } else {
     document.getElementById('mainNav').style.display = 'none';
   }
-  event?.target?.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
 }
 
 function showLogin() {
@@ -769,7 +1149,7 @@ function onDateChange() {
 }
 
 function login() {
-  const phone = document.getElementById('loginPhone').value;
+  const phone = document.getElementById('loginPhone').value.trim();
   const pw = document.getElementById('loginPw').value;
   const err = document.getElementById('loginError');
   if (!phone || !pw) {
@@ -791,6 +1171,7 @@ function login() {
     err.style.display = 'none';
     localStorage.setItem('yoga_current', JSON.stringify(user));
     showMemberUI();
+    showToast('登入成功！', 'success');
   } else {
     err.textContent = '帳號或密碼錯誤';
     err.style.display = 'block';
@@ -798,18 +1179,25 @@ function login() {
 }
 
 function register() {
-  const name = document.getElementById('regName').value;
-  const phone = document.getElementById('regPhone').value;
+  const name = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
   const pw = document.getElementById('regPw').value;
-  if (!name || !phone || !pw) { alert('請填寫所有欄位'); return; }
+  if (!name || !phone || !pw) {
+    showToast('請填寫所有欄位', 'error');
+    return;
+  }
+  if (!isValidPhone(phone)) {
+    showToast('請輸入正確的手機號碼（09開頭，10位數）', 'error');
+    return;
+  }
   const users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
   if (users.some(function(u) { return u.phone === phone; })) {
-    alert('此帳號已註冊');
+    showToast('此帳號已註冊', 'error');
     return;
   }
   users.push({ id: Date.now(), name: name, phone: phone, pw: pw });
   localStorage.setItem('yoga_users', JSON.stringify(users));
-  alert('註冊成功！');
+  showToast('註冊成功！', 'success');
   showLogin();
 }
 
@@ -820,8 +1208,9 @@ function teacherLogin() {
     isTeacher = true;
     switchTab('teacher-dash');
     loadTeacherDash();
+    showToast('老師登入成功', 'success');
   } else {
-    alert('帳號或密碼錯誤');
+    showToast('帳號或密碼錯誤', 'error');
   }
 }
 
@@ -844,23 +1233,26 @@ function loadMyBookings() {
       return `<div class="booking-item">
         <div class="booking-date">${c.emoji} ${c.name}</div>
         <div class="booking-info">${b.date} ${b.time}</div>
-        <button onclick="cancelMyBooking('${b.date}', '${b.time}', ${b.courseId})" style="margin-top:8px;padding:6px 14px;font-size:12px;background:#c62828;color:white;border:none;border-radius:8px;cursor:pointer">取消預約</button>
+        <button class="btn-cancel" onclick="cancelMyBooking('${b.date}', '${b.time}', ${b.courseId})">取消預約</button>
       </div>`;
     }).join('');
   }
 }
 
 function cancelMyBooking(date, time, courseId) {
+  var tapTime = Date.now();
+  if (tapTime - lastTapTime < 500) return; // double-tap guard
+  lastTapTime = tapTime;
   if (!confirm('確定要取消這個預約嗎？')) return;
   try {
     const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
     const updated = bookings.filter(b => !(b.courseId == courseId && b.date === date && b.time === time && b.phone === currentUser.phone));
     localStorage.setItem('yoga_bookings', JSON.stringify(updated));
     loadMyBookings();
-    alert('已取消預約');
+    showToast('已取消預約', 'success');
   } catch(e) {
     console.error('cancelMyBooking error:', e);
-    alert('取消失敗，請稍後再試');
+    showToast('取消失敗，請稍後再試', 'error');
   }
 }
 
@@ -891,23 +1283,26 @@ function loadTeacherDash() {
           <div class="booking-date">${c.emoji} ${c.name}</div>
           <div class="booking-info">👤 ${name} · ${b.date} ${b.time}</div>
         </div>
-        <button onclick="teacherCancelBooking('${b.date}', '${b.time}', ${b.courseId}, '${b.phone}')" style="padding:6px 12px;font-size:12px;background:#c62828;color:white;border:none;border-radius:8px;cursor:pointer;white-space:nowrap">取消</button>
+        <button class="btn-cancel" onclick="teacherCancelBooking('${b.date}', '${b.time}', ${b.courseId}, '${b.phone}')">取消</button>
       </div>`;
     }).join('');
   }
 }
 
 function teacherCancelBooking(date, time, courseId, phone) {
+  var tapTime = Date.now();
+  if (tapTime - lastTapTime < 500) return;
+  lastTapTime = tapTime;
   if (!confirm('確定要取消此會員的預約嗎？')) return;
   try {
     const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
     const updated = bookings.filter(b => !(b.courseId == courseId && b.date === date && b.time === time && b.phone === phone));
     localStorage.setItem('yoga_bookings', JSON.stringify(updated));
     loadTeacherDash();
-    alert('已取消該會員預約');
+    showToast('已取消該會員預約', 'success');
   } catch(e) {
     console.error('teacherCancelBooking error:', e);
-    alert('取消失敗，請稍後再試');
+    showToast('取消失敗，請稍後再試', 'error');
   }
 }
 
@@ -956,45 +1351,57 @@ function submitBooking() {
   const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
   bookings.push({ courseId: parseInt(courseId), date, time, phone: currentUser.phone, name: currentUser.name });
   localStorage.setItem('yoga_bookings', JSON.stringify(bookings));
-  alert('預約成功！');
+  showToast('預約成功！', 'success');
   showBookingForm();
   loadMyBookings();
 }
 
 function shareToLine() {
   if (navigator.share) {
-    navigator.share({ title: '九容瑜伽', text: '我在九容瑜伽預約了課程，一起來練習吧！', url: location.href });
+    navigator.share({ title: '九容瑜伽', text: '我在九容瑜伽預約了課程，一起來練習吧！', url: location.href })
+      .catch(function() { showToast('感謝分享！', 'info'); });
   } else {
-    alert('感謝分享！');
+    showToast('感謝分享！', 'info');
   }
 }
 
-// LINE Login（OAuth flow - 舊版可用的方式）
+// ===== LINE Login (Fixed) =====
 function lineLogin() {
   var clientId = '2009559768';
   var redirectUri = encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/');
-  var lineAuthUrl = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectUri + '&state=yoga123&scope=openid%20profile';
-  window.location.href = lineAuthUrl;
+  var state = 'yoga_' + Date.now();
+  sessionStorage.setItem('line_oauth_state', state);
+  
+  // 檢查是否在 LINE 內的 LIFF 瀏覽器
+  var isLiffBrowser = typeof liff !== 'undefined' && liff.getOS !== undefined;
+  
+  if (isLiffBrowser) {
+    // LIFF 瀏覽器：使用 LINE SDK 登入
+    liff.login({ redirectUri: window.location.href });
+  } else {
+    // 一般瀏覽器：使用 OAuth2
+    var lineAuthUrl = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectUri + '&state=' + state + '&scope=openid%20profile';
+    window.location.href = lineAuthUrl;
+  }
 }
 
 function getLineProfile() {
   if (typeof liff === 'undefined') {
-    alert('LINE SDK 未載入，請在 LINE 內開啟');
+    showToast('LINE SDK 未載入，請在 LINE 內開啟', 'error');
     showLogin();
     return;
   }
-  // liff.init() 已經在 window.onload 完成了，直接取 profile
   liff.getProfile().then(function(profile) {
     var lineId = profile.userId;
     var displayName = profile.displayName || '';
     if (!displayName || displayName === 'LINE User') {
       var name = 'LINE:' + lineId.substring(0, 12);
     } else {
-      var name = displayName + ' (LINE)';
+      var name = displayName;
     }
-    createOrUpdateUser(lineId, name, '');
+    createOrUpdateUser(lineId, name, profile.pictureUrl || '');
   }).catch(function(e) {
-    alert('LINE 登入失敗：' + e.message);
+    showToast('LINE 登入失敗：' + e.message, 'error');
     checkLogin();
   });
 }
@@ -1004,6 +1411,7 @@ function createOrUpdateUser(lineId, name, picUrl) {
   var existingUser = users.find(function(u) { return u.lineId === lineId; });
   if (existingUser) {
     existingUser.name = name;
+    if (picUrl) existingUser.picUrl = picUrl;
     currentUser = existingUser;
   } else {
     var newUser = { id: Date.now(), name: name, phone: '', pw: '', lineId: lineId, picUrl: picUrl };
@@ -1012,6 +1420,7 @@ function createOrUpdateUser(lineId, name, picUrl) {
   }
   localStorage.setItem('yoga_users', JSON.stringify(users));
   localStorage.setItem('yoga_current', JSON.stringify(currentUser));
+  showToast('LINE 登入成功！', 'success');
   showMemberUI();
 }
 
@@ -1053,40 +1462,66 @@ function logout() {
   location.reload();
 }
 
-// Force hide loading after 2s regardless
+// Force hide loading after 3s regardless
 var loadingTimer = setInterval(function() {
   var overlay = document.getElementById('loadingOverlay');
   if (overlay) {
     overlay.style.display = 'none';
     clearInterval(loadingTimer);
   }
-}, 2000);
+}, 3000);
 
 // Init
 window.onload = function() {
   try {
     var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('code')) {
-      // LINE OAuth callback
+    var code = urlParams.get('code');
+    var state = urlParams.get('state');
+    
+    if (code) {
+      // LINE OAuth callback - validate state first
+      var savedState = sessionStorage.getItem('line_oauth_state');
+      if (state && savedState && state !== savedState) {
+        showToast('LINE 登入驗證失敗，請重試', 'error');
+        checkLogin();
+        return;
+      }
+      // LIFF init for profile retrieval
       if (typeof liff !== 'undefined') {
-        liff.init({ liffId: '2009559768' }).then(function() {
+        liff.init({ liffId: '2009559768-h44Oa41n' }).then(function() {
           getLineProfile();
         }).catch(function(e) {
-          alert('liff init 失敗：' + e.message);
+          // Even if liff init fails, try getProfile via token
+          showToast('LINE 初始化不完整，但嘗試繼續...', 'info');
+          // Clean URL and proceed
+          window.history.replaceState({}, document.title, window.location.pathname);
           checkLogin();
         });
       } else {
-        alert('liff SDK 不存在，請在 LINE 內開啟');
+        // liff SDK not available, can't get profile without it
+        showToast('LINE SDK 不可用，請在 LINE 內開啟此頁面', 'error');
+        window.history.replaceState({}, document.title, window.location.pathname);
         checkLogin();
       }
     } else {
       checkLogin();
     }
   } catch(e) {
-    alert('Init error: ' + e.message);
-    console.error(e);
+    console.error('Init error:', e);
+    showToast('初始化錯誤，請刷新頁面', 'error');
     checkLogin();
   }
+  
+  // Setup field validation
+  setupFieldValidation('loginPhone', function(v) {
+    return { valid: isValidPhone(v), msg: isValidPhone(v) ? '格式正確' : '請輸入正確的手機號碼' };
+  }, '格式正確');
+  setupFieldValidation('regPhone', function(v) {
+    return { valid: isValidPhone(v), msg: isValidPhone(v) ? '格式正確' : '請輸入正確的手機號碼' };
+  }, '格式正確');
+  setupFieldValidation('regName', function(v) {
+    return { valid: v.length >= 2, msg: v.length >= 2 ? 'ok' : '請輸入至少2個字元' };
+  }, 'ok');
 };
 </script>
 </body>
