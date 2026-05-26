@@ -88,7 +88,6 @@ var courses=[];
 var currentUser=null;
 var page='login';
 var selectedWeekday=new Date().getDay();
-var teacherSelectedWeekday=-1; // -1 = all days
 var isOnline=false;
 
 // 雲端同步狀態
@@ -295,16 +294,8 @@ function getTeacherHTML(){
   html+='<div style="display:flex;gap:8px"><div class="input-group" style="flex:1"><input type="text" id="ctime" placeholder="09:00-10:00"></div><div class="input-group" style="flex:1"><input type="number" id="ccap" placeholder="名額" value="10"></div></div>';
   html+='<button class="btn btn-primary" onclick="addCourse()">新增課程</button></div>';
   
-  // Weekday tabs
-  html+='<div class="weekday-tabs">';
-  html+='<div class="weekday-btn'+(teacherSelectedWeekday===-1?' active':'')+'" onclick="selectTeacherWeekday(-1)"><span>全部</span></div>';
-  for(var td=0;td<7;td++){html+='<div class="weekday-btn'+(teacherSelectedWeekday===td?' active':'')+'" onclick="selectTeacherWeekday('+td+')"><span>'+weekdays[td].substring(1)+'</span></div>';}
-  html+='</div>';
-
-  // Filter days
-  var daysToShow=teacherSelectedWeekday===-1?[0,1,2,3,4,5,6]:[teacherSelectedWeekday];
-  for(var di=0;di<daysToShow.length;di++){
-    var d=daysToShow[di];
+  // All courses grouped by weekday
+  for(var d=0;
     var dayCourses=courses.filter(function(c){return c.weekday===d;});
     if(dayCourses.length===0)continue;
     html+='<div class="day-title">'+weekdays[d]+'</div>';
@@ -442,7 +433,6 @@ function getMyBookingByCourse(cid){for(var i=0;i<bookings.length;i++)if(bookings
 function getMyBookings(){var r=[];for(var i=0;i<bookings.length;i++)if(bookings[i].phone===currentUser.phone)r.push(bookings[i]);return r;}
 function getMyWaitlist(){var r=[];for(var i=0;i<waitlist.length;i++)if(waitlist[i].phone===currentUser.phone&&waitlist[i].status==='waiting')r.push(waitlist[i]);return r;}
 
-function selectTeacherWeekday(d){teacherSelectedWeekday=d;var app=document.getElementById('app');if(app)app.innerHTML=getTeacherHTML();window.scrollTo({top:0,behavior:'smooth'});}
 function selectWeekday(d){selectedWeekday=d;render();}
 
 function switchTab(el,tab){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.getElementById('tab-login').style.display=tab==='login'?'block':'none';document.getElementById('tab-reg').style.display=tab==='reg'?'block':'none';}
