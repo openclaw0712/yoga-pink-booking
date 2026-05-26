@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yoga Booking</title>
+<title>瑜伽預約</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
@@ -11,31 +11,31 @@
 body{font-family:'Noto Sans TC',sans-serif;background:#faf8f5;color:#333;min-height:100vh;font-size:16px}
 .container{max-width:480px;margin:0 auto;padding:20px}
 
-/* Login */
-.login-page{opacity:0;transform:translateY(30px)}
 .logo{text-align:center;font-size:56px;margin-bottom:16px}
 .title{text-align:center;font-size:28px;font-weight:700;color:#8b6f5c;margin-bottom:8px;letter-spacing:4px}
 .subtitle{text-align:center;color:#888;margin-bottom:40px;font-size:14px}
+
 .card{background:#fff;border-radius:20px;padding:24px;margin-bottom:16px;box-shadow:0 4px 16px rgba(0,0,0,0.06);opacity:0;transform:translateY(20px)}
+
 .input-group{margin-bottom:16px}
 .input-group input{width:100%;padding:14px 16px;border:2px solid #eee;border-radius:12px;font-size:16px;transition:border-color 0.2s}
 .input-group input:focus{outline:none;border-color:#8b6f5c}
+
 .btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s}
 .btn-primary{background:#8b6f5c;color:#fff}
 .btn-primary:active{transform:scale(0.97)}
 .btn-secondary{background:#e8ddd4;color:#8b6f5c}
 .btn-teacher{background:#5c8b6f;color:#fff}
+
 .tabs{display:flex;gap:8px;margin-bottom:20px}
 .tab{flex:1;padding:12px;text-align:center;background:#fff;border:2px solid #8b6f5c;color:#8b6f5c;border-radius:10px;font-weight:600;cursor:pointer}
 .tab.active{background:#8b6f5c;color:#fff}
 .error{color:#c67b5c;font-size:14px;margin-bottom:10px;text-align:center}
 
-/* Main */
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;opacity:0}
 .header h2{font-size:20px;font-weight:700;color:#8b6f5c}
 .logout-btn{color:#8b6f5c;text-decoration:none;font-size:14px;cursor:pointer}
 
-/* Course */
 .course-card{background:#fff;border-radius:16px;padding:18px;margin-bottom:14px;border-left:4px solid #8b6f5c;cursor:pointer;opacity:0;transform:translateX(-20px);transition:box-shadow 0.2s}
 .course-card:hover{box-shadow:0 6px 20px rgba(0,0,0,0.1)}
 .course-name{font-size:17px;font-weight:700;margin-bottom:8px}
@@ -46,11 +46,9 @@ body{font-family:'Noto Sans TC',sans-serif;background:#faf8f5;color:#333;min-hei
 .badge-booked{background:#cce5ff;color:#004085}
 .nav-btn{opacity:0;transform:translateY(20px)}
 
-/* Booking */
-.back-btn{color:#8b6f5c;text-decoration:none;font-size:14px;cursor:pointer;opacity:0}
+.back-btn{color:#8b6f5c;text-decoration:none;font-size:14px;opacity:0}
 .confirm-btn{margin-top:20px}
 
-/* Toast */
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:1000;opacity:0}
 .toast.success{background:#28a745}
 .toast.error{background:#dc3545}
@@ -64,15 +62,13 @@ body{font-family:'Noto Sans TC',sans-serif;background:#faf8f5;color:#333;min-hei
 var users = [];
 var bookings = [];
 var courses = [
-  {id:1, name:'Morning Yoga', teacher:'Teacher A', time:'08:00-09:00', cap:10, booked:3},
-  {id:2, name:'Yin Yoga', teacher:'Teacher B', time:'10:00-11:30', cap:8, booked:8},
-  {id:3, name:'Hatha Yoga', teacher:'Teacher A', time:'14:00-15:30', cap:10, booked:5},
-  {id:4, name:'Flow Yoga', teacher:'Teacher B', time:'16:00-17:00', cap:12, booked:2}
+  {id:1, name:'晨間瑜伽', teacher:'小美老師', time:'08:00-09:00', cap:10, booked:3},
+  {id:2, name:'陰瑜伽', teacher:'阿偉老師', time:'10:00-11:30', cap:8, booked:8},
+  {id:3, name:'哈達瑜伽', teacher:'小美老師', time:'14:00-15:30', cap:10, booked:5},
+  {id:4, name:'流動瑜伽', teacher:'阿偉老師', time:'16:00-17:00', cap:12, booked:2}
 ];
 var currentUser = null;
 var page = 'login';
-
-function save(){}
 
 function render(){
   var app = document.getElementById('app');
@@ -95,66 +91,51 @@ function render(){
 }
 
 function getLoginHTML(){
-  return '<div class="login-page">' +
-    '<div class="logo">O</div>' +
-    '<div class="title">Yoga Booking</div>' +
-    '<div class="subtitle">Book your class</div>' +
+  return '<div class="logo">O</div>' +
+    '<div class="title">瑜伽預約系統</div>' +
+    '<div class="subtitle">預約您想要的課程</div>' +
     '<div class="card" id="loginCard">' +
       '<div class="tabs">' +
-        '<div class="tab active" onclick="switchTab(this,\'member\')">Member</div>' +
-        '<div class="tab" onclick="switchTab(this,\'register\')">Register</div>' +
+        '<div class="tab active" onclick="switchTab(this,\'member\')">會員登入</div>' +
+        '<div class="tab" onclick="switchTab(this,\'register\')">註冊</div>' +
       '</div>' +
       '<div id="tab-member">' +
-        '<div class="input-group"><input type="tel" id="loginPhone" placeholder="Phone"></div>' +
-        '<div class="input-group"><input type="password" id="loginPw" placeholder="Password"></div>' +
+        '<div class="input-group"><input type="tel" id="loginPhone" placeholder="電話號碼"></div>' +
+        '<div class="input-group"><input type="password" id="loginPw" placeholder="密碼"></div>' +
         '<div class="error" id="loginError"></div>' +
-        '<button class="btn btn-primary" onclick="doLogin()">Login</button>' +
+        '<button class="btn btn-primary" onclick="doLogin()">登入</button>' +
       '</div>' +
       '<div id="tab-register" style="display:none">' +
-        '<div class="input-group"><input type="text" id="regName" placeholder="Name"></div>' +
-        '<div class="input-group"><input type="tel" id="regPhone" placeholder="Phone"></div>' +
-        '<div class="input-group"><input type="password" id="regPw" placeholder="Password"></div>' +
+        '<div class="input-group"><input type="text" id="regName" placeholder="姓名"></div>' +
+        '<div class="input-group"><input type="tel" id="regPhone" placeholder="電話號碼"></div>' +
+        '<div class="input-group"><input type="password" id="regPw" placeholder="設定密碼"></div>' +
         '<div class="error" id="regError"></div>' +
-        '<button class="btn btn-primary" onclick="doRegister()">Register</button>' +
+        '<button class="btn btn-primary" onclick="doRegister()">註冊</button>' +
       '</div>' +
     '</div>' +
-    '<div class="card" id="teacherCard">' +
-      '<div class="error" style="text-align:center;margin-bottom:10px">Teacher Area</div>' +
-      '<button class="btn btn-teacher" onclick="showTeacherLogin()">Teacher Login</button>' +
-      '<div id="teacherForm" style="display:none;margin-top:16px">' +
-        '<div class="input-group"><input type="text" id="teacherId" placeholder="ID"></div>' +
-        '<div class="input-group"><input type="password" id="teacherPw" placeholder="Password"></div>' +
-        '<button class="btn btn-teacher" onclick="doTeacherLogin()">Login</button>' +
-      '</div>' +
-    '</div>' +
-    '<div id="teacherLoginCard" class="card" style="display:none">' +
-      '<div class="tabs">' +
-        '<div class="tab active">Teacher</div>' +
-      '</div>' +
-      '<div class="input-group"><input type="text" id="tId" value="teacher"></div>' +
-      '<div class="input-group"><input type="password" id="tPw" placeholder="Password"></div>' +
-      '<button class="btn btn-teacher" onclick="doTeacherLogin()">Login</button>' +
-    '</div>' +
-  '</div>';
+    '<div class="card">' +
+      '<div class="error" style="text-align:center;margin-bottom:10px">老師專區</div>' +
+      '<button class="btn btn-teacher" onclick="page=\'teacher\';render()">老師登入</button>' +
+    '</div>';
 }
 
 function getMainHTML(){
   var html = '<div class="header">' +
-    '<h2>O Yoga Booking</h2>' +
-    '<a href="#" class="logout-btn" onclick="logout()">Logout</a>' +
+    '<h2>O 瑜伽預約</h2>' +
+    '<a href="#" class="logout-btn" onclick="logout()">登出</a>' +
   '</div>';
   
   for (var i = 0; i < courses.length; i++) {
     var c = courses[i];
     var status = 'badge-ok';
-    var text = 'Available';
+    var text = '可預約';
     if (c.booked >= c.cap) {
       status = 'badge-full';
-      text = 'Full';
+      text = '已額滿';
     }
     if (hasBooked(c.id)) {
       status = 'badge-booked';
-      text = 'Booked';
+      text = '已預約';
     }
     html += '<div class="course-card" onclick="goBooking(' + c.id + ')">' +
       '<div class="course-name">' + c.name + '</div>' +
@@ -163,9 +144,9 @@ function getMainHTML(){
     '</div>';
   }
   
-  html += '<button class="btn btn-secondary nav-btn" onclick="goMy()">My Bookings</button>';
+  html += '<button class="btn btn-secondary nav-btn" onclick="goMy()">我的預約</button>';
   if (currentUser && currentUser.isTeacher) {
-    html += '<button class="btn btn-secondary nav-btn" onclick="goTeacher()">Teacher</button>';
+    html += '<button class="btn btn-secondary nav-btn" onclick="goTeacher()">老師後台</button>';
   }
   
   return html;
@@ -173,25 +154,25 @@ function getMainHTML(){
 
 function getBookingHTML(){
   var c = getCourse(window.bookingId);
-  if (!c) return '<p>Not found</p><button class="btn btn-secondary" onclick="goMain()">Back</button>';
+  if (!c) return '<p>找不到課程</p><button class="btn btn-secondary" onclick="goMain()">返回</button>';
   
-  return '<a href="#" class="back-btn" onclick="goMain()">- Back</a>' +
+  return '<a href="#" class="back-btn" onclick="goMain()">- 返回</a>' +
     '<div class="card" style="margin-top:16px">' +
       '<div class="course-name">' + c.name + '</div>' +
       '<div class="course-info">' + c.teacher + '</div>' +
       '<div class="course-info">' + c.time + '</div>' +
-      '<div>Capacity: ' + c.booked + '/' + c.cap + '</div>' +
-      '<button class="btn btn-primary confirm-btn" onclick="confirmBook(' + c.id + ')">Confirm Booking</button>' +
+      '<div>名額：' + c.booked + '/' + c.cap + '</div>' +
+      '<button class="btn btn-primary confirm-btn" onclick="confirmBook(' + c.id + ')">確認預約</button>' +
     '</div>';
 }
 
 function getMyHTML(){
   var myBooks = getMyBookings();
-  var html = '<a href="#" class="back-btn" onclick="goMain()">- Back</a>' +
-    '<div class="header"><h2>My Bookings</h2></div>';
+  var html = '<a href="#" class="back-btn" onclick="goMain()">- 返回</a>' +
+    '<div class="header"><h2>我的預約</h2></div>';
   
   if (myBooks.length === 0) {
-    html += '<div class="card"><p style="text-align:center;color:#888">No bookings yet</p></div>';
+    html += '<div class="card"><p style="text-align:center;color:#888">還沒有預約記錄</p></div>';
   }
   
   for (var i = 0; i < myBooks.length; i++) {
@@ -201,9 +182,9 @@ function getMyHTML(){
       '<div class="course-info">' + b.teacher + '</div>' +
       '<div class="course-info">' + b.time + '</div>';
     if (b.status === 'confirmed') {
-      html += '<button class="btn btn-secondary" style="margin-top:10px" onclick="cancelBook(' + b.id + ')">Cancel</button>';
+      html += '<button class="btn btn-secondary" style="margin-top:10px" onclick="cancelBook(' + b.id + ')">取消預約</button>';
     } else {
-      html += '<div style="color:#c67b5c;margin-top:8px">Cancelled</div>';
+      html += '<div style="color:#c67b5c;margin-top:8px">已取消</div>';
     }
     html += '</div>';
   }
@@ -213,11 +194,11 @@ function getMyHTML(){
 
 function getTeacherHTML(){
   if (!currentUser || !currentUser.isTeacher) {
-    currentUser = {phone:'teacher', name:'Teacher', isTeacher:true};
+    currentUser = {phone:'teacher', name:'老師', isTeacher:true};
   }
   
-  var html = '<a href="#" class="back-btn" onclick="goMain()">- Back</a>' +
-    '<div class="header"><h2>Teacher Panel</h2></div>' +
+  var html = '<a href="#" class="back-btn" onclick="goMain()">- 返回</a>' +
+    '<div class="header"><h2>老師後台</h2></div>' +
     '<div class="card">';
   
   for (var i = 0; i < courses.length; i++) {
@@ -225,11 +206,11 @@ function getTeacherHTML(){
     html += '<div style="padding:12px 0;border-bottom:1px solid #eee">' +
       '<b>' + c.name + '</b><br>' +
       '<span style="color:#888">' + c.teacher + ' | ' + c.time + '</span><br>' +
-      'Booked: ' + c.booked + '/' + c.cap +
+      '報名：' + c.booked + '/' + c.cap +
     '</div>';
   }
   
-  html += '</div><button class="btn btn-secondary" onclick="resetData()">Reset Demo</button>';
+  html += '</div><button class="btn btn-secondary" onclick="resetData()">重置範例</button>';
   return html;
 }
 
@@ -273,12 +254,12 @@ function doLogin(){
     if (users[i].phone === phone && users[i].pw === pw) {
       currentUser = users[i];
       page = 'main';
-      showToast('Login success');
+      showToast('登入成功');
       render();
       return;
     }
   }
-  document.getElementById('loginError').textContent = 'Login failed';
+  document.getElementById('loginError').textContent = '電話或密碼錯誤';
 }
 
 function doRegister(){
@@ -286,37 +267,20 @@ function doRegister(){
   var phone = document.getElementById('regPhone').value.trim();
   var pw = document.getElementById('regPw').value;
   if (!name || !phone || !pw) {
-    document.getElementById('regError').textContent = 'Please fill all';
+    document.getElementById('regError').textContent = '請填寫所有欄位';
     return;
   }
   for (var i = 0; i < users.length; i++) {
     if (users[i].phone === phone) {
-      document.getElementById('regError').textContent = 'Phone already registered';
+      document.getElementById('regError').textContent = '此電話已註冊';
       return;
     }
   }
   users.push({name:name, phone:phone, pw:pw, isTeacher:false});
   currentUser = {name:name, phone:phone, isTeacher:false};
-  showToast('Registered!');
+  showToast('註冊成功');
   page = 'main';
   render();
-}
-
-function showTeacherLogin(){
-  document.getElementById('teacherForm').style.display = 'block';
-}
-
-function doTeacherLogin(){
-  var id = document.getElementById('teacherId') ? document.getElementById('teacherId').value : 'teacher';
-  var pw = document.getElementById('teacherPw') ? document.getElementById('teacherPw').value : document.getElementById('tPw').value;
-  if (id === 'teacher' && pw === 'yoga9527') {
-    currentUser = {phone:'teacher', name:'Teacher', isTeacher:true};
-    showToast('Teacher login');
-    page = 'main';
-    render();
-  } else {
-    showToast('Login failed', 'error');
-  }
 }
 
 function goBooking(id){
@@ -329,11 +293,11 @@ function confirmBook(id){
   var c = getCourse(id);
   if (!c) return;
   if (c.booked >= c.cap) {
-    showToast('Class is full', 'error');
+    showToast('已額滿', 'error');
     return;
   }
   if (hasBooked(id)) {
-    showToast('Already booked', 'error');
+    showToast('已預約過此課程', 'error');
     return;
   }
   c.booked++;
@@ -347,7 +311,7 @@ function confirmBook(id){
     time: c.time,
     status: 'confirmed'
   });
-  showToast('Booking confirmed!');
+  showToast('預約成功');
   page = 'main';
   render();
 }
@@ -361,7 +325,7 @@ function cancelBook(id){
       break;
     }
   }
-  showToast('Cancelled');
+  showToast('已取消預約');
   render();
 }
 
@@ -388,13 +352,13 @@ function logout(){
 
 function resetData(){
   courses = [
-    {id:1, name:'Morning Yoga', teacher:'Teacher A', time:'08:00-09:00', cap:10, booked:3},
-    {id:2, name:'Yin Yoga', teacher:'Teacher B', time:'10:00-11:30', cap:8, booked:8},
-    {id:3, name:'Hatha Yoga', teacher:'Teacher A', time:'14:00-15:30', cap:10, booked:5},
-    {id:4, name:'Flow Yoga', teacher:'Teacher B', time:'16:00-17:00', cap:12, booked:2}
+    {id:1, name:'晨間瑜伽', teacher:'小美老師', time:'08:00-09:00', cap:10, booked:3},
+    {id:2, name:'陰瑜伽', teacher:'阿偉老師', time:'10:00-11:30', cap:8, booked:8},
+    {id:3, name:'哈達瑜伽', teacher:'小美老師', time:'14:00-15:30', cap:10, booked:5},
+    {id:4, name:'流動瑜伽', teacher:'阿偉老師', time:'16:00-17:00', cap:12, booked:2}
   ];
   bookings = [];
-  showToast('Reset complete');
+  showToast('已重置');
   render();
 }
 
@@ -409,8 +373,7 @@ function showToast(msg, type){
 }
 
 function animateLogin(){
-  gsap.to('.login-page', {opacity:1, y:0, duration:0.8, ease:'power2.out'});
-  gsap.to('.card', {opacity:1, y:0, duration:0.6, stagger:0.15, delay:0.3, ease:'power2.out'});
+  gsap.to('.card', {opacity:1, y:0, duration:0.6, stagger:0.15, delay:0.2, ease:'power2.out'});
 }
 
 function animateMain(){
