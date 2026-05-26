@@ -238,7 +238,7 @@ function getTeacherHTML(){
   html += '</div>';
   
   // 重置
-  html += '<button class="btn btn-secondary" onclick="resetDemo()">重置所有資料</button>';
+  html += '<button class="btn btn-secondary" onclick="backupData()">備份資料</button>';<button class="btn btn-secondary" onclick="resetDemo()" style="margin-top:8px">恢復範例</button>';
   
   return html;
 }
@@ -346,17 +346,16 @@ function deleteCourse(id){
   goTeacher();
 }
 
-function resetDemo(){
-  if (!confirm('確定重置所有資料？')) return;
-  courses = [
-    {id:1, name:'晨間瑜伽', teacher:'小美', time:'08:00-09:00', cap:10, booked:3, status:'active'},
-    {id:2, name:'陰瑜伽', teacher:'阿偉', time:'10:00-11:30', cap:8, booked:8, status:'active'},
-    {id:3, name:'哈達瑜伽', teacher:'小美', time:'14:00-15:30', cap:10, booked:5, status:'active'},
-    {id:4, name:'流動瑜伽', teacher:'阿偉', time:'16:00-17:00', cap:12, booked:2, status:'active'}
-  ];
-  bookings = [];
-  toast('已重置');
-  goTeacher();
+function backupData(){
+  var data = JSON.stringify({courses: courses, bookings: bookings}, null, 2);
+  var blob = new Blob([data], {type: 'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'yoga-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('備份已下載');
 }
 
 function logout(){ currentUser = null; page = 'login'; render(); }
