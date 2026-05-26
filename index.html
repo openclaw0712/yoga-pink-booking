@@ -1089,5 +1089,29 @@ window.onload = function() {
   }
 };
 </script>
+
+  <!-- GSAP Animation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+  (function() {
+    setTimeout(function() {
+      // Hero entrance
+      gsap.fromTo('.hero', { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+      
+      // Cards stagger
+      gsap.fromTo('.course-card, .booking-card, .teacher-card, .card', 
+        { opacity: 0, y: 20 }, 
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.3 }
+      );
+      
+      // Button interactions
+      document.querySelectorAll('button, .btn, .course-btn, .action-btn').forEach(function(btn) {
+        btn.addEventListener('mouseenter', function() { gsap.to(this, { scale: 1.05, duration: 0.15 }); });
+        btn.addEventListener('mouseleave', function() { gsap.to(this, { scale: 1, duration: 0.15 }); });
+        btn.addEventListener('mousedown', function() { gsap.to(this, { scale: 0.95, duration: 0.1 }); });
+      });
+    }, 100);
+  })();
+  </script>
 </body>
 </html>
