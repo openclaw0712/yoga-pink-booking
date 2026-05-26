@@ -57,26 +57,9 @@ body{font-family:-apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft Jh
 <body>
 <div id="app" class="container"><div class="loading"><div class="loading-spinner"></div>連接雲端資料庫...</div></div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
 <script>
-// Firebase 設定
-const firebaseConfig = {
-  apiKey: "AIzaSyB112VryuB5xCaQa7gG52969Rtyb6p07RQ",
-  authDomain: "jiurong-yoga.firebaseapp.com",
-  projectId: "jiurong-yoga",
-  storageBucket: "jiurong-yoga.firebasestorage.app",
-  messagingSenderId: "421020627143",
-  appId: "1:421020627143:web:2dd03b7599bd3e37ea8ee2",
-  measurementId: "G-B93VW0SQ5B"
-};
-
-// 初始化 Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
 
 // 全域變數
 var weekdays=['週日','週一','週二','週三','週四','週五','週六'];
@@ -111,24 +94,67 @@ function setOnlineStatus(status){
   }
 }
 
-// 初始化：從雲端載入資料
-function initData(){
-  db.ref('courses').once('value').then(function(snapshot){
-    var data=snapshot.val();
-    if(data){
-      courses=Object.values(data);
-    }else{
-      // 首次使用，寫入預設值
-      var courseObj={};
-      defaultCourses.forEach(function(c,i){courseObj[i+1]=c;});
-      db.ref('courses').set(courseObj);
-      courses=defaultCourses;
-    }
+// =============================================
+// JSONBin API - 替換 Firebase Realtime Database
+// =============================================
+var BIN_ID = localStorage.getItem('yoga_bin_id') || null;
+var BIN_URL = 'https://jsonbin-zeta.vercel.app/api/bins';
+
+async function initBin(){
+  try{
+    var response = await fetch(BIN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ courses: defaultCourses, users: [], bookings: [], waitlist: [] })
+    });
+    var data = await response.json();
+    BIN_ID = data.id;
+    localStorage.setItem('yoga_bin_id', BIN_ID);
+    return data.data;
+  }catch(e){
+    return null;
+  }
+}
+
+async function readBin(){
+  if(!BIN_ID){
+    var initial = await initBin();
+ courses = defaultCourses; users = []; bookings = []; waitlist = [];
+    return { courses: defaultCourses, users: [], bookings: [], waitlist: [] };
+  }
+  try{
+    var response = await fetch(BIN_URL + '/' + BIN_ID);
+    if(!response.ok) throw new Error('Bin not found');
+    return await response.json();
+  }catch(e){
+    var initial = await initBin();
+    return { courses: defaultCourses, users: [], bookings: [], waitlist: [] };
+  }
+}
+
+async function writeBin(data){
+  if(!BIN_ID) return;
+  try{
+    await fetch(BIN_URL + '/' + BIN_ID, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  }catch(e){}
+}
+
+// 初始化：從 JSONBin 載入資料
+async function initData(){
+  try{
+    var cloudData = await readBin();
+    courses = cloudData.courses || defaultCourses;
+    users = cloudData.users || [];
+    bookings = cloudData.bookings || [];
+    waitlist = cloudData.waitlist || [];
     setOnlineStatus(true);
     loadOtherData();
-  }).catch(function(err){
-    console.log('Offline mode:',err);
-    // 離線模式：從 localStorage 讀取
+  }catch(err){
+    console.log('Offline mode:', err);
     courses=JSON.parse(localStorage.getItem('yoga_courses')||'[]');
     if(courses.length===0){
       courses=defaultCourses;
@@ -139,43 +165,23 @@ function initData(){
     waitlist=JSON.parse(localStorage.getItem('yoga_waitlist')||'[]');
     setOnlineStatus(false);
     render();
-  });
+  }
 }
 
 function loadOtherData(){
-  db.ref('users').once('value').then(function(snapshot){
-    var data=snapshot.val();
-    users=data?Object.values(data):[];
-  });
-  db.ref('bookings').once('value').then(function(snapshot){
-    var data=snapshot.val();
-    bookings=data?Object.values(data):[];
-    localStorage.setItem('yoga_bookings',JSON.stringify(bookings));
-  });
-  db.ref('waitlist').once('value').then(function(snapshot){
-    var data=snapshot.val();
-    waitlist=data?Object.values(data):[];
-    localStorage.setItem('yoga_waitlist',JSON.stringify(waitlist));
-    localStorage.setItem('yoga_courses',JSON.stringify(courses));
-    render();
-  });
+  localStorage.setItem('yoga_users',JSON.stringify(users));
+  localStorage.setItem('yoga_bookings',JSON.stringify(bookings));
+  localStorage.setItem('yoga_waitlist',JSON.stringify(waitlist));
+  localStorage.setItem('yoga_courses',JSON.stringify(courses));
+  render();
 }
 
-// 儲存到雲端
-function saveToCloud(){
-  if(!isOnline)return;
-  var courseObj={};
-  courses.forEach(function(c,i){courseObj[i+1]=c;});
-  db.ref('courses').set(courseObj);
-  var userObj={};
-  users.forEach(function(u,i){userObj[u.id||i+1]=u;});
-  db.ref('users').set(userObj);
-  var bookingObj={};
-  bookings.forEach(function(b,i){bookingObj[b.id||i+1]=b;});
-  db.ref('bookings').set(bookingObj);
-  var waitObj={};
-  waitlist.forEach(function(w,i){waitObj[w.id||i+1]=w;});
-  db.ref('waitlist').set(waitObj);
+// 儲存到 JSONBin
+async function saveToCloud(){
+  if(!isOnline) return;
+  try{
+    await writeBin({ courses: courses, users: users, bookings: bookings, waitlist: waitlist });
+  }catch(e){}
 }
 
 // 離線本地儲存
