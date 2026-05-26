@@ -4,1159 +4,434 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>九容瑜伽</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg-primary: #faf8f5;
-  --bg-secondary: #f5f0eb;
-  --text-primary: #2d2926;
-  --text-secondary: #6b5f54;
-  --text-muted: #9c8f85;
-  --accent-primary: #8b6f5c;
-  --accent-secondary: #c4a484;
-  --accent-terracotta: #c67b5c;
-  --accent-sage: #7d9a8c;
-  --accent-blush: #d4a5a5;
-  --accent-gold: #c9a86c;
-  --card-bg: #ffffff;
-  --shadow-soft: 0 4px 24px rgba(45, 41, 38, 0.06);
-  --shadow-hover: 0 8px 40px rgba(45, 41, 38, 0.12);
-  --radius-lg: 24px;
-  --radius-md: 16px;
-  --radius-sm: 12px;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans TC',sans-serif;background:#faf8f5;color:#2d2926;min-height:100vh}
+.container{max-width:480px;margin:0 auto;padding:20px}
 
-* {margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-html, body {width:100%; overflow-x:hidden}
-body {
-  font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-size:16px;
-  line-height:1.6;
-  min-height:100vh;
-}
+/* 登入頁 */
+.login-page{text-align:center;padding-top:60px}
+.logo{font-size:48px;margin-bottom:10px}
+.title{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:4px}
+.subtitle{color:#888;margin-bottom:40px}
+.input-group{margin-bottom:16px}
+input{display:block;width:100%;padding:14px 16px;border:1px solid #ddd;border-radius:12px;font-size:16px;background:#fff}
+input:focus{outline:none;border-color:#8b6f5c}
+.btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:12px}
+.btn-primary{background:#8b6f5c;color:#fff}
+.btn-secondary{background:#e8ddd4;color:#8b6f5c}
+.btn-teacher{background:#5c8b6f;color:#fff}
+.tab{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:1px solid #ddd}
+.tab-item{flex:1;text-align:center;padding:12px;background:#fff;cursor:pointer;font-size:14px}
+.tab-item.active{background:#8b6f5c;color:#fff}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.error{color:#c67b5c;font-size:14px;text-align:left;margin-bottom:10px}
 
-/* Hero Section */
-.hero {
-  position: relative;
-  min-height: 45vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 48px 24px 64px;
-  background: linear-gradient(165deg, #f5f0eb 0%, #e8ddd4 50%, #d4c4b5 100%);
-  overflow: hidden;
-}
+/* 課程頁 */
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.header h2{font-size:20px}
+.back-btn{color:#8b6f5c;text-decoration:none;font-size:14px}
+.course-list{display:flex;flex-direction:column;gap:12px}
+.course-card{background:#fff;border-radius:16px;padding:16px;border:1px solid #eee;cursor:pointer}
+.course-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.course-name{font-size:18px;font-weight:600;margin-bottom:8px}
+.course-info{color:#888;font-size:14px;margin-bottom:8px}
+.course-status{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px}
+.status-ok{background:#d4edda;color:#155724}
+.status-full{background:#f8d7da;color:#721c24}
+.status-booked{background:#cce5ff;color:#004085}
+.book-btn{width:100%;padding:12px;background:#8b6f5c;color:#fff;border:none;border-radius:10px;margin-top:12px;cursor:pointer}
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -30%;
-  width: 80vw;
-  height: 80vw;
-  background: radial-gradient(circle, rgba(196,164,132,0.15) 0%, transparent 70%);
-  border-radius: 50%;
-}
+/* 我的預約 */
+.booking-item{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid #eee}
+.booking-date{color:#8b6f5c;font-size:14px;margin-bottom:4px}
+.booking-name{font-size:16px;font-weight:600}
+.cancel-btn{width:100%;padding:10px;background:#fff;color:#c67b5c;border:1px solid #c67b5c;border-radius:8px;margin-top:10px;cursor:pointer}
 
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: -30%;
-  left: -20%;
-  width: 60vw;
-  height: 60vw;
-  background: radial-gradient(circle, rgba(125,154,140,0.1) 0%, transparent 70%);
-  border-radius: 50%;
-}
+/* 老師後台 */
+.teacher-section{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px}
+.teacher-section h3{font-size:16px;margin-bottom:12px;color:#8b6f5c}
+.course-edit{display:flex;gap:8px;margin-bottom:10px}
+.course-edit input{flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px}
+.course-edit button{padding:10px 16px;background:#8b6f5c;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.student-list{margin-top:12px}
+.student-item{padding:10px 0;border-bottom:1px solid #eee;font-size:14px}
 
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 20px;
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(10px);
-  border-radius: 50px;
-  font-size: 13px;
-  color: var(--accent-primary);
-  font-weight: 500;
-  letter-spacing: 1px;
-  margin-bottom: 24px;
-  border: 1px solid rgba(139,111,92,0.1);
-}
-
-.hero h1 {
-  font-family: 'Noto Serif TC', serif;
-  font-size: clamp(36px, 8vw, 56px);
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: 8px;
-  margin-bottom: 8px;
-  position: relative;
-  z-index: 1;
-}
-
-.hero-subtitle {
-  font-size: 15px;
-  color: var(--text-secondary);
-  letter-spacing: 4px;
-  font-weight: 300;
-  margin-bottom: 32px;
-}
-
-.hero-tagline {
-  position: relative;
-  z-index: 1;
-  padding: 16px 32px;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(10px);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  color: var(--text-secondary);
-  border: 1px solid rgba(139,111,92,0.1);
-  max-width: 300px;
-}
-
-/* Decorative Elements */
-.lotus-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 40px 24px;
-}
-
-.lotus-divider span {
-  font-size: 24px;
-  opacity: 0.3;
-}
-
-.lotus-divider::before,
-.lotus-divider::after {
-  content: '';
-  flex: 1;
-  max-width: 80px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-secondary), transparent);
-}
-
-/* Container */
-.container {
-  max-width: 100%;
-  padding: 0 20px 40px;
-}
-
-/* Cards */
-.card {
-  background: var(--card-bg);
-  border-radius: var(--radius-lg);
-  padding: 28px 24px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow-soft);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(139,111,92,0.05);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-2px);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.card-icon {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-}
-
-.card-title {
-  font-family: 'Noto Serif TC', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-/* Form Elements */
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: 8px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 16px 18px;
-  font-size: 16px;
-  font-family: inherit;
-  border: 1.5px solid rgba(139,111,92,0.15);
-  border-radius: var(--radius-md);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  transition: all 0.2s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: var(--accent-primary);
-  background: white;
-  box-shadow: 0 0 0 4px rgba(139,111,92,0.08);
-}
-
-.form-group input::placeholder {
-  color: var(--text-muted);
-}
-
-/* Buttons */
-.btn {
-  width: 100%;
-  padding: 18px 24px;
-  font-size: 16px;
-  font-family: inherit;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.25s ease;
-  letter-spacing: 2px;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent-primary), #7a5f4a);
-  color: white;
-  box-shadow: 0 4px 20px rgba(139,111,92,0.3);
-}
-
-.btn-primary:hover {
-  box-shadow: 0 6px 28px rgba(139,111,92,0.4);
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1.5px solid rgba(139,111,92,0.15);
-}
-
-.btn-secondary:hover {
-  background: var(--bg-primary);
-  border-color: var(--accent-secondary);
-}
-
-.btn-line {
-  background: linear-gradient(135deg, #00b900, #00a000);
-  color: white;
-  box-shadow: 0 4px 20px rgba(0,185,0,0.25);
-}
-
-/* Navigation */
-.nav-tabs {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.nav-tab {
-  flex: 1;
-  padding: 16px;
-  text-align: center;
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--text-secondary);
-  background: var(--bg-secondary);
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.nav-tab.active {
-  background: linear-gradient(135deg, var(--accent-primary), #7a5f4a);
-  color: white;
-  box-shadow: 0 4px 16px rgba(139,111,92,0.25);
-}
-
-/* Course Cards */
-.course-card {
-  background: white;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow-soft);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(139,111,92,0.05);
-}
-
-.course-card:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-3px);
-}
-
-.course-header {
-  position: relative;
-  height: 120px;
-  background: linear-gradient(135deg, var(--accent-sage) 0%, #5d7a6c 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 48px;
-}
-
-.course-header.special {
-  background: linear-gradient(135deg, var(--accent-terracotta) 0%, #a65f42 100%);
-}
-
-.course-header.gentle {
-  background: linear-gradient(135deg, var(--accent-blush) 0%, #b88888 100%);
-}
-
-.course-body {
-  padding: 20px;
-}
-
-.course-name {
-  font-family: 'Noto Serif TC', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-}
-
-.course-info {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-.course-meta {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
-
-.course-tag {
-  padding: 6px 14px;
-  background: var(--bg-secondary);
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.course-tag.capacity {
-  background: rgba(125,154,140,0.15);
-  color: var(--accent-sage);
-}
-
-/* Booking Items */
-.booking-item {
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  padding: 18px;
-  margin-bottom: 12px;
-  border-left: 4px solid var(--accent-primary);
-  transition: all 0.2s ease;
-}
-
-.booking-item:hover {
-  border-left-color: var(--accent-terracotta);
-  transform: translateX(4px);
-}
-
-.booking-date {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent-primary);
-  margin-bottom: 6px;
-}
-
-.booking-info {
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-/* Utility */
-.text-center { text-align: center; }
-.text-muted { color: var(--text-muted); font-size: 14px; }
-.mt-16 { margin-top: 16px; }
-.mb-12 { margin-bottom: 12px; }
-.hidden { display: none !important; }
-.link { color: var(--accent-primary); text-decoration: underline; cursor: pointer; }
-
-/* Tab Content */
-.tab-content { display: none; }
-.tab-content.active { display: block; animation: fadeIn 0.3s ease; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Loading */
-#loadingOverlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--bg-primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.loading-lotus {
-  width: 60px;
-  height: 60px;
-  position: relative;
-  animation: lotusFloat 2s ease-in-out infinite;
-}
-
-.loading-lotus::before {
-  content: '🪷';
-  font-size: 48px;
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-@keyframes lotusFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-#loadingOverlay p {
-  color: var(--text-secondary);
-  margin-top: 24px;
-  font-size: 14px;
-  letter-spacing: 2px;
-}
-
-/* Share Button */
-#shareBtn {
-  display: none;
-  margin-top: 16px;
-  padding: 12px 24px !important;
-  font-size: 14px !important;
-  background: rgba(255,255,255,0.8) !important;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(139,111,92,0.15) !important;
-  color: var(--accent-primary) !important;
-}
-
-/* Error */
-.text-error { color: #c62828; font-size: 13px; margin-top: 12px; }
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:1000}
+.toast.success{background:#28a745}
+.toast.error{background:#dc3545}
 </style>
 </head>
 <body>
-<div id="loadingOverlay">
-  <div class="loading-lotus"></div>
-  <p>靜心載入中</p>
-</div>
 
-<div class="hero">
-  <div class="hero-badge">🪷 身心靈和諧</div>
-  <h1>九容瑜伽</h1>
-  <p class="hero-subtitle">JIURONG YOGA</p>
-  <div class="hero-tagline">靜而有容，修身於形。<br>在最舒心的空間，遇見更好的自己。</div>
-  <button id="shareBtn" onclick="shareToLine()">📤 分享給朋友</button>
-</div>
-
-<div class="lotus-divider"><span>🪷</span></div>
-
-<div class="container">
-<div class="nav-tabs" id="mainNav" style="display:none">
-  <button class="nav-tab active" onclick="switchTab('courses')">探索課程</button>
-  <button class="nav-tab" onclick="switchTab('my')">我的預約</button>
-</div>
-
-<!-- Login Tab -->
-<div id="tab-login" class="tab-content active">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">🧘</div>
-      <div class="card-title">會員登入</div>
-    </div>
-    <div class="form-group">
-      <label>手機號碼</label>
-      <input type="tel" id="loginPhone" placeholder="09xx xxx xxx" autocomplete="tel">
-    </div>
-    <div class="form-group">
-      <label>密碼</label>
-      <input type="password" id="loginPw" placeholder="請輸入密碼" autocomplete="current-password">
-    </div>
-    <button class="btn btn-line" onclick="lineLogin()" style="margin-top:12px">🌿 用 LINE 登入</button>
-    <button class="btn btn-primary" onclick="login()">登入</button>
-    <p id="loginError" class="text-error text-center" style="display:none"></p>
-    <p class="text-center text-muted mt-16">還沒有帳號？<span class="link" onclick="showRegister()">立即註冊</span></p>
-  </div>
-
-  <div class="card" style="text-align:center">
-    <p class="text-muted" style="margin-bottom:16px">我是老師</p>
-    <button class="btn btn-secondary" onclick="showTeacherLogin()">老師入口</button>
-  </div>
-</div>
-
-<!-- Register Tab -->
-<div id="tab-register" class="tab-content">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">✨</div>
-      <div class="card-title">加入九容</div>
-    </div>
-    <div class="form-group">
-      <label>姓名</label>
-      <input type="text" id="regName" placeholder="請輸入姓名">
-    </div>
-    <div class="form-group">
-      <label>手機號碼</label>
-      <input type="tel" id="regPhone" placeholder="09xx xxx xxx">
-    </div>
-    <div class="form-group">
-      <label>密碼</label>
-      <input type="password" id="regPw" placeholder="設定密碼">
-    </div>
-    <button class="btn btn-primary" onclick="register()">註冊</button>
-    <p class="text-center text-muted mt-16">已有帳號？<span class="link" onclick="showLogin()">返回登入</span></p>
-  </div>
-</div>
-
-<!-- Teacher Login Tab -->
-<div id="tab-teacher" class="tab-content">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">👩‍🏫</div>
-      <div class="card-title">老師專區</div>
-    </div>
-    <div class="form-group">
-      <label>帳號</label>
-      <input type="text" id="teacherId" placeholder="老師帳號">
-    </div>
-    <div class="form-group">
-      <label>密碼</label>
-      <input type="password" id="teacherPw" placeholder="請輸入密碼">
-    </div>
-    <button class="btn btn-primary" onclick="teacherLogin()">老師登入</button>
-    <p class="text-center text-muted mt-16"><span class="link" onclick="showLogin()">返回會員登入</span></p>
-  </div>
-</div>
-
-<!-- Courses Tab -->
-<div id="tab-courses" class="tab-content">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">📚</div>
-      <div class="card-title">課程總覽</div>
-    </div>
-    <div class="form-group">
-      <label>選擇課程</label>
-      <select id="courseSelect" onchange="showBookingForm()">
-        <option value="">請選擇課程</option>
-      </select>
-    </div>
-  </div>
-
-  <div id="bookingForm" class="card hidden">
-    <div class="card-header">
-      <div class="card-icon">📅</div>
-      <div class="card-title">預約時段</div>
-    </div>
-    <div id="courseDetail"></div>
-    <div class="form-group">
-      <label>選擇日期</label>
-      <input type="date" id="bookDate" onchange="onDateChange()">
-    </div>
-    <div class="form-group">
-      <label>選擇時段</label>
-      <select id="bookTime">
-        <option value="">請選擇時段</option>
-      </select>
-    </div>
-    <button class="btn btn-primary" id="bookingBtn" onclick="submitBooking()">確認預約</button>
-    <p id="bookingMsg" class="text-error" style="display:none"></p>
-  </div>
-</div>
-
-<!-- My Bookings Tab -->
-<div id="tab-my" class="tab-content">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">📋</div>
-      <div class="card-title">我的預約</div>
-    </div>
-    <div id="bookingList">
-      <p class="text-center text-muted">尚無預約記錄</p>
-    </div>
-  </div>
-</div>
-
-<!-- Teacher Dashboard Tab -->
-<div id="tab-teacher-dash" class="tab-content">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">👩‍🏫</div>
-      <div class="card-title">老師管理</div>
-    </div>
-    <div id="teacherCourseList"></div>
-  <div class="card mt-16">
-    <div class="card-header">
-      <div class="card-icon">📋</div>
-      <div class="card-title">所有會員預約</div>
-    </div>
-    <div id="allBookingsList"></div>
-  </div>
-  </div>
-</div>
-</div>
+<div id="app" class="container"></div>
 
 <script>
-const COURSES = [
-  {id:1, name:'陰瑜伽', emoji:'🧘‍♀️', desc:'深度伸展與冥想，適合初學者', dur:'60 min', cap:12, cat:'special'},
-  {id:2, name:'哈達瑜伽', emoji:'🧘', desc:'傳統體位法練習', dur:'75 min', cap:15, cat:''},
-  {id:3, name:'熱瑜伽', emoji:'🔥', desc:'高溫環境下的深度練習', dur:'90 min', cap:10, cat:'special'},
-  {id:4, name:'療癒瑜伽', emoji:'💆‍♀️', desc:'舒緩壓力與身心修復', dur:'60 min', cap:8, cat:'gentle'},
-  {id:5, name:'晨間流動', emoji:'🌅', desc:'喚醒身體的活潑練習', dur:'45 min', cap:15, cat:''},
+// ========== 資料 ==========
+const defaultCourses = [
+  {id:1,name:'晨間瑜伽',teacher:'小美',time:'08:00-09:00',capacity:10,booked:3},
+  {id:2,name:'陰瑜伽',teacher:'阿偉',time:'10:00-11:30',capacity:8,booked:8},
+  {id:3,name:'哈達瑜伽',teacher:'小美',time:'14:00-15:30',capacity:10,booked:5},
+  {id:4,name:'流動瑜伽',teacher:'阿偉',time:'16:00-17:00',capacity:12,booked:2},
 ];
 
-function getCourseCapacity(courseId) {
-  const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
-  return bookings.filter(b => b.courseId == courseId).length;
+// ========== 工具函數 ==========
+function getUsers(){return JSON.parse(localStorage.getItem('yoga_users')||'[]')}
+function setUsers(u){localStorage.setItem('yoga_users',JSON.stringify(u))}
+function getCurrentUser(){return JSON.parse(localStorage.getItem('yoga_current')||'null')}
+function setCurrentUser(u){localStorage.setItem('yoga_current',JSON.stringify(u))}
+function getBookings(){return JSON.parse(localStorage.getItem('yoga_bookings')||'[]')}
+function setBookings(b){localStorage.setItem('yoga_bookings',JSON.stringify(b))}
+function getCourses(){
+  const c=localStorage.getItem('yoga_courses');
+  return c?JSON.parse(c):defaultCourses;
+}
+function setCourses(c){localStorage.setItem('yoga_courses',JSON.stringify(c))}
+function showToast(msg,type='info'){
+  const t=document.createElement('div');
+  t.className='toast '+type;
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
 }
 
-function isAlreadyBooked(courseId, phone) {
-  const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
-  return bookings.some(b => b.courseId == courseId && b.phone === phone);
-}
+// ========== 路由 ==========
+let currentUser=getCurrentUser();
+let currentTab='login';
+let view='main';
 
-function setDatePickerRange() {
-  const dateInput = document.getElementById('bookDate');
-  if (!dateInput) return;
-  const today = new Date();
-  const maxDate = new Date(today);
-  maxDate.setDate(today.getDate() + 7);
-  const fmt = d => d.toISOString().split('T')[0];
-  dateInput.min = fmt(today);
-  dateInput.max = fmt(maxDate);
-}
-
-function getUserName(phone) {
-  const users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
-  const u = users.find(x => x.phone === phone);
-  return u ? u.name : (phone || '未知');
-}
-
-const TIMES = ['09:00','10:30','14:00','16:00','19:00'];
-
-let currentUser = null;
-let isTeacher = false;
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(e => e.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'courses' || tab === 'my') {
-    document.getElementById('mainNav').style.display = 'flex';
-  } else {
-    document.getElementById('mainNav').style.display = 'none';
-  }
-  event?.target?.classList.add('active');
-}
-
-function showLogin() {
-  switchTab('login');
-  document.getElementById('mainNav').style.display = 'none';
-  var header = document.querySelector('.hero');
-  var un = header?.querySelector('.user-name');
-  if (un) un.remove();
-}
-function showRegister() { switchTab('register'); }
-function showTeacherLogin() { switchTab('teacher'); }
-
-function showBookingForm() {
-  const sel = document.getElementById('courseSelect');
-  const form = document.getElementById('bookingForm');
-  if (sel.value) {
-    const c = COURSES.find(x => x.id == sel.value);
-    const booked = getCourseCapacity(c.id);
-    const full = booked >= c.cap;
-    document.getElementById('courseDetail').innerHTML = `
-      <div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius-md);margin-bottom:16px">
-        <strong>${c.emoji} ${c.name}</strong><br>
-        <span style="font-size:14px;color:var(--text-secondary)">${c.desc}</span><br>
-        <span style="font-size:12px;color:var(--text-muted)">${c.dur}</span> ·
-        <span style="font-size:12px;color:${full ? '#c62828' : 'var(--accent-sage)'}">${booked}/${c.cap} 人</span>
-        ${full ? '<span style="font-size:12px;color:#c62828">　已額滿</span>' : ''}
-      </div>`;
-    const timeSel = document.getElementById('bookTime');
-    timeSel.innerHTML = '<option value="">請選擇時段</option>' + TIMES.map(t => `<option value="${t}">${t}</option>`).join('');
-    form.classList.remove('hidden');
-    setDatePickerRange();
-    document.getElementById('bookDate').value = '';
-    document.getElementById('bookTime').value = '';
-    document.getElementById('bookingMsg').style.display = 'none';
-    document.getElementById('bookingBtn').disabled = false;
-    document.getElementById('bookingBtn').textContent = '確認預約';
-  } else {
-    form.classList.add('hidden');
+function render(){
+  const app=document.getElementById('app');
+  if(!currentUser){
+    app.innerHTML=renderLogin();
+  } else if(view==='main'){
+    app.innerHTML=renderMain();
+  } else if(view==='booking'){
+    app.innerHTML=renderBooking();
+  } else if(view==='mybookings'){
+    app.innerHTML=renderMyBookings();
+  } else if(view==='teacher'){
+    app.innerHTML=renderTeacher();
   }
 }
 
-function onDateChange() {
-  const btn = document.getElementById('bookingBtn');
-  const msg = document.getElementById('bookingMsg');
-  msg.style.display = 'none';
-  const date = document.getElementById('bookDate').value;
-  if (!date) return;
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  const maxDate = new Date(today);
-  maxDate.setDate(today.getDate() + 7);
-  const selDate = new Date(date + 'T00:00:00');
-  if (selDate < today || selDate > maxDate) {
-    msg.textContent = '⚠️ 只能預約今天起的未來7天內的日期';
-    msg.style.display = 'block';
-    return;
-  }
-  const courseId = document.getElementById('courseSelect').value;
-  if (!courseId) return;
-  const c = COURSES.find(x => x.id == courseId);
-  const booked = getCourseCapacity(c.id);
-  if (booked >= c.cap) {
-    btn.disabled = true;
-    btn.textContent = '已額滿';
-    msg.textContent = '此課程已額滿，請選擇其他課程';
-    msg.style.display = 'block';
-  } else if (currentUser && isAlreadyBooked(c.id, currentUser.phone)) {
-    btn.disabled = true;
-    btn.textContent = '您已預約過';
-    msg.textContent = '⚠️ 您已預約過此課程，請至「我的預約」取消後再重新預約';
-    msg.style.display = 'block';
-  } else {
-    btn.disabled = false;
-    btn.textContent = '確認預約';
-  }
-}
-
-function login() {
-  const phone = document.getElementById('loginPhone').value;
-  const pw = document.getElementById('loginPw').value;
-  const err = document.getElementById('loginError');
-  if (!phone || !pw) {
-    err.textContent = '請填寫所有欄位';
-    err.style.display = 'block';
-    return;
-  }
-  if (pw === 'yoga9527' && phone === 'teacher') {
-    isTeacher = true;
-    err.style.display = 'none';
-    switchTab('teacher-dash');
-    loadTeacherDash();
-    return;
-  }
-  const users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
-  const user = users.find(function(u) { return u.phone === phone && u.pw === pw; });
-  if (user) {
-    currentUser = user;
-    err.style.display = 'none';
-    localStorage.setItem('yoga_current', JSON.stringify(user));
-    showMemberUI();
-  } else {
-    err.textContent = '帳號或密碼錯誤';
-    err.style.display = 'block';
-  }
-}
-
-function register() {
-  const name = document.getElementById('regName').value;
-  const phone = document.getElementById('regPhone').value;
-  const pw = document.getElementById('regPw').value;
-  if (!name || !phone || !pw) { alert('請填寫所有欄位'); return; }
-  const users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
-  if (users.some(function(u) { return u.phone === phone; })) {
-    alert('此帳號已註冊');
-    return;
-  }
-  users.push({ id: Date.now(), name: name, phone: phone, pw: pw });
-  localStorage.setItem('yoga_users', JSON.stringify(users));
-  alert('註冊成功！');
-  showLogin();
-}
-
-function teacherLogin() {
-  const id = document.getElementById('teacherId').value;
-  const pw = document.getElementById('teacherPw').value;
-  if (id === 'teacher' && pw === 'yoga9527') {
-    isTeacher = true;
-    switchTab('teacher-dash');
-    loadTeacherDash();
-  } else {
-    alert('帳號或密碼錯誤');
-  }
-}
-
-function loadCourses() {
-  const sel = document.getElementById('courseSelect');
-  sel.innerHTML = '<option value="">請選擇課程</option>' +
-    COURSES.map(c => `<option value="${c.id}">${c.emoji} ${c.name} (${c.dur})</option>`).join('');
-}
-
-function loadMyBookings() {
-  if (!currentUser) return;
-  const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]')
-    .filter(b => b.phone === currentUser.phone);
-  const list = document.getElementById('bookingList');
-  if (bookings.length === 0) {
-    list.innerHTML = '<p class="text-center text-muted">尚無預約記錄</p>';
-  } else {
-    list.innerHTML = bookings.map((b) => {
-      const c = COURSES.find(x => x.id == b.courseId);
-      return `<div class="booking-item">
-        <div class="booking-date">${c.emoji} ${c.name}</div>
-        <div class="booking-info">${b.date} ${b.time}</div>
-        <button onclick="cancelMyBooking('${b.date}', '${b.time}', ${b.courseId})" style="margin-top:8px;padding:6px 14px;font-size:12px;background:#c62828;color:white;border:none;border-radius:8px;cursor:pointer">取消預約</button>
-      </div>`;
-    }).join('');
-  }
-}
-
-function cancelMyBooking(date, time, courseId) {
-  if (!confirm('確定要取消這個預約嗎？')) return;
-  try {
-    const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
-    const updated = bookings.filter(b => !(b.courseId == courseId && b.date === date && b.time === time && b.phone === currentUser.phone));
-    localStorage.setItem('yoga_bookings', JSON.stringify(updated));
-    loadMyBookings();
-    alert('已取消預約');
-  } catch(e) {
-    console.error('cancelMyBooking error:', e);
-    alert('取消失敗，請稍後再試');
-  }
-}
-
-function loadTeacherDash() {
-  const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
-  document.getElementById('teacherCourseList').innerHTML = COURSES.map(c => {
-    const courseBookings = bookings.filter(b => b.courseId == c.id);
-    const full = courseBookings.length >= c.cap;
-    return `<div style="padding:16px;background:var(--bg-secondary);border-radius:var(--radius-md);margin-bottom:12px">
-      <strong>${c.emoji} ${c.name}</strong>
-      <span style="float:right;color:${full ? '#c62828' : 'var(--accent-sage)'}">${courseBookings.length}/${c.cap} 人</span>
-      ${courseBookings.length > 0 ? '<div style="margin-top:10px;font-size:13px;color:var(--text-secondary)">' + courseBookings.map(b => {
-        const name = getUserName(b.phone);
-        return `<span style="display:inline-block;background:white;padding:2px 10px;border-radius:50px;margin:2px">${name} · ${b.date} ${b.time}</span>`;
-      }).join('') + '</div>' : ''}
-    </div>`;
-  }).join('');
-
-  const allList = document.getElementById('allBookingsList');
-  if (bookings.length === 0) {
-    allList.innerHTML = '<p class="text-center text-muted">尚無任何預約</p>';
-  } else {
-    allList.innerHTML = bookings.map((b) => {
-      const c = COURSES.find(x => x.id == b.courseId);
-      const name = getUserName(b.phone);
-      return `<div class="booking-item" style="display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div class="booking-date">${c.emoji} ${c.name}</div>
-          <div class="booking-info">👤 ${name} · ${b.date} ${b.time}</div>
-        </div>
-        <button onclick="teacherCancelBooking('${b.date}', '${b.time}', ${b.courseId}, '${b.phone}')" style="padding:6px 12px;font-size:12px;background:#c62828;color:white;border:none;border-radius:8px;cursor:pointer;white-space:nowrap">取消</button>
-      </div>`;
-    }).join('');
-  }
-}
-
-function teacherCancelBooking(date, time, courseId, phone) {
-  if (!confirm('確定要取消此會員的預約嗎？')) return;
-  try {
-    const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
-    const updated = bookings.filter(b => !(b.courseId == courseId && b.date === date && b.time === time && b.phone === phone));
-    localStorage.setItem('yoga_bookings', JSON.stringify(updated));
-    loadTeacherDash();
-    alert('已取消該會員預約');
-  } catch(e) {
-    console.error('teacherCancelBooking error:', e);
-    alert('取消失敗，請稍後再試');
-  }
-}
-
-function submitBooking() {
-  const courseId = document.getElementById('courseSelect').value;
-  const date = document.getElementById('bookDate').value;
-  const time = document.getElementById('bookTime').value;
-  const btn = document.getElementById('bookingBtn');
-  const msg = document.getElementById('bookingMsg');
-  if (!courseId || !date || !time) {
-    msg.textContent = '請填寫所有欄位';
-    msg.style.display = 'block';
-    return;
-  }
-  if (!currentUser) {
-    msg.textContent = '請先登入會員';
-    msg.style.display = 'block';
-    return;
-  }
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  const maxDate = new Date(today);
-  maxDate.setDate(today.getDate() + 7);
-  const selDate = new Date(date + 'T00:00:00');
-  if (selDate < today || selDate > maxDate) {
-    msg.textContent = '只能預約今天起的未來7天內的日期';
-    msg.style.display = 'block';
-    return;
-  }
-  const c = COURSES.find(x => x.id == courseId);
-  const booked = getCourseCapacity(c.id);
-  if (booked >= c.cap) {
-    btn.disabled = true;
-    btn.textContent = '已額滿';
-    msg.textContent = '此課程已額滿，請選擇其他課程';
-    msg.style.display = 'block';
-    return;
-  }
-  if (isAlreadyBooked(c.id, currentUser.phone)) {
-    btn.disabled = true;
-    btn.textContent = '您已預約過';
-    msg.textContent = '您已預約過此課程，請至「我的預約」取消後再重新預約';
-    msg.style.display = 'block';
-    return;
-  }
-  const bookings = JSON.parse(localStorage.getItem('yoga_bookings') || '[]');
-  bookings.push({ courseId: parseInt(courseId), date, time, phone: currentUser.phone, name: currentUser.name });
-  localStorage.setItem('yoga_bookings', JSON.stringify(bookings));
-  alert('預約成功！');
-  showBookingForm();
-  loadMyBookings();
-}
-
-function shareToLine() {
-  if (navigator.share) {
-    navigator.share({ title: '九容瑜伽', text: '我在九容瑜伽預約了課程，一起來練習吧！', url: location.href });
-  } else {
-    alert('感謝分享！');
-  }
-}
-
-// LINE Login（OAuth flow - 舊版可用的方式）
-function lineLogin() {
-  var clientId = '2009559768';
-  var redirectUri = encodeURIComponent('https://openclaw0712.github.io/yoga-pink-booking/');
-  var lineAuthUrl = 'https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectUri + '&state=yoga123&scope=openid%20profile';
-  window.location.href = lineAuthUrl;
-}
-
-function getLineProfile() {
-  if (typeof liff === 'undefined') {
-    alert('LINE SDK 未載入，請在 LINE 內開啟');
-    showLogin();
-    return;
-  }
-  // liff.init() 已經在 window.onload 完成了，直接取 profile
-  liff.getProfile().then(function(profile) {
-    var lineId = profile.userId;
-    var displayName = profile.displayName || '';
-    if (!displayName || displayName === 'LINE User') {
-      var name = 'LINE:' + lineId.substring(0, 12);
-    } else {
-      var name = displayName + ' (LINE)';
-    }
-    createOrUpdateUser(lineId, name, '');
-  }).catch(function(e) {
-    alert('LINE 登入失敗：' + e.message);
-    checkLogin();
-  });
-}
-
-function createOrUpdateUser(lineId, name, picUrl) {
-  var users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
-  var existingUser = users.find(function(u) { return u.lineId === lineId; });
-  if (existingUser) {
-    existingUser.name = name;
-    currentUser = existingUser;
-  } else {
-    var newUser = { id: Date.now(), name: name, phone: '', pw: '', lineId: lineId, picUrl: picUrl };
-    users.push(newUser);
-    currentUser = newUser;
-  }
-  localStorage.setItem('yoga_users', JSON.stringify(users));
-  localStorage.setItem('yoga_current', JSON.stringify(currentUser));
-  showMemberUI();
-}
-
-function showMemberUI() {
-  document.getElementById('mainNav').style.display = 'flex';
-  document.getElementById('shareBtn').style.display = 'inline-block';
-  var header = document.querySelector('.hero');
-  if (currentUser && header) {
-    var userName = document.createElement('p');
-    userName.className = 'user-name';
-    userName.style.cssText = 'color:rgba(255,255,255,0.9);font-size:14px;margin-top:8px';
-    userName.innerHTML = '👤 ' + currentUser.name;
-    header.appendChild(userName);
-  }
-  switchTab('courses');
-  loadCourses();
-  loadMyBookings();
-}
-
-function checkLogin() {
-  var stored = localStorage.getItem('yoga_current');
-  if (stored) {
-    try {
-      var user = JSON.parse(stored);
-      var users = JSON.parse(localStorage.getItem('yoga_users') || '[]');
-      if (users.some(function(u) { return u.id === user.id; })) {
-        currentUser = user;
-        showMemberUI();
-        return;
-      }
-    } catch (e) {}
-  }
-  showLogin();
-}
-
-function logout() {
-  currentUser = null;
-  localStorage.removeItem('yoga_current');
-  location.reload();
-}
-
-// Force hide loading after 2s regardless
-var loadingTimer = setInterval(function() {
-  var overlay = document.getElementById('loadingOverlay');
-  if (overlay) {
-    overlay.style.display = 'none';
-    clearInterval(loadingTimer);
-  }
-}, 2000);
-
-// Init
-window.onload = function() {
-  try {
-    var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('code')) {
-      // LINE OAuth callback
-      if (typeof liff !== 'undefined') {
-        liff.init({ liffId: '2009559768-h44Oa41n' }).then(function() {
-          getLineProfile();
-        }).catch(function(e) {
-          alert('liff init 失敗：' + e.message);
-          checkLogin();
-        });
-      } else {
-        alert('liff SDK 不存在，請在 LINE 內開啟');
-        checkLogin();
-      }
-    } else {
-      checkLogin();
-    }
-  } catch(e) {
-    alert('Init error: ' + e.message);
-    console.error(e);
-    checkLogin();
-  }
-};
-</script>
-
-  <!-- GSAP Animation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script>
-  (function() {
-    setTimeout(function() {
-      // Hero entrance
-      gsap.fromTo('.hero', { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
-      
-      // Cards stagger
-      gsap.fromTo('.course-card, .booking-card, .teacher-card, .card', 
-        { opacity: 0, y: 20 }, 
-        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.3 }
-      );
-      
-      // Button interactions
-      document.querySelectorAll('button, .btn, .course-btn, .action-btn').forEach(function(btn) {
-        btn.addEventListener('mouseenter', function() { gsap.to(this, { scale: 1.05, duration: 0.15 }); });
-        btn.addEventListener('mouseleave', function() { gsap.to(this, { scale: 1, duration: 0.15 }); });
-        btn.addEventListener('mousedown', function() { gsap.to(this, { scale: 0.95, duration: 0.1 }); });
-      });
-    }, 100);
-  })();
-  </script>
-
-  <!-- GSAP Animation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script>
-  (function() {
-    function initAnimations() {
-      var hero = document.querySelector('.hero');
-      if (hero) {
-        gsap.fromTo(hero, 
-          { opacity: 0, y: -30 }, 
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
-        );
-      }
-      
-      var cards = document.querySelectorAll('.course-card, .booking-card, .teacher-card, .card');
-      if (cards && cards.length > 0) {
-        gsap.fromTo(cards, 
-          { opacity: 0, y: 20 }, 
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.3 }
-        );
-      }
-      
-      var buttons = document.querySelectorAll('button, .btn, .course-btn, .action-btn');
-      if (buttons && buttons.length > 0) {
-        buttons.forEach(function(btn) {
-          btn.addEventListener('mouseenter', function() { 
-            gsap.to(this, { scale: 1.05, duration: 0.15 }); 
-          });
-          btn.addEventListener('mouseleave', function() { 
-            gsap.to(this, { scale: 1, duration: 0.15 }); 
-          });
-          btn.addEventListener('mousedown', function() { 
-            gsap.to(this, { scale: 0.95, duration: 0.1 }); 
-          });
-        });
-      }
-    }
+function renderLogin(){
+  return `
+  <div class="login-page">
+    <div class="logo">🧘</div>
+    <div class="title">九容瑜伽</div>
+    <div class="subtitle">線上預約系統</div>
     
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initAnimations);
-    } else {
-      setTimeout(initAnimations, 100);
+    <div class="tab">
+      <div class="tab-item active" onclick="switchTab('login')">學員登入</div>
+      <div class="tab-item" onclick="switchTab('register')">註冊</div>
+      <div class="tab-item" onclick="switchTab('teacher')">老師</div>
+    </div>
+    
+    <div id="tab-login" class="tab-content active">
+      <div class="input-group">
+        <input type="tel" id="loginPhone" placeholder="電話號碼">
+      </div>
+      <div class="input-group">
+        <input type="password" id="loginPw" placeholder="密碼">
+      </div>
+      <div id="loginError" class="error"></div>
+      <button class="btn btn-primary" onclick="doLogin()">登入</button>
+    </div>
+    
+    <div id="tab-register" class="tab-content">
+      <div class="input-group">
+        <input type="tel" id="regPhone" placeholder="電話號碼">
+      </div>
+      <div class="input-group">
+        <input type="text" id="regName" placeholder="姓名">
+      </div>
+      <div class="input-group">
+        <input type="password" id="regPw" placeholder="設定密碼">
+      </div>
+      <div id="regError" class="error"></div>
+      <button class="btn btn-primary" onclick="doRegister()">註冊</button>
+    </div>
+    
+    <div id="tab-teacher" class="tab-content">
+      <div class="input-group">
+        <input type="text" id="teacherId" placeholder="老師帳號">
+      </div>
+      <div class="input-group">
+        <input type="password" id="teacherPw" placeholder="密碼">
+      </div>
+      <button class="btn btn-teacher" onclick="doTeacherLogin()">老師登入</button>
+    </div>
+  </div>
+  `;
+}
+
+function renderMain(){
+  const courses=getCourses();
+  const bookings=getBookings();
+  const userBookings=bookings.filter(b=>b.phone===currentUser.phone&&b.status==='confirmed');
+  
+  let cards='';
+  courses.forEach(c=>{
+    let statusClass='status-ok';
+    let statusText='可預約';
+    if(c.booked>=c.capacity){
+      statusClass='status-full';
+      statusText='已額滿';
+    } else if(userBookings.some(b=>b.courseId===c.id)){
+      statusClass='status-booked';
+      statusText='已預約';
     }
-  })();
-  </script>
+    cards+=`
+    <div class="course-card" onclick="goBooking(${c.id})">
+      <div class="course-name">${c.name}</div>
+      <div class="course-info">👤 ${c.teacher} | 🕐 ${c.time}</div>
+      <div class="course-status ${statusClass}">${statusText} ${c.booked}/${c.capacity}</div>
+    </div>`;
+  });
+  
+  return `
+  <div class="header">
+    <h2>🧘 九容瑜伽</h2>
+    <a href="#" onclick="logout()" class="back-btn">登出</a>
+  </div>
+  
+  <div class="course-list">${cards}</div>
+  
+  <div style="margin-top:20px;display:flex;gap:10px">
+    <button class="btn btn-secondary" onclick="view='mybookings';render()" style="flex:1">我的預約</button>
+    ${currentUser.isTeacher?'<button class="btn btn-secondary" onclick="view=\\'teacher\\';render()" style="flex:1">老師後台</button>':''}
+  </div>
+  `;
+}
+
+function renderBooking(){
+  const courses=getCourses();
+  const course=courses.find(c=>c.id===window.bookingId);
+  if(!course) return '<p>找不到課程</p>';
+  
+  return `
+  <div class="header">
+    <a href="#" onclick="view='main';render()" class="back-btn">← 返回</a>
+    <h2>預約</h2>
+    <div></div>
+  </div>
+  
+  <div class="course-card" style="margin-bottom:20px">
+    <div class="course-name">${course.name}</div>
+    <div class="course-info">👤 ${course.teacher} | 🕐 ${course.time}</div>
+    <div>名額：${course.booked}/${course.capacity}</div>
+  </div>
+  
+  <button class="btn btn-primary" onclick="confirmBooking(${course.id})">確認預約</button>
+  `;
+}
+
+function renderMyBookings(){
+  const bookings=getBookings();
+  const userBookings=bookings.filter(b=>b.phone===currentUser.phone);
+  
+  let items='';
+  userBookings.forEach(b=>{
+    items+=`
+    <div class="booking-item">
+      <div class="booking-date">${b.date} ${b.time}</div>
+      <div class="booking-name">${b.courseName}</div>
+      <div style="color:#888;font-size:14px">老師：${b.teacher}</div>
+      ${b.status==='confirmed'?'<button class="cancel-btn" onclick="cancelBooking('+b.id+')">取消預約</button>':'<div style="color:#c67b5c;margin-top:8px">已取消</div>'}
+    </div>`;
+  });
+  
+  if(!items) items='<p style="text-align:center;color:#888;padding:40px">還沒有預約記錄</p>';
+  
+  return `
+  <div class="header">
+    <a href="#" onclick="view='main';render()" class="back-btn">← 返回</a>
+    <h2>我的預約</h2>
+    <div></div>
+  </div>
+  ${items}
+  `;
+}
+
+function renderTeacher(){
+  const courses=getCourses();
+  const bookings=getBookings();
+  
+  let courseList='';
+  courses.forEach(c=>{
+    courseList+=`
+    <div style="padding:12px 0;border-bottom:1px solid #eee">
+      <strong>${c.name}</strong> (${c.teacher})<br>
+      <span style="color:#888">${c.time}</span><br>
+      <span>報名：${c.booked}/${c.capacity}</span>
+    </div>`;
+  });
+  
+  let studentList='';
+  bookings.filter(b=>b.status==='confirmed').forEach(b=>{
+    studentList+=`<div class="student-item">${b.name} - ${b.courseName} (${b.phone})</div>`;
+  });
+  
+  return `
+  <div class="header">
+    <a href="#" onclick="view='main';render()" class="back-btn">← 返回</a>
+    <h2>老師後台</h2>
+    <div></div>
+  </div>
+  
+  <div class="teacher-section">
+    <h3>📚 課程管理</h3>
+    ${courseList||'<p style="color:#888">尚無課程</p>'}
+  </div>
+  
+  <div class="teacher-section">
+    <h3>👥 已報名學員</h3>
+    ${studentList||'<p style="color:#888">尚無報名</p>'}
+  </div>
+  
+  <button class="btn btn-secondary" onclick="resetDemo()">重置範例資料</button>
+  `;
+}
+
+// ========== 動作 ==========
+function switchTab(tab){
+  document.querySelectorAll('.tab-item').forEach((t,i)=>{
+    t.classList.toggle('active',i===['login','register','teacher'].indexOf(tab));
+  });
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function doLogin(){
+  const phone=document.getElementById('loginPhone').value.trim();
+  const pw=document.getElementById('loginPw').value;
+  const users=getUsers();
+  const user=users.find(u=>u.phone===phone&&u.pw===pw);
+  if(user){
+    currentUser=user;
+    setCurrentUser(user);
+    view='main';
+    showToast('登入成功','success');
+    render();
+  } else {
+    document.getElementById('loginError').textContent='電話或密碼錯誤';
+  }
+}
+
+function doRegister(){
+  const phone=document.getElementById('regPhone').value.trim();
+  const name=document.getElementById('regName').value.trim();
+  const pw=document.getElementById('regPw').value;
+  if(!phone||!name||!pw){
+    document.getElementById('regError').textContent='請填寫所有欄位';
+    return;
+  }
+  const users=getUsers();
+  if(users.find(u=>u.phone===phone)){
+    document.getElementById('regError').textContent='此電話已註冊';
+    return;
+  }
+  users.push({phone,name,pw,isTeacher:false});
+  setUsers(users);
+  currentUser={phone,name,isTeacher:false};
+  setCurrentUser(currentUser);
+  view='main';
+  showToast('註冊成功','success');
+  render();
+}
+
+function doTeacherLogin(){
+  const id=document.getElementById('teacherId').value.trim();
+  const pw=document.getElementById('teacherPw').value;
+  if(id==='teacher'&&pw==='yoga9527'){
+    const users=getUsers();
+    let teacher=users.find(u=>u.isTeacher&&u.phone==='teacher');
+    if(!teacher){
+      users.push({phone:'teacher',name:'老師',pw:'yoga9527',isTeacher:true});
+      setUsers(users);
+    }
+    currentUser={phone:'teacher',name:'老師',isTeacher:true};
+    setCurrentUser(currentUser);
+    view='teacher';
+    showToast('老師登入成功','success');
+    render();
+  } else {
+    showToast('帳號或密碼錯誤','error');
+  }
+}
+
+function goBooking(id){
+  window.bookingId=id;
+  view='booking';
+  render();
+}
+
+function confirmBooking(id){
+  const courses=getCourses();
+  const course=courses.find(c=>c.id===id);
+  if(!course) return;
+  if(course.booked>=course.capacity){
+    showToast('已額滿','error');
+    return;
+  }
+  const bookings=getBookings();
+  if(bookings.some(b=>b.phone===currentUser.phone&&b.courseId===id&&b.status==='confirmed')){
+    showToast('您已預約過此課程','error');
+    return;
+  }
+  course.booked++;
+  setCourses(courses);
+  bookings.push({
+    id:Date.now(),
+    phone:currentUser.phone,
+    name:currentUser.name,
+    courseId:id,
+    courseName:course.name,
+    teacher:course.teacher,
+    date:'今日',
+    time:course.time.split('-')[0],
+    status:'confirmed'
+  });
+  setBookings(bookings);
+  showToast('預約成功！','success');
+  view='main';
+  render();
+}
+
+function cancelBooking(id){
+  const bookings=getBookings();
+  const booking=bookings.find(b=>b.id===id);
+  if(!booking) return;
+  const courses=getCourses();
+  const course=courses.find(c=>c.id===booking.courseId);
+  if(course) course.booked=Math.max(0,course.booked-1);
+  setCourses(courses);
+  booking.status='cancelled';
+  setBookings(bookings);
+  showToast('已取消預約','success');
+  render();
+}
+
+function logout(){
+  currentUser=null;
+  setCurrentUser(null);
+  view='main';
+  render();
+}
+
+function resetDemo(){
+  setCourses(defaultCourses);
+  setBookings([]);
+  showToast('已重置','success');
+  render();
+}
+
+// ========== 啟動 ==========
+render();
+</script>
 </body>
 </html>
