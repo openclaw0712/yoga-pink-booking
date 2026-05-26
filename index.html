@@ -125,11 +125,13 @@ function restoreLocal(){
 }
 
 async function initData(){
+  // 立即從 localStorage 恢復，馬上顯示頁面
   if(restoreLocal()){
     setOnlineStatus(false);
     render();
   }
-  await syncFromCloud();
+  // 背景同步雲端（5秒超時）
+  syncFromCloud().catch(function(e){});
 }
 
 async function syncFromCloud(){
@@ -161,13 +163,19 @@ async function syncFromCloud(){
 
 async function saveToCloud(){
   ensureLocal();
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function(){ controller.abort(); }, 5000);
   try{
     await fetch(CLOUD_API,{
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({courses:courses,users:users,bookings:bookings,waitlist:waitlist})
+      body: JSON.stringify({courses:courses,users:users,bookings:bookings,waitlist:waitlist}),
+      signal: controller.signal
     });
-  }catch(e){}
+    clearTimeout(timeoutId);
+  }catch(e){
+    clearTimeout(timeoutId);
+  }
 }
 
 
