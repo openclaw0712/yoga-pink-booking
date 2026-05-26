@@ -59,6 +59,14 @@ body{font-family:-apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft Jh
 .cloud-badge{font-size:11px;padding:2px 6px;border-radius:4px;margin-left:8px}
 .cloud-badge.on{background:#d4edda;color:#155724}
 .cloud-badge.off{background:#f8d7da;color:#721c24}
+/* 禪風：柔和懸停過渡 */
+.btn{transition:all 0.35s ease;transform:translateZ(0)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.12)}
+.btn:active{transform:translateY(0)}
+.course-card{transition:all 0.4s ease}
+.course-card:hover{transform:translateX(2px);box-shadow:0 6px 20px rgba(0,0,0,0.08)}
+.weekday-btn{transition:all 0.3s ease}
+.weekday-btn:hover{background:#f5f0eb}
 </style>
 </head>
 <body>
@@ -492,7 +500,7 @@ function goMain(){page='main';render();}
 function goMy(){page='my';render();}
 function goBooking(id){window.bookId=id;page='booking';render();}
 
-function showEditForm(id){var el=document.getElementById('edit-'+id);if(el){el.classList.add('show');gsap.from(el,{opacity:0,y:10,duration:0.3});}}
+function showEditForm(id){var el=document.getElementById('edit-'+id);if(el){el.classList.add('show');gsap.from(el,{opacity:0,y:8,scale:0.98,duration:0.4,ease:'power1.out'});}}
 function hideEditForm(id){var el=document.getElementById('edit-'+id);if(el)el.classList.remove('show');}
 
 function saveEdit(id){
@@ -625,19 +633,52 @@ function resetData(){
 
 function logout(){currentUser=null;page='login';render();}
 
+// =============================================
+// 禪風動畫 — 緩慢、和諧、留白、有序
+// =============================================
 function toast(msg,type){
   type=type||'success';
   var el=document.createElement('div');
-  el.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc3545':'#333')+';color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:1000;pointer-events:none';
+  el.style.cssText='position:fixed;top:24px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#c67b5c':'#5c4a3a')+';color:#fff;padding:10px 24px;border-radius:20px;font-size:14px;z-index:9999;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.12)';
   el.textContent=msg;
   document.body.appendChild(el);
-  gsap.fromTo(el,{opacity:0,y:-20},{opacity:1,y:0,duration:0.3,onComplete:function(){gsap.to(el,{opacity:0,y:-20,delay:2,onComplete:function(){el.remove();}});}});
+  gsap.fromTo(el,{opacity:0,y:-16,scale:0.95},{opacity:1,y:0,scale:1,duration:0.6,ease:'power2.out'});
+  gsap.to(el,{opacity:0,y:-10,delay:2.2,duration:0.5,ease:'power1.in',onComplete:function(){el.remove();}});
 }
 
-function animateLogin(){gsap.from('.card',{opacity:0,y:30,duration:0.5,stagger:0.15,delay:0.2,ease:'power2.out'});}
-function animateMain(){gsap.from('.header',{opacity:0,duration:0.4,delay:0.1});gsap.from('.weekday-btn',{opacity:0,y:10,duration:0.3,stagger:0.05,delay:0.2});gsap.from('.course-card',{opacity:0,x:-30,duration:0.4,stagger:0.08,delay:0.4,ease:'power2.out'});}
-function animateTeacher(){gsap.from('.header',{opacity:0,duration:0.4,delay:0.1});gsap.from('.card',{opacity:0,y:20,duration:0.4,stagger:0.1,delay:0.2,ease:'power2.out'});}
-function animatePage(){gsap.from('.back-btn',{opacity:0,duration:0.3,delay:0.1});gsap.from('.header',{opacity:0,duration:0.4,delay:0.15});gsap.from('.card',{opacity:0,y:20,duration:0.4,stagger:0.1,delay:0.2,ease:'power2.out'});}
+// 登入頁 — 緩慢如太極
+function animateLogin(){
+  var tl=gsap.timeline({defaults:{ease:'power1.out'}});
+  tl.from('.card',{opacity:0,y:24,scale:0.97,duration:0.7,stagger:0.2,delay:0.1})
+    .from('.btn-primary',{opacity:0,y:12,duration:0.5},'-=0.3');
+}
+
+// 學生首頁 — 如流水般的課程展開
+function animateMain(){
+  var tl=gsap.timeline({defaults:{ease:'power1.out'}});
+  tl.from('.header',{opacity:0,y:-10,duration:0.5,delay:0.05})
+    .from('.weekday-tabs',{opacity:0,y:8,duration:0.5},'-=0.3')
+    .from('.course-card',{opacity:0,y:16,duration:0.5,stagger:{amount:0.4,from:'start'}},0.6)
+    .from('.card:last-child',{opacity:0,duration:0.4},'-=0.2');
+}
+
+// 老師後台 — 有序如儒禮
+function animateTeacher(){
+  var tl=gsap.timeline({defaults:{ease:'power1.out'}});
+  tl.from('.header',{opacity:0,y:-8,duration:0.5,delay:0.05})
+    .from('.card',{opacity:0,y:14,duration:0.5,stagger:0.15},0.1)
+    .from('.weekday-tabs',{opacity:0,y:6,duration:0.45},0.2)
+    .from('.day-title',{opacity:0,x:-10,duration:0.4,stagger:0.08},0.5)
+    .from('.card:not(:first-child)',{opacity:0,y:12,duration:0.4,stagger:{amount:0.3,from:'start'}},0.65);
+}
+
+// 課程詳情頁 — 柔和展開
+function animatePage(){
+  var tl=gsap.timeline({defaults:{ease:'power1.out'}});
+  tl.from('.back-btn',{opacity:0,x:-8,duration:0.4,delay:0.05})
+    .from('.header',{opacity:0,y:-6,duration:0.45},'-=0.2')
+    .from('.card',{opacity:0,y:12,duration:0.5,stagger:0.1},0.2);
+}
 
 // 啟動
 initData();
