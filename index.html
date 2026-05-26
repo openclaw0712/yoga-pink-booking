@@ -88,6 +88,7 @@ var courses=[];
 var currentUser=null;
 var page='login';
 var selectedWeekday=new Date().getDay();
+var teacherSelectedWeekday=new Date().getDay();
 var isOnline=false;
 
 // 雲端同步狀態
@@ -307,6 +308,10 @@ function getMainHTML(){
 function getTeacherHTML(){
   currentUser={id:0,name:'老師',phone:'teacher',isTeacher:true};
   var html='<div class="header"><h2>老師後台 <span class="cloud-badge '+(isOnline?'on':'off')+'">'+((isOnline)?'☁️ 即時':'⚠️ 離線')+'</span></h2><a href="#" class="logout-btn" onclick="logout()">登出</a></div>';
+  html+='<div class="weekday-tabs" style="margin-top:16px">';
+  html+='<div class="weekday-btn'+(teacherSelectedWeekday===-1?' active':'')+'" onclick="selectTeacherWeekday(-1)"><span>全部</span></div>';
+  for(var td=0;td<7;td++){html+='<div class="weekday-btn'+(teacherSelectedWeekday===td?' active':'')+'" onclick="selectTeacherWeekday('+td+')"><span>'+weekdays[td].substring(1)+'</span></div>';}
+  html+='</div>';
   html+='<div class="card"><div class="section-title">+ 新增課程</div>';
   html+='<div class="input-group"><input type="text" id="cname" placeholder="課程名稱"></div>';
   html+='<div style="display:flex;gap:8px"><div class="input-group" style="flex:1"><input type="text" id="cteacher" placeholder="老師"></div><div class="input-group" style="flex:1"><select id="cweekday"><option value="">星期</option><option value="0">週日</option><option value="1">週一</option><option value="2">週二</option><option value="3">週三</option><option value="4">週四</option><option value="5">週五</option><option value="6">週六</option></select></div></div>';
@@ -314,7 +319,9 @@ function getTeacherHTML(){
   html+='<button class="btn btn-primary" onclick="addCourse()">新增課程</button></div>';
   
   // All courses grouped by weekday
-  for(var d=0;d<7;d++){
+  var daysToShow=teacherSelectedWeekday===-1?[0,1,2,3,4,5,6]:[teacherSelectedWeekday];
+  for(var di=0;di<daysToShow.length;di++){
+    var d=daysToShow[di];
     var dayCourses=courses.filter(function(c){return c.weekday===d;});
     if(dayCourses.length===0)continue;
     html+='<div class="day-title">'+weekdays[d]+'</div>';
@@ -453,6 +460,7 @@ function getMyBookings(){var r=[];for(var i=0;i<bookings.length;i++)if(bookings[
 function getMyWaitlist(){var r=[];for(var i=0;i<waitlist.length;i++)if(waitlist[i].phone===currentUser.phone&&waitlist[i].status==='waiting')r.push(waitlist[i]);return r;}
 
 function selectWeekday(d){selectedWeekday=d;render();}
+function selectTeacherWeekday(d){teacherSelectedWeekday=d;var app=document.getElementById('app');if(app)app.innerHTML=getTeacherHTML();window.scrollTo({top:0,behavior:'smooth'});}
 
 function switchTab(el,tab){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.getElementById('tab-login').style.display=tab==='login'?'block':'none';document.getElementById('tab-reg').style.display=tab==='reg'?'block':'none';}
 function showTeacherForm(){document.getElementById('teacherForm').style.display='block';document.getElementById('teacherBtn').style.display='none';}
