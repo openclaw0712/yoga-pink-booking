@@ -70,14 +70,14 @@ function getMyBookings(){var r=[];for(var i=0;i<bookings.length;i++)if(bookings[
 
 function switchTab(el,tab){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.getElementById('tab-login').style.display=tab==='login'?'block':'none';document.getElementById('tab-reg').style.display=tab==='reg'?'block':'none';}
 
-function doLogin(){var phone=document.getElementById('phone').value.trim();var pw=document.getElementById('pw').value;for(var i=0;i<users.length;i++){if(users[i].phone===phone&&users[i].pw===pw){currentUser=users[i];toast('登入成功');goMain();return;}}document.getElementById('err').textContent='電話或密碼錯誤';}
+function doLogin(){var phone=document.getElementById('phone').value.trim();var pw=document.getElementById('pw').value;for(var i=0;i<users.length;i++){if(users[i].phone===phone&&users[i].pw===pw){currentUser=users[i];toast('登入成功');page='teacher';render();return;}}document.getElementById('err').textContent='電話或密碼錯誤';}
 
 function doRegister(){var name=document.getElementById('name').value.trim();var phone=document.getElementById('rphone').value.trim();var pw=document.getElementById('rpw').value;if(!name||!phone||!pw){document.getElementById('rerr').textContent='請填寫所有欄位';return;}for(var i=0;i<users.length;i++){if(users[i].phone===phone){document.getElementById('rerr').textContent='此電話已註冊';return;}}users.push({id:Date.now(),name:name,phone:phone,pw:pw,isTeacher:false});currentUser={name:name,phone:phone,isTeacher:false};toast('註冊成功');goMain();}
 
 function goMain(){page='main';render();}
 function goMy(){page='my';render();}
 function showTeacherForm(){document.getElementById('teacherForm').style.display='block';document.getElementById('teacherBtn').style.display='none';}
-function verifyTeacher(){var pw=document.getElementById('teacherPw').value;if(pw==='yoga9527'){currentUser=users[0];toast('登入成功');goMain();}else{toast('密碼錯誤','error');}}
+function verifyTeacher(){var pw=document.getElementById('teacherPw').value;if(pw==='yoga9527'){currentUser=users[0];toast('登入成功');page='teacher';render();}else{toast('密碼錯誤','error');}}
 function goTeacher(){page='teacher';render();}
 function goBooking(id){window.bookId=id;page='booking';render();}
 
