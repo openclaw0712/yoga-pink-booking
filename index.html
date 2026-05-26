@@ -13,8 +13,8 @@ body{font-family:-apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft Jh
 .subtitle{text-align:center;color:#888;margin-bottom:40px;font-size:14px}
 .card{background:#fff;border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.06)}
 .input-group{margin-bottom:12px}
-.input-group input{width:100%;padding:12px 14px;border:2px solid #eee;border-radius:10px;font-size:15px}
-.input-group input:focus{outline:none;border-color:#8b6f5c}
+.input-group input,.input-group select{width:100%;padding:12px 14px;border:2px solid #eee;border-radius:10px;font-size:15px}
+.input-group input:focus,.input-group select:focus{outline:none;border-color:#8b6f5c}
 .btn{width:100%;padding:14px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px}
 .btn-primary{background:#8b6f5c;color:#fff}
 .btn-secondary{background:#e8ddd4;color:#8b6f5c}
@@ -27,79 +27,133 @@ body{font-family:-apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft Jh
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .header h2{font-size:18px;font-weight:700;color:#8b6f5c}
 .back-btn,.logout-btn{color:#8b6f5c;text-decoration:none;font-size:14px;cursor:pointer}
+.day-title{font-size:15px;font-weight:700;color:#8b6f5c;padding:8px 12px;background:#f5f0eb;border-radius:10px;margin:16px 0 10px 0}
+.day-title:first-child{margin-top:0}
 .course-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;border-left:4px solid #8b6f5c;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s}
 .course-card:hover{transform:scale(1.01);box-shadow:0 4px 16px rgba(0,0,0,0.1)}
+.course-card.passed{border-left-color:#ccc;opacity:0.6}
+.course-card.full{border-left-color:#e88b8b}
 .student-item{padding:8px 0;border-bottom:1px solid #eee;font-size:14px}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
 .badge-ok{background:#d4edda;color:#155724}
 .badge-full{background:#f8d7da;color:#721c24}
 .badge-booked{background:#cce5ff;color:#004085}
 .section-title{font-size:14px;font-weight:700;color:#8b6f5c;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eee}
+.weekday-selector{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.weekday-btn{flex:1;min-width:40px;padding:10px 4px;text-align:center;background:#fff;border:2px solid #ddd;color:#888;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.weekday-btn.active{background:#8b6f5c;color:#fff;border-color:#8b6f5c}
+.weekday-btn span{display:block;font-size:16px;margin-bottom:2px}
 </style>
 </head>
 <body>
 <div id="app" class="container"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script>
+var weekdays=['週日','週一','週二','週三','週四','週五','週六'];
 var defaultCourses=[
-  {id:1,name:'晨間瑜伽',teacher:'小美',time:'08:00-09:00',cap:10,booked:3,status:'active'},
-  {id:2,name:'陰瑜伽',teacher:'阿偉',time:'10:00-11:30',cap:8,booked:8,status:'active'},
-  {id:3,name:'哈達瑜伽',teacher:'小美',time:'14:00-15:30',cap:10,booked:5,status:'active'},
-  {id:4,name:'流動瑜伽',teacher:'阿偉',time:'16:00-17:00',cap:12,booked:2,status:'active'}
+  {id:1,name:'晨間瑜伽',teacher:'小美',time:'08:00-09:00',cap:10,booked:3,status:'active',weekday:1},
+  {id:2,name:'陰瑜伽',teacher:'阿偉',time:'10:00-11:30',cap:8,booked:8,status:'active',weekday:2},
+  {id:3,name:'哈達瑜伽',teacher:'小美',time:'14:00-15:30',cap:10,booked:5,status:'active',weekday:3},
+  {id:4,name:'流動瑜伽',teacher:'阿偉',time:'16:00-17:00',cap:12,booked:2,status:'active',weekday:4},
+  {id:5,name:'晚間冥想',teacher:'小美',time:'19:30-20:30',cap:15,booked:6,status:'active',weekday:1},
+  {id:6,name:'哈達瑜伽',teacher:'阿偉',time:'09:00-10:30',cap:10,booked:4,status:'active',weekday:5},
+  {id:7,name:'陰瑜伽',teacher:'小美',time:'14:00-15:30',cap:8,booked:7,status:'active',weekday:6}
 ];
 
-// 從 localStorage 讀取資料
 var users=JSON.parse(localStorage.getItem('yoga_users')||'[]');
 var bookings=JSON.parse(localStorage.getItem('yoga_bookings')||'[]');
 var courses=JSON.parse(localStorage.getItem('yoga_courses'));
-
-// 如果沒有資料，用預設值
-if(!courses){
-  courses=defaultCourses;
-  localStorage.setItem('yoga_courses',JSON.stringify(courses));
-}
+if(!courses){courses=JSON.parse(JSON.stringify(defaultCourses));localStorage.setItem('yoga_courses',JSON.stringify(courses));}
 
 var currentUser=null;
 var page='login';
+var selectedWeekday=new Date().getDay();
 
-function save(){
-  localStorage.setItem('yoga_users',JSON.stringify(users));
-  localStorage.setItem('yoga_bookings',JSON.stringify(bookings));
-  localStorage.setItem('yoga_courses',JSON.stringify(courses));
-}
+function save(){localStorage.setItem('yoga_users',JSON.stringify(users));localStorage.setItem('yoga_bookings',JSON.stringify(bookings));localStorage.setItem('yoga_courses',JSON.stringify(courses));}
 
-function render(){var app=document.getElementById('app');if(page==='login'){app.innerHTML=getLoginHTML();animateLogin();}else if(page==='teacher'){app.innerHTML=getTeacherHTML();animateTeacher();}else if(page==='booking'){app.innerHTML=getBookingHTML();animatePage();}else if(page==='my'){app.innerHTML=getMyHTML();animatePage();}else if(page==='main'){app.innerHTML=getMainHTML();animateMain();}}
+function render(){var app=document.getElementById('app');if(page==='login'){app.innerHTML=getLoginHTML();animateLogin();}else if(page==='main'){app.innerHTML=getMainHTML();animateMain();}else if(page==='teacher'){app.innerHTML=getTeacherHTML();animateTeacher();}else if(page==='booking'){app.innerHTML=getBookingHTML();animatePage();}else if(page==='my'){app.innerHTML=getMyHTML();animatePage();}}
 
 function getLoginHTML(){return'<div class="logo">O</div><div class="title">瑜伽預約系統</div><div class="subtitle">預約您想要的課程</div><div class="card"><div class="tabs"><div class="tab active" onclick="switchTab(this,\'login\')">登入</div><div class="tab" onclick="switchTab(this,\'reg\')">註冊</div></div><div id="tab-login"><div class="input-group"><input type="tel" id="phone" placeholder="電話號碼"></div><div class="input-group"><input type="password" id="pw" placeholder="密碼"></div><div class="error" id="err"></div><button class="btn btn-primary" onclick="doLogin()">登入</button></div><div id="tab-reg" style="display:none"><div class="input-group"><input type="text" id="name" placeholder="姓名"></div><div class="input-group"><input type="tel" id="rphone" placeholder="電話"></div><div class="input-group"><input type="password" id="rpw" placeholder="密碼"></div><div class="error" id="rerr"></div><button class="btn btn-primary" onclick="doRegister()">註冊</button></div></div><div class="card"><div style="text-align:center;color:#888;font-size:14px;margin-bottom:10px">老師專區</div><div id="teacherForm" style="display:none"><div class="input-group"><input type="password" id="teacherPw" placeholder="請輸入老師密碼"></div><button class="btn btn-primary" style="background:#5c8b6f" onclick="verifyTeacher()">確認</button></div><button class="btn" id="teacherBtn" style="background:#5c8b6f;color:#fff" onclick="showTeacherForm()">老師登入</button></div>';}
+
+function getMainHTML(){
+  var today=new Date().getDay();
+  var html='<div class="header"><h2>瑜伽預約</h2><a href="#" class="logout-btn" onclick="logout()">登出</a></div>';
+  html+='<div class="weekday-selector">';
+  for(var i=0;i<7;i++){html+='<div class="weekday-btn'+(selectedWeekday===i?' active':'')+'" onclick="selectWeekday('+i+')"><span>'+weekdays[i].substring(1)+'</span></div>';}
+  html+='</div>';
+  
+  // 顯示選中日期的全部課程
+  var dayCourses=courses.filter(function(c){return c.weekday===selectedWeekday&&c.status==='active';});
+  if(dayCourses.length===0){
+    html+='<div class="card"><p style="text-align:center;color:#888">'+weekdays[selectedWeekday]+'沒有課程</p></div>';
+  }else{
+    html+='<div class="day-title">'+weekdays[selectedWeekday]+'課程</div>';
+    for(var i=0;i<dayCourses.length;i++){
+      var c=dayCourses[i];
+      var st='badge-ok';var txt='可預約';
+      if(c.booked>=c.cap){st='badge-full';txt='額滿';}
+      if(hasBooked(c.id)){st='badge-booked';txt='已預約';}
+      html+='<div class="course-card'+(c.booked>=c.cap?' full':'')+'" onclick="goBooking('+c.id+')"><div style="font-weight:700;margin-bottom:4px">'+c.name+'</div><div style="color:#888;font-size:14px;margin-bottom:6px">'+c.teacher+' | '+c.time+'</div><span class="badge '+st+'">'+txt+' '+c.booked+'/'+c.cap+'</span></div>';
+    }
+  }
+  
+  html+='<button class="btn btn-secondary" style="margin-top:16px" onclick="goMy()">我的預約</button>';
+  return html;
+}
 
 function getTeacherHTML(){
   currentUser={id:0,name:'老師',phone:'teacher',isTeacher:true};
   var html='<div class="header"><h2>老師後台</h2><a href="#" class="logout-btn" onclick="logout()">登出</a></div>';
-  html+='<div class="card"><div class="section-title">+ 新增課程</div><div class="input-group"><input type="text" id="cname" placeholder="課程名稱"></div><div style="display:flex;gap:8px"><div class="input-group" style="flex:1"><input type="text" id="cteacher" placeholder="老師名稱"></div><div class="input-group" style="flex:1"><input type="text" id="ctime" placeholder="時間如 09:00-10:00"></div></div><div class="input-group"><input type="number" id="ccap" placeholder="名額" value="10"></div><button class="btn btn-primary" onclick="addCourse()">新增課程</button></div>';
-  html+='<div class="card"><div class="section-title">課程管理</div>';
-  for(var i=0;i<courses.length;i++){var c=courses[i];var statusTxt=c.status==='active'?'':'<span class="badge badge-full">已停課</span>';html+='<div style="padding:10px 0;border-bottom:1px solid #eee"><div style="font-weight:600;margin-bottom:4px">'+c.name+statusTxt+'</div><div style="color:#888;font-size:13px;margin-bottom:6px">'+c.teacher+' | '+c.time+'</div><div style="font-size:14px;margin-bottom:6px">報名：<b>'+c.booked+'/'+c.cap+'</b></div><div style="display:flex;gap:6px">'+(c.status==='active'?'<button class="btn btn-danger btn-small" onclick="stopCourse('+c.id+')">停課</button>':'<button class="btn btn-secondary btn-small" onclick="restoreCourse('+c.id+')">復課</button>')+'<button class="btn btn-danger btn-small" onclick="deleteCourse('+c.id+')">刪除</button></div></div>';}
-  html+='</div>';
+  html+='<div class="card"><div class="section-title">+ 新增課程</div>';
+  html+='<div class="input-group"><input type="text" id="cname" placeholder="課程名稱"></div>';
+  html+='<div style="display:flex;gap:8px"><div class="input-group" style="flex:1"><input type="text" id="cteacher" placeholder="老師"></div><div class="input-group" style="flex:1"><select id="cweekday"><option value="">選擇星期</option><option value="0">週日</option><option value="1">週一</option><option value="2">週二</option><option value="3">週三</option><option value="4">週四</option><option value="5">週五</option><option value="6">週六</option></select></div></div>';
+  html+='<div style="display:flex;gap:8px"><div class="input-group" style="flex:1"><input type="text" id="ctime" placeholder="時間如 09:00-10:00"></div><div class="input-group" style="flex:1"><input type="number" id="ccap" placeholder="名額" value="10"></div></div>';
+  html+='<button class="btn btn-primary" onclick="addCourse()">新增課程</button></div>';
+  
+  // 每週課程列表
+  for(var d=0;d<7;d++){
+    var dayCourses=courses.filter(function(c){return c.weekday===d;});
+    if(dayCourses.length===0)continue;
+    html+='<div class="day-title">'+weekdays[d]+'</div>';
+    for(var i=0;i<dayCourses.length;i++){
+      var c=dayCourses[i];
+      html+='<div class="course-card'+(c.status!=='active'?' passed':'')+'"><div style="font-weight:700;margin-bottom:4px">'+c.name+'<span style="color:#888;font-weight:400"> | '+c.time+'</span></div><div style="color:#888;font-size:13px;margin-bottom:6px">'+c.teacher+' | 報名：'+c.booked+'/'+c.cap+'</div><div style="display:flex;gap:6px">'+(c.status==='active'?'<button class="btn btn-danger btn-small" onclick="stopCourse('+c.id+')">停課</button>':'<button class="btn btn-secondary btn-small" onclick="restoreCourse('+c.id+')">復課</button>')+'<button class="btn btn-danger btn-small" onclick="deleteCourse('+c.id+')">刪除</button></div></div>';
+    }
+  }
+  
   var confirmed=bookings.filter(function(b){return b.status==='confirmed';});
   html+='<div class="card"><div class="section-title">已報名學員 ('+confirmed.length+'人)</div>';
   if(confirmed.length===0){html+='<div style="color:#888;text-align:center;padding:20px">尚無報名</div>';}
-  for(var i=0;i<confirmed.length;i++){var b=confirmed[i];html+='<div class="student-item"><b>'+b.name+'</b> | '+b.phone+'<br><span style="color:#888">'+b.courseName+' '+b.time+'</span></div>';}
+  for(var i=0;i<confirmed.length;i++){var b=confirmed[i];html+='<div class="student-item"><b>'+b.name+'</b> | '+b.phone+'<br><span style="color:#888">'+b.courseName+' ('+weekdays[b.weekday]+' '+b.time+')</span></div>';}
   html+='</div>';
   html+='<button class="btn btn-secondary" onclick="resetData()">恢復預設</button>';
   return html;
 }
 
-function getMainHTML(){var html='<div class="header"><h2>瑜伽預約</h2><a href="#" class="logout-btn" onclick="logout()">登出</a></div>';for(var i=0;i<courses.length;i++){var c=courses[i];if(c.status!=='active')continue;var st='badge-ok';var txt='可預約';if(c.booked>=c.cap){st='badge-full';txt='額滿';}if(hasBooked(c.id)){st='badge-booked';txt='已預約';}html+='<div class="course-card" onclick="goBooking('+c.id+')"><div style="font-weight:700;margin-bottom:4px">'+c.name+'</div><div style="color:#888;font-size:14px;margin-bottom:6px">'+c.teacher+' | '+c.time+'</div><span class="badge '+st+'">'+txt+' '+c.booked+'/'+c.cap+'</span></div>';}html+='<button class="btn btn-secondary" onclick="goMy()">我的預約</button>';return html;}
+function getBookingHTML(){
+  var c=getCourse(window.bookId);
+  if(!c)return'<p>找不到課程</p><button class="btn btn-secondary" onclick="goMy()">返回</button>';
+  return'<a href="#" class="back-btn" onclick="goMain()">- 返回</a><div class="card" style="margin-top:12px"><div style="font-weight:700;font-size:18px;margin-bottom:8px">'+c.name+'</div><div style="color:#888;margin-bottom:4px">'+c.teacher+'</div><div style="color:#888;margin-bottom:4px">'+weekdays[c.weekday]+' '+c.time+'</div><div style="margin-bottom:12px">名額：<b>'+c.booked+'/'+c.cap+'</b></div>'+(c.booked>=c.cap?'<div style="color:#c67b5c">已額滿</div>':hasBooked(c.id)?'<div style="color:#004085">您已預約過此課程</div>':'<button class="btn btn-primary" onclick="confirmBook('+c.id+')">確認預約</button>')+'</div>';
+}
 
-function getBookingHTML(){var c=getCourse(window.bookId);if(!c)return'<p>找不到課程</p><button class="btn btn-secondary" onclick="goMy()">返回</button>';return'<a href="#" class="back-btn" onclick="goMain()">- 返回</a><div class="card" style="margin-top:12px"><div style="font-weight:700;font-size:18px;margin-bottom:8px">'+c.name+'</div><div style="color:#888;margin-bottom:4px">'+c.teacher+'</div><div style="color:#888;margin-bottom:8px">'+c.time+'</div><div style="margin-bottom:12px">名額：<b>'+c.booked+'/'+c.cap+'</b></div>'+(c.booked>=c.cap?'<div style="color:#c67b5c">已額滿</div>':hasBooked(c.id)?'<div style="color:#004085">您已預約過此課程</div>':'<button class="btn btn-primary" onclick="confirmBook('+c.id+')">確認預約</button>')+'</div>';}
-
-function getMyHTML(){var my=getMyBookings();var html='<a href="#" class="back-btn" onclick="goMain()">- 返回</a><div class="header" style="margin-top:12px"><h2>我的預約</h2></div>';if(my.length===0){html+='<div class="card"><p style="text-align:center;color:#888">尚無預約記錄</p></div>';}for(var i=0;i<my.length;i++){var b=my[i];html+='<div class="card"><div style="font-weight:700;margin-bottom:4px">'+b.courseName+'</div><div style="color:#888;font-size:14px;margin-bottom:4px">'+b.teacher+'</div><div style="color:#888;font-size:14px;margin-bottom:8px">'+b.time+'</div>'+(b.status==='confirmed'?'<button class="btn btn-danger btn-small" onclick="cancelBook('+b.id+')">取消預約</button>':'<span style="color:#c67b5c;font-size:14px">已取消</span>')+'</div>';}return html;}
+function getMyHTML(){
+  var my=getMyBookings();
+  var html='<a href="#" class="back-btn" onclick="goMain()">- 返回</a><div class="header" style="margin-top:12px"><h2>我的預約</h2></div>';
+  if(my.length===0){html+='<div class="card"><p style="text-align:center;color:#888">尚無預約記錄</p></div>';}
+  for(var i=0;i<my.length;i++){
+    var b=my[i];
+    html+='<div class="card"><div style="font-weight:700;margin-bottom:4px">'+b.courseName+'</div><div style="color:#888;font-size:14px;margin-bottom:4px">'+weekdays[b.weekday]+' '+b.time+'</div><div style="color:#888;font-size:14px;margin-bottom:8px">'+b.teacher+'</div>'+(b.status==='confirmed'?'<button class="btn btn-danger btn-small" onclick="cancelBook('+b.id+')">取消預約</button>':'<span style="color:#c67b5c;font-size:14px">已取消</span>')+'</div>';
+  }
+  return html;
+}
 
 function getCourse(id){for(var i=0;i<courses.length;i++)if(courses[i].id===id)return courses[i];return null;}
 function hasBooked(cid){for(var i=0;i<bookings.length;i++)if(bookings[i].courseId===cid&&bookings[i].phone===currentUser.phone&&bookings[i].status==='confirmed')return true;return false;}
 function getMyBookings(){var r=[];for(var i=0;i<bookings.length;i++)if(bookings[i].phone===currentUser.phone)r.push(bookings[i]);return r;}
 
-function switchTab(el,tab){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.getElementById('tab-login').style.display=tab==='login'?'block':'none';document.getElementById('tab-reg').style.display=tab==='reg'?'block':'none';}
+function selectWeekday(d){selectedWeekday=d;render();}
 
+function switchTab(el,tab){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.getElementById('tab-login').style.display=tab==='login'?'block':'none';document.getElementById('tab-reg').style.display=tab==='reg'?'block':'none';}
 function showTeacherForm(){document.getElementById('teacherForm').style.display='block';document.getElementById('teacherBtn').style.display='none';}
 function verifyTeacher(){var pw=document.getElementById('teacherPw').value;if(pw==='yoga9527'){page='teacher';render();}else{toast('密碼錯誤','error');}}
 
@@ -110,22 +164,58 @@ function goMain(){page='main';render();}
 function goMy(){page='my';render();}
 function goBooking(id){window.bookId=id;page='booking';render();}
 
-function confirmBook(id){var c=getCourse(id);if(!c||c.booked>=c.cap){toast('已額滿','error');return;}if(hasBooked(id)){toast('已預約過','error');return;}c.booked++;bookings.push({id:Date.now(),phone:currentUser.phone,name:currentUser.name,courseId:id,courseName:c.name,teacher:c.teacher,time:c.time,status:'confirmed'});save();toast('預約成功');goMain();}
-function cancelBook(id){for(var i=0;i<bookings.length;i++){if(bookings[i].id===id){bookings[i].status='cancelled';var c=getCourse(bookings[i].courseId);if(c)c.booked=Math.max(0,c.booked-1);break;}}save();toast('已取消');goMy();}
+function confirmBook(id){
+  var c=getCourse(id);
+  if(!c||c.booked>=c.cap){toast('已額滿','error');return;}
+  if(hasBooked(id)){toast('已預約過','error');return;}
+  c.booked++;
+  bookings.push({id:Date.now(),phone:currentUser.phone,name:currentUser.name,courseId:id,courseName:c.name,teacher:c.teacher,time:c.time,weekday:c.weekday,status:'confirmed'});
+  save();
+  toast('預約成功');
+  goMain();
+}
+function cancelBook(id){
+  for(var i=0;i<bookings.length;i++){
+    if(bookings[i].id===id){
+      bookings[i].status='cancelled';
+      var c=getCourse(bookings[i].courseId);
+      if(c)c.booked=Math.max(0,c.booked-1);
+      break;
+    }
+  }
+  save();
+  toast('已取消');
+  goMy();
+}
 
-function addCourse(){var name=document.getElementById('cname').value.trim();var teacher=document.getElementById('cteacher').value.trim();var time=document.getElementById('ctime').value.trim();var cap=parseInt(document.getElementById('ccap').value)||10;if(!name||!teacher||!time){toast('請填寫課程資訊','error');return;}courses.push({id:Date.now(),name:name,teacher:teacher,time:time,cap:cap,booked:0,status:'active'});save();document.getElementById('cname').value='';document.getElementById('cteacher').value='';document.getElementById('ctime').value='';toast('課程已新增');render();}
+function addCourse(){
+  var name=document.getElementById('cname').value.trim();
+  var teacher=document.getElementById('cteacher').value.trim();
+  var time=document.getElementById('ctime').value.trim();
+  var weekday=parseInt(document.getElementById('cweekday').value);
+  var cap=parseInt(document.getElementById('ccap').value)||10;
+  if(!name||!teacher||!time||isNaN(weekday)){toast('請填寫所有欄位','error');return;}
+  courses.push({id:Date.now(),name:name,teacher:teacher,time:time,cap:cap,booked:0,status:'active',weekday:weekday});
+  save();
+  document.getElementById('cname').value='';
+  document.getElementById('cteacher').value='';
+  document.getElementById('ctime').value='';
+  document.getElementById('cweekday').value='';
+  toast('課程已新增');
+  render();
+}
 function stopCourse(id){var c=getCourse(id);if(!c)return;c.status='cancelled';save();toast('已停課');render();}
 function restoreCourse(id){var c=getCourse(id);if(!c)return;c.status='active';save();toast('已復課');render();}
-function deleteCourse(id){if(!confirm('確定刪除此課程？'))return;courses=courses.filter(function(c){return c.id!==id;});bookings=bookings.filter(function(b){return b.courseId!==id;});save();toast('已刪除');render();}
-function resetData(){if(!confirm('確定恢復預設資料？'))return;courses=JSON.parse(JSON.stringify(defaultCourses));bookings=[];save();toast('已恢復預設');render();}
+function deleteCourse(id){if(!confirm('確定刪除？'))return;courses=courses.filter(function(c){return c.id!==id;});bookings=bookings.filter(function(b){return b.courseId!==id;});save();toast('已刪除');render();}
+function resetData(){if(!confirm('確定恢復預設？'))return;courses=JSON.parse(JSON.stringify(defaultCourses));bookings=[];save();toast('已恢復預設');render();}
 
 function logout(){currentUser=null;page='login';render();}
 
 function toast(msg,type){type=type||'success';var el=document.createElement('div');el.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#dc3545':'#333')+';color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;z-index:1000';el.textContent=msg;document.body.appendChild(el);gsap.fromTo(el,{opacity:0,y:-20},{opacity:1,y:0,duration:0.3,onComplete:function(){gsap.to(el,{opacity:0,y:-20,delay:2,onComplete:function(){el.remove();}});}});}
 
 function animateLogin(){gsap.from('.card',{opacity:0,y:30,duration:0.5,stagger:0.15,delay:0.2,ease:'power2.out'});}
+function animateMain(){gsap.from('.header',{opacity:0,duration:0.4,delay:0.1});gsap.from('.weekday-btn',{opacity:0,y:10,duration:0.3,stagger:0.05,delay:0.2});gsap.from('.course-card',{opacity:0,x:-30,duration:0.4,stagger:0.08,delay:0.4,ease:'power2.out'});}
 function animateTeacher(){gsap.from('.header',{opacity:0,duration:0.4,delay:0.1});gsap.from('.card',{opacity:0,y:20,duration:0.4,stagger:0.1,delay:0.2,ease:'power2.out'});}
-function animateMain(){gsap.from('.header',{opacity:0,duration:0.4,delay:0.1});gsap.from('.course-card',{opacity:0,x:-30,duration:0.4,stagger:0.08,delay:0.2,ease:'power2.out'});}
 function animatePage(){gsap.from('.back-btn',{opacity:0,duration:0.3,delay:0.1});gsap.from('.header',{opacity:0,duration:0.4,delay:0.15});gsap.from('.card',{opacity:0,y:20,duration:0.4,stagger:0.1,delay:0.2,ease:'power2.out'});}
 
 render();
