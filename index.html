@@ -1,129 +1,106 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>九容瑜伽</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:sans-serif;background:#faf8f5;color:#333;padding:20px;font-size:16px}
-.container{max-width:480px;margin:0 auto}
-.logo{text-align:center;font-size:48px;margin-bottom:10px}
-h1{text-align:center;font-size:24px;margin-bottom:20px;color:#8b6f5c}
-.card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:16px;margin-bottom:12px}
-button{width:100%;padding:14px;background:#8b6f5c;color:#fff;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-bottom:10px}
-button.secondary{background:#e8ddd4;color:#8b6f5c}
-button.teacher{background:#5c8b6f}
-.course{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;border-left:4px solid #8b6f5c}
-.course-name{font-weight:600;margin-bottom:6px}
-.course-info{color:#888;font-size:14px;margin-bottom:6px}
-.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:12px}
-.badge-ok{background:#d4edda;color:#155724}
-.badge-full{background:#f8d7da;color:#721c24}
-.badge-booked{background:#cce5ff;color:#004085}
-.header{display:flex;justify-content:space-between;margin-bottom:16px}
-.hidden{display:none}
-</style>
+<title>Yoga Booking</title>
 </head>
 <body>
-
-<div id="app" class="container"></div>
-
+<h1 style="text-align:center">Yoga Booking System</h1>
+<div id="app"></div>
 <script>
-var users=JSON.parse(localStorage.getItem('y_users')||'[]');
-var bookings=JSON.parse(localStorage.getItem('y_bookings')||'[]');
-var courses=JSON.parse(localStorage.getItem('y_courses'));
-if(!courses){courses=[
-  {id:1,name:'晨間瑜伽',teacher:'小美',time:'08:00-09:00',cap:10,booked:3},
-  {id:2,name:'陰瑜伽',teacher:'阿偉',time:'10:00-11:30',cap:8,booked:8},
-  {id:3,name:'哈達瑜伽',teacher:'小美',time:'14:00-15:30',cap:10,booked:5},
-  {id:4,name:'流動瑜伽',teacher:'阿偉',time:'16:00-17:00',cap:12,booked:2}
-];localStorage.setItem('y_courses',JSON.stringify(courses))}
-var currentUser=JSON.parse(localStorage.getItem('y_current')||'null');
-var page='login';
+var users = [];
+var bookings = [];
+var courses = [
+  {id:1, name:'Morning Yoga', teacher:'Teacher A', time:'08:00-09:00', cap:10, booked:3},
+  {id:2, name:'Yin Yoga', teacher:'Teacher B', time:'10:00-11:30', cap:8, booked:8},
+  {id:3, name:'Hatha Yoga', teacher:'Teacher A', time:'14:00-15:30', cap:10, booked:5},
+  {id:4, name:'Flow Yoga', teacher:'Teacher B', time:'16:00-17:00', cap:12, booked:2}
+];
+var currentUser = null;
+var page = 'login';
 
-function save(){localStorage.setItem('y_users',JSON.stringify(users));localStorage.setItem('y_bookings',JSON.stringify(bookings));localStorage.setItem('y_courses',JSON.stringify(courses))}
-function render(){
-  var app=document.getElementById('app');
-  if(page==='login'){app.innerHTML=loginHTML()}
-  else if(page==='main'){app.innerHTML=mainHTML()}
-  else if(page==='booking'){app.innerHTML=bookingHTML()}
-  else if(page==='my'){app.innerHTML=myHTML()}
-  else if(page==='teacher'){app.innerHTML=teacherHTML()}
+function render() {
+  var app = document.getElementById('app');
+  if (page === 'login') {
+    app.innerHTML = '<h2>Login</h2><input id="phone" placeholder="Phone"><input id="pw" type="password" placeholder="Password"><button onclick="doLogin()">Login</button><button onclick="page=\'teacher\';render()">Teacher</button>';
+  } else if (page === 'main') {
+    var html = '<h2>Courses</h2><button onclick="logout()">Logout</button>';
+    for (var i = 0; i < courses.length; i++) {
+      var c = courses[i];
+      var status = c.booked >= c.cap ? 'FULL' : 'AVAILABLE';
+      html += '<div style="border:1px solid #ccc;padding:10px;margin:5px"><b>' + c.name + '</b><br>Teacher: ' + c.teacher + '<br>Time: ' + c.time + '<br>Status: ' + status + ' (' + c.booked + '/' + c.cap + ')</div>';
+    }
+    html += '<button onclick="page=\'my\';render()">My Bookings</button>';
+    if (currentUser && currentUser.isTeacher) {
+      html += '<button onclick="page=\'teacher\';render()">Teacher Panel</button>';
+    }
+    app.innerHTML = html;
+  } else if (page === 'my') {
+    var myBooks = [];
+    for (var i = 0; i < bookings.length; i++) {
+      if (bookings[i].phone === currentUser.phone) {
+        myBooks.push(bookings[i]);
+      }
+    }
+    var html = '<h2>My Bookings</h2><button onclick="page=\'main\';render()">Back</button>';
+    if (myBooks.length === 0) {
+      html += '<p>No bookings yet</p>';
+    }
+    for (var i = 0; i < myBooks.length; i++) {
+      var b = myBooks[i];
+      html += '<div style="border:1px solid #ccc;padding:10px;margin:5px"><b>' + b.courseName + '</b><br>Time: ' + b.time + '<br>Status: ' + b.status + '</div>';
+    }
+    app.innerHTML = html;
+  } else if (page === 'teacher') {
+    if (!currentUser || !currentUser.isTeacher) {
+      currentUser = {phone:'teacher', name:'Teacher', isTeacher:true};
+    }
+    var html = '<h2>Teacher Panel</h2><button onclick="page=\'main\';render()">Back</button>';
+    for (var i = 0; i < courses.length; i++) {
+      var c = courses[i];
+      html += '<div style="border:1px solid #ccc;padding:10px;margin:5px"><b>' + c.name + '</b><br>Teacher: ' + c.teacher + '<br>Booked: ' + c.booked + '/' + c.cap + '</div>';
+    }
+    html += '<button onclick="resetData()">Reset Demo Data</button>';
+    app.innerHTML = html;
+  }
 }
 
-function loginHTML(){return'<div class="logo">🧘</div><h1>九容瑜伽</h1><div class="card"><h2 style="text-align:center;margin-bottom:16px;color:#8b6f5c">會員登入</h2><input type="tel" id="phone" placeholder="電話號碼"><input type="password" id="pw" placeholder="密碼"><button onclick="doLogin()">登入</button><p style="text-align:center;color:#888;font-size:14px">還沒帳號？<a href="#" onclick="page=\\'register\\';render()" style="color:#8b6f5c">立即註冊</a></p></div><div class="card"><p style="text-align:center;color:#888;margin-bottom:10px">老師專區</p><button class="teacher" onclick="page=\\'teacher\\';render()">老師入口</button></div>'}
-function doLogin(){var phone=document.getElementById('phone').value.trim();var pw=document.getElementById('pw').value;var u=users.find(function(x){return x.phone===phone&&x.pw===pw});if(u){currentUser=u;localStorage.setItem('y_current',JSON.stringify(u));page='main';render()}else{alert('電話或密碼錯誤')}}
-function mainHTML(){
-  var html='<div class="header"><h1 style="margin:0">🧘 九容瑜伽</h1><a href="#" onclick="currentUser=null;localStorage.removeItem(\\'y_current\\');page=\\'login\\';render()" style="color:#8b6f5c">登出</a></div>';
-  courses.forEach(function(c){
-    var status='status-ok',text='可預約';
-    if(c.booked>=c.cap){status='status-full';text='已額滿'}
-    if(bookings.find(function(b){return b.phone===currentUser.phone&&b.courseId===c.id&&b.status==='confirmed'})){status='status-booked';text='已預約'}
-    html+='<div class="course" onclick="window.bookingId='+c.id+';page=\\'booking\\';render()"><div class="course-name">'+c.name+'</div><div class="course-info">'+c.teacher+' | '+c.time+'</div><span class="badge '+status+'">'+text+' ('+c.booked+'/'+c.cap+')</span></div>'
-  });
-  html+='<button class="secondary" onclick="page=\\'my\\';render()">我的預約</button>';
-  if(currentUser.isTeacher){html+='<button class="secondary" onclick="page=\\'teacher\\';render()">老師後台</button>'}
-  return html}
-function bookingHTML(){
-  var c=courses.find(function(x){return x.id===window.bookingId});
-  if(!c)return'<p>找不到課程</p><button onclick="page=\\'main\\';render()">返回</button>';
-  return'<div class="header"><a href="#" onclick="page=\\'main\\';render()" style="color:#8b6f5c">← 返回</a><h1 style="margin:0">預約</h1></div><div class="card"><div class="course-name">'+c.name+'</div><div class="course-info">'+c.teacher+' | '+c.time+'</div><p>名額：'+c.booked+'/'+c.cap+'</p><button onclick="confirmBook('+c.id+')">確認預約</button></div>'}
-function confirmBook(id){
-  var c=courses.find(function(x){return x.id===id});
-  if(c.booked>=c.cap){alert('已額滿');return}
-  if(bookings.find(function(b){return b.phone===currentUser.phone&&b.courseId===id&&b.status==='confirmed'})){alert('您已預約過');return}
-  c.booked++;
-  bookings.push({id:Date.now(),phone:currentUser.phone,name:currentUser.name,courseId:id,courseName:c.name,teacher:c.teacher,time:c.time.split('-')[0],status:'confirmed'});
-  save();
-  alert('預約成功');
-  page='main';
-  render()
+function doLogin() {
+  var phone = document.getElementById('phone').value.trim();
+  var pw = document.getElementById('pw').value;
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].phone === phone && users[i].pw === pw) {
+      currentUser = users[i];
+      page = 'main';
+      render();
+      return;
+    }
+  }
+  alert('Login failed');
 }
-function myHTML(){
-  var myBooks=bookings.filter(function(b){return b.phone===currentUser.phone});
-  var html='<div class="header"><a href="#" onclick="page=\\'main\\';render()" style="color:#8b6f5c">← 返回</a><h1 style="margin:0">我的預約</h1></div>';
-  if(myBooks.length===0){html+='<div class="card"><p style="text-align:center;color:#888">還沒有預約記錄</p></div>'}
-  myBooks.forEach(function(b){
-    html+='<div class="card"><div style="color:#8b6f5c;font-size:14px">'+b.time+'</div><div class="course-name">'+b.courseName+'</div><div style="color:#888;font-size:14px">老師：'+b.teacher+'</div>';
-    if(b.status==='confirmed'){html+='<button onclick="cancelBook('+b.id+')" style="background:#fff;color:#c67b5c;border:1px solid #c67b5c;margin-top:10px">取消預約</button>'}
-    else{html+='<p style="color:#c67b5c;margin-top:8px">已取消</p>'}
-    html+='</div>'
-  });
-  html+='<button class="secondary" onclick="page=\\'main\\';render()">返回首頁</button>';
-  return html
+
+function logout() {
+  currentUser = null;
+  page = 'login';
+  render();
 }
-function cancelBook(id){
-  var b=bookings.find(function(x){return x.id===id});
-  if(!b)return;
-  var c=courses.find(function(x){return x.id===b.courseId});
-  if(c)c.booked=Math.max(0,c.booked-1);
-  b.status='cancelled';
-  save();
-  render()
-}
-function teacherHTML(){
-  if(currentUser.isTeacher!==true){var t=users.find(function(x){return x.phone==='teacher'});if(!t){t={phone:'teacher',name:'老師',pw:'yoga9527',isTeacher:true};users.push(t)}currentUser=t;localStorage.setItem('y_current',JSON.stringify(t));save()}
-  var html='<div class="header"><a href="#" onclick="page=\\'main\\';render()" style="color:#8b6f5c">← 返回</a><h1 style="margin:0">老師後台</h1></div>';
-  courses.forEach(function(c){html+='<div class="card"><div class="course-name">'+c.name+'</div><div class="course-info">'+c.teacher+' | '+c.time+'</div><div>報名：'+c.booked+'/'+c.cap+'</div></div>'});
-  html+='<button class="secondary" onclick="resetData()">重置資料</button>';
-  return html
-}
-function resetData(){
-  courses=[
-    {id:1,name:'晨間瑜伽',teacher:'小美',time:'08:00-09:00',cap:10,booked:3},
-    {id:2,name:'陰瑜伽',teacher:'阿偉',time:'10:00-11:30',cap:8,booked:8},
-    {id:3,name:'哈達瑜伽',teacher:'小美',time:'14:00-15:30',cap:10,booked:5},
-    {id:4,name:'流動瑜伽',teacher:'阿偉',time:'16:00-17:00',cap:12,booked:2}
+
+function resetData() {
+  courses = [
+    {id:1, name:'Morning Yoga', teacher:'Teacher A', time:'08:00-09:00', cap:10, booked:3},
+    {id:2, name:'Yin Yoga', teacher:'Teacher B', time:'10:00-11:30', cap:8, booked:8},
+    {id:3, name:'Hatha Yoga', teacher:'Teacher A', time:'14:00-15:30', cap:10, booked:5},
+    {id:4, name:'Flow Yoga', teacher:'Teacher B', time:'16:00-17:00', cap:12, booked:2}
   ];
-  bookings=[];
-  save();
-  alert('已重置');
-  render()
+  bookings = [];
+  alert('Reset complete');
+  render();
 }
 
+// Initial render
 render();
+document.write('<p>JS executed OK</p>');
 </script>
 </body>
 </html>
