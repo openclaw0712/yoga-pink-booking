@@ -308,17 +308,19 @@ function getMainHTML(){
 function getTeacherHTML(){
   currentUser={id:0,name:'老師',phone:'teacher',isTeacher:true};
   var html='<div class="header"><h2>老師後台 <span class="cloud-badge '+(isOnline?'on':'off')+'">'+((isOnline)?'☁️ 即時':'⚠️ 離線')+'</span></h2><a href="#" class="logout-btn" onclick="logout()">登出</a></div>';
-  html+='<div class="weekday-tabs" style="margin-top:16px">';
-  for(var td=0;td<7;td++){html+='<div class="weekday-btn'+(teacherSelectedWeekday===td?' active':'')+'" onclick="selectTeacherWeekday('+td+')"><span>'+weekdays[td].substring(1)+'</span></div>';}
-  html+='</div>';
   html+='<div class="card"><div class="section-title">+ 新增課程</div>';
   html+='<div class="input-group"><input type="text" id="cname" placeholder="課程名稱"></div>';
   html+='<div style="display:flex;gap:8px"><div class="input-group" style="flex:1"><input type="text" id="cteacher" placeholder="老師"></div><div class="input-group" style="flex:1"><select id="cweekday"><option value="">星期</option><option value="0">週日</option><option value="1">週一</option><option value="2">週二</option><option value="3">週三</option><option value="4">週四</option><option value="5">週五</option><option value="6">週六</option></select></div></div>';
   html+='<div style="display:flex;gap:8px"><div class="input-group" style="flex:1"><input type="text" id="ctime" placeholder="09:00-10:00"></div><div class="input-group" style="flex:1"><input type="number" id="ccap" placeholder="名額" value="10"></div></div>';
   html+='<button class="btn btn-primary" onclick="addCourse()">新增課程</button></div>';
-  
-  // All courses grouped by weekday
+
+  // Filter to selected weekday
   var daysToShow=[teacherSelectedWeekday];
+  
+  // Weekday tabs
+  html+='<div class="weekday-tabs" style="margin-top:16px">';
+  for(var td=0;td<7;td++){html+='<div class="weekday-btn'+(teacherSelectedWeekday===td?' active':'')+'" onclick="selectTeacherWeekday('+td+')"><span>'+weekdays[td].substring(1)+'</span></div>';}
+  html+='</div>';
   for(var di=0;di<daysToShow.length;di++){
     var d=daysToShow[di];
     var dayCourses=courses.filter(function(c){return c.weekday===d;});
