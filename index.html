@@ -314,7 +314,7 @@ function getTeacherHTML(){
   html+='<button class="btn btn-primary" onclick="addCourse()">新增課程</button></div>';
   
   // All courses grouped by weekday
-  for(var d=0;
+  for(var d=0;d<7;d++){
     var dayCourses=courses.filter(function(c){return c.weekday===d;});
     if(dayCourses.length===0)continue;
     html+='<div class="day-title">'+weekdays[d]+'</div>';
