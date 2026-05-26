@@ -1,13 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Yoga Booking</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans TC',sans-serif;background:#faf8f5;color:#333;min-height:100vh;font-size:16px}
+.container{max-width:480px;margin:0 auto;padding:20px}
+
+/* Login */
+.login-page{opacity:0;transform:translateY(30px)}
+.logo{text-align:center;font-size:56px;margin-bottom:16px}
+.title{text-align:center;font-size:28px;font-weight:700;color:#8b6f5c;margin-bottom:8px;letter-spacing:4px}
+.subtitle{text-align:center;color:#888;margin-bottom:40px;font-size:14px}
+.card{background:#fff;border-radius:20px;padding:24px;margin-bottom:16px;box-shadow:0 4px 16px rgba(0,0,0,0.06);opacity:0;transform:translateY(20px)}
+.input-group{margin-bottom:16px}
+.input-group input{width:100%;padding:14px 16px;border:2px solid #eee;border-radius:12px;font-size:16px;transition:border-color 0.2s}
+.input-group input:focus{outline:none;border-color:#8b6f5c}
+.btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.btn-primary{background:#8b6f5c;color:#fff}
+.btn-primary:active{transform:scale(0.97)}
+.btn-secondary{background:#e8ddd4;color:#8b6f5c}
+.btn-teacher{background:#5c8b6f;color:#fff}
+.tabs{display:flex;gap:8px;margin-bottom:20px}
+.tab{flex:1;padding:12px;text-align:center;background:#fff;border:2px solid #8b6f5c;color:#8b6f5c;border-radius:10px;font-weight:600;cursor:pointer}
+.tab.active{background:#8b6f5c;color:#fff}
+.error{color:#c67b5c;font-size:14px;margin-bottom:10px;text-align:center}
+
+/* Main */
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;opacity:0}
+.header h2{font-size:20px;font-weight:700;color:#8b6f5c}
+.logout-btn{color:#8b6f5c;text-decoration:none;font-size:14px;cursor:pointer}
+
+/* Course */
+.course-card{background:#fff;border-radius:16px;padding:18px;margin-bottom:14px;border-left:4px solid #8b6f5c;cursor:pointer;opacity:0;transform:translateX(-20px);transition:box-shadow 0.2s}
+.course-card:hover{box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.course-name{font-size:17px;font-weight:700;margin-bottom:8px}
+.course-info{color:#888;font-size:14px;margin-bottom:10px}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-ok{background:#d4edda;color:#155724}
+.badge-full{background:#f8d7da;color:#721c24}
+.badge-booked{background:#cce5ff;color:#004085}
+.nav-btn{opacity:0;transform:translateY(20px)}
+
+/* Booking */
+.back-btn{color:#8b6f5c;text-decoration:none;font-size:14px;cursor:pointer;opacity:0}
+.confirm-btn{margin-top:20px}
+
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:1000;opacity:0}
+.toast.success{background:#28a745}
+.toast.error{background:#dc3545}
+</style>
 </head>
 <body>
-<h1 style="text-align:center">Yoga Booking System</h1>
-<div id="app"></div>
+
+<div id="app" class="container"></div>
+
 <script>
 var users = [];
 var bookings = [];
@@ -20,73 +72,321 @@ var courses = [
 var currentUser = null;
 var page = 'login';
 
-function render() {
+function save(){}
+
+function render(){
   var app = document.getElementById('app');
   if (page === 'login') {
-    app.innerHTML = '<h2>Login</h2><input id="phone" placeholder="Phone"><input id="pw" type="password" placeholder="Password"><button onclick="doLogin()">Login</button><button onclick="page=\'teacher\';render()">Teacher</button>';
+    app.innerHTML = getLoginHTML();
+    animateLogin();
   } else if (page === 'main') {
-    var html = '<h2>Courses</h2><button onclick="logout()">Logout</button>';
-    for (var i = 0; i < courses.length; i++) {
-      var c = courses[i];
-      var status = c.booked >= c.cap ? 'FULL' : 'AVAILABLE';
-      html += '<div style="border:1px solid #ccc;padding:10px;margin:5px"><b>' + c.name + '</b><br>Teacher: ' + c.teacher + '<br>Time: ' + c.time + '<br>Status: ' + status + ' (' + c.booked + '/' + c.cap + ')</div>';
-    }
-    html += '<button onclick="page=\'my\';render()">My Bookings</button>';
-    if (currentUser && currentUser.isTeacher) {
-      html += '<button onclick="page=\'teacher\';render()">Teacher Panel</button>';
-    }
-    app.innerHTML = html;
+    app.innerHTML = getMainHTML();
+    animateMain();
+  } else if (page === 'booking') {
+    app.innerHTML = getBookingHTML();
+    animateBooking();
   } else if (page === 'my') {
-    var myBooks = [];
-    for (var i = 0; i < bookings.length; i++) {
-      if (bookings[i].phone === currentUser.phone) {
-        myBooks.push(bookings[i]);
-      }
-    }
-    var html = '<h2>My Bookings</h2><button onclick="page=\'main\';render()">Back</button>';
-    if (myBooks.length === 0) {
-      html += '<p>No bookings yet</p>';
-    }
-    for (var i = 0; i < myBooks.length; i++) {
-      var b = myBooks[i];
-      html += '<div style="border:1px solid #ccc;padding:10px;margin:5px"><b>' + b.courseName + '</b><br>Time: ' + b.time + '<br>Status: ' + b.status + '</div>';
-    }
-    app.innerHTML = html;
+    app.innerHTML = getMyHTML();
+    animateMy();
   } else if (page === 'teacher') {
-    if (!currentUser || !currentUser.isTeacher) {
-      currentUser = {phone:'teacher', name:'Teacher', isTeacher:true};
-    }
-    var html = '<h2>Teacher Panel</h2><button onclick="page=\'main\';render()">Back</button>';
-    for (var i = 0; i < courses.length; i++) {
-      var c = courses[i];
-      html += '<div style="border:1px solid #ccc;padding:10px;margin:5px"><b>' + c.name + '</b><br>Teacher: ' + c.teacher + '<br>Booked: ' + c.booked + '/' + c.cap + '</div>';
-    }
-    html += '<button onclick="resetData()">Reset Demo Data</button>';
-    app.innerHTML = html;
+    app.innerHTML = getTeacherHTML();
+    animateTeacher();
   }
 }
 
-function doLogin() {
-  var phone = document.getElementById('phone').value.trim();
-  var pw = document.getElementById('pw').value;
+function getLoginHTML(){
+  return '<div class="login-page">' +
+    '<div class="logo">O</div>' +
+    '<div class="title">Yoga Booking</div>' +
+    '<div class="subtitle">Book your class</div>' +
+    '<div class="card" id="loginCard">' +
+      '<div class="tabs">' +
+        '<div class="tab active" onclick="switchTab(this,\'member\')">Member</div>' +
+        '<div class="tab" onclick="switchTab(this,\'register\')">Register</div>' +
+      '</div>' +
+      '<div id="tab-member">' +
+        '<div class="input-group"><input type="tel" id="loginPhone" placeholder="Phone"></div>' +
+        '<div class="input-group"><input type="password" id="loginPw" placeholder="Password"></div>' +
+        '<div class="error" id="loginError"></div>' +
+        '<button class="btn btn-primary" onclick="doLogin()">Login</button>' +
+      '</div>' +
+      '<div id="tab-register" style="display:none">' +
+        '<div class="input-group"><input type="text" id="regName" placeholder="Name"></div>' +
+        '<div class="input-group"><input type="tel" id="regPhone" placeholder="Phone"></div>' +
+        '<div class="input-group"><input type="password" id="regPw" placeholder="Password"></div>' +
+        '<div class="error" id="regError"></div>' +
+        '<button class="btn btn-primary" onclick="doRegister()">Register</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="card" id="teacherCard">' +
+      '<div class="error" style="text-align:center;margin-bottom:10px">Teacher Area</div>' +
+      '<button class="btn btn-teacher" onclick="showTeacherLogin()">Teacher Login</button>' +
+      '<div id="teacherForm" style="display:none;margin-top:16px">' +
+        '<div class="input-group"><input type="text" id="teacherId" placeholder="ID"></div>' +
+        '<div class="input-group"><input type="password" id="teacherPw" placeholder="Password"></div>' +
+        '<button class="btn btn-teacher" onclick="doTeacherLogin()">Login</button>' +
+      '</div>' +
+    '</div>' +
+    '<div id="teacherLoginCard" class="card" style="display:none">' +
+      '<div class="tabs">' +
+        '<div class="tab active">Teacher</div>' +
+      '</div>' +
+      '<div class="input-group"><input type="text" id="tId" value="teacher"></div>' +
+      '<div class="input-group"><input type="password" id="tPw" placeholder="Password"></div>' +
+      '<button class="btn btn-teacher" onclick="doTeacherLogin()">Login</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function getMainHTML(){
+  var html = '<div class="header">' +
+    '<h2>O Yoga Booking</h2>' +
+    '<a href="#" class="logout-btn" onclick="logout()">Logout</a>' +
+  '</div>';
+  
+  for (var i = 0; i < courses.length; i++) {
+    var c = courses[i];
+    var status = 'badge-ok';
+    var text = 'Available';
+    if (c.booked >= c.cap) {
+      status = 'badge-full';
+      text = 'Full';
+    }
+    if (hasBooked(c.id)) {
+      status = 'badge-booked';
+      text = 'Booked';
+    }
+    html += '<div class="course-card" onclick="goBooking(' + c.id + ')">' +
+      '<div class="course-name">' + c.name + '</div>' +
+      '<div class="course-info">' + c.teacher + ' | ' + c.time + '</div>' +
+      '<span class="badge ' + status + '">' + text + ' (' + c.booked + '/' + c.cap + ')</span>' +
+    '</div>';
+  }
+  
+  html += '<button class="btn btn-secondary nav-btn" onclick="goMy()">My Bookings</button>';
+  if (currentUser && currentUser.isTeacher) {
+    html += '<button class="btn btn-secondary nav-btn" onclick="goTeacher()">Teacher</button>';
+  }
+  
+  return html;
+}
+
+function getBookingHTML(){
+  var c = getCourse(window.bookingId);
+  if (!c) return '<p>Not found</p><button class="btn btn-secondary" onclick="goMain()">Back</button>';
+  
+  return '<a href="#" class="back-btn" onclick="goMain()">- Back</a>' +
+    '<div class="card" style="margin-top:16px">' +
+      '<div class="course-name">' + c.name + '</div>' +
+      '<div class="course-info">' + c.teacher + '</div>' +
+      '<div class="course-info">' + c.time + '</div>' +
+      '<div>Capacity: ' + c.booked + '/' + c.cap + '</div>' +
+      '<button class="btn btn-primary confirm-btn" onclick="confirmBook(' + c.id + ')">Confirm Booking</button>' +
+    '</div>';
+}
+
+function getMyHTML(){
+  var myBooks = getMyBookings();
+  var html = '<a href="#" class="back-btn" onclick="goMain()">- Back</a>' +
+    '<div class="header"><h2>My Bookings</h2></div>';
+  
+  if (myBooks.length === 0) {
+    html += '<div class="card"><p style="text-align:center;color:#888">No bookings yet</p></div>';
+  }
+  
+  for (var i = 0; i < myBooks.length; i++) {
+    var b = myBooks[i];
+    html += '<div class="card">' +
+      '<div class="course-name">' + b.courseName + '</div>' +
+      '<div class="course-info">' + b.teacher + '</div>' +
+      '<div class="course-info">' + b.time + '</div>';
+    if (b.status === 'confirmed') {
+      html += '<button class="btn btn-secondary" style="margin-top:10px" onclick="cancelBook(' + b.id + ')">Cancel</button>';
+    } else {
+      html += '<div style="color:#c67b5c;margin-top:8px">Cancelled</div>';
+    }
+    html += '</div>';
+  }
+  
+  return html;
+}
+
+function getTeacherHTML(){
+  if (!currentUser || !currentUser.isTeacher) {
+    currentUser = {phone:'teacher', name:'Teacher', isTeacher:true};
+  }
+  
+  var html = '<a href="#" class="back-btn" onclick="goMain()">- Back</a>' +
+    '<div class="header"><h2>Teacher Panel</h2></div>' +
+    '<div class="card">';
+  
+  for (var i = 0; i < courses.length; i++) {
+    var c = courses[i];
+    html += '<div style="padding:12px 0;border-bottom:1px solid #eee">' +
+      '<b>' + c.name + '</b><br>' +
+      '<span style="color:#888">' + c.teacher + ' | ' + c.time + '</span><br>' +
+      'Booked: ' + c.booked + '/' + c.cap +
+    '</div>';
+  }
+  
+  html += '</div><button class="btn btn-secondary" onclick="resetData()">Reset Demo</button>';
+  return html;
+}
+
+function hasBooked(courseId){
+  for (var i = 0; i < bookings.length; i++) {
+    if (bookings[i].courseId === courseId && bookings[i].phone === currentUser.phone && bookings[i].status === 'confirmed') {
+      return true;
+    }
+  }
+  return false;
+}
+
+function getCourse(id){
+  for (var i = 0; i < courses.length; i++) {
+    if (courses[i].id === id) return courses[i];
+  }
+  return null;
+}
+
+function getMyBookings(){
+  var result = [];
+  for (var i = 0; i < bookings.length; i++) {
+    if (bookings[i].phone === currentUser.phone) {
+      result.push(bookings[i]);
+    }
+  }
+  return result;
+}
+
+function switchTab(el, tab){
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('tab-member').style.display = tab === 'member' ? 'block' : 'none';
+  document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+function doLogin(){
+  var phone = document.getElementById('loginPhone').value.trim();
+  var pw = document.getElementById('loginPw').value;
   for (var i = 0; i < users.length; i++) {
     if (users[i].phone === phone && users[i].pw === pw) {
       currentUser = users[i];
       page = 'main';
+      showToast('Login success');
       render();
       return;
     }
   }
-  alert('Login failed');
+  document.getElementById('loginError').textContent = 'Login failed';
 }
 
-function logout() {
+function doRegister(){
+  var name = document.getElementById('regName').value.trim();
+  var phone = document.getElementById('regPhone').value.trim();
+  var pw = document.getElementById('regPw').value;
+  if (!name || !phone || !pw) {
+    document.getElementById('regError').textContent = 'Please fill all';
+    return;
+  }
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].phone === phone) {
+      document.getElementById('regError').textContent = 'Phone already registered';
+      return;
+    }
+  }
+  users.push({name:name, phone:phone, pw:pw, isTeacher:false});
+  currentUser = {name:name, phone:phone, isTeacher:false};
+  showToast('Registered!');
+  page = 'main';
+  render();
+}
+
+function showTeacherLogin(){
+  document.getElementById('teacherForm').style.display = 'block';
+}
+
+function doTeacherLogin(){
+  var id = document.getElementById('teacherId') ? document.getElementById('teacherId').value : 'teacher';
+  var pw = document.getElementById('teacherPw') ? document.getElementById('teacherPw').value : document.getElementById('tPw').value;
+  if (id === 'teacher' && pw === 'yoga9527') {
+    currentUser = {phone:'teacher', name:'Teacher', isTeacher:true};
+    showToast('Teacher login');
+    page = 'main';
+    render();
+  } else {
+    showToast('Login failed', 'error');
+  }
+}
+
+function goBooking(id){
+  window.bookingId = id;
+  page = 'booking';
+  render();
+}
+
+function confirmBook(id){
+  var c = getCourse(id);
+  if (!c) return;
+  if (c.booked >= c.cap) {
+    showToast('Class is full', 'error');
+    return;
+  }
+  if (hasBooked(id)) {
+    showToast('Already booked', 'error');
+    return;
+  }
+  c.booked++;
+  bookings.push({
+    id: Date.now(),
+    phone: currentUser.phone,
+    name: currentUser.name,
+    courseId: id,
+    courseName: c.name,
+    teacher: c.teacher,
+    time: c.time,
+    status: 'confirmed'
+  });
+  showToast('Booking confirmed!');
+  page = 'main';
+  render();
+}
+
+function cancelBook(id){
+  for (var i = 0; i < bookings.length; i++) {
+    if (bookings[i].id === id) {
+      bookings[i].status = 'cancelled';
+      var c = getCourse(bookings[i].courseId);
+      if (c) c.booked = Math.max(0, c.booked - 1);
+      break;
+    }
+  }
+  showToast('Cancelled');
+  render();
+}
+
+function goMain(){
+  page = 'main';
+  render();
+}
+
+function goMy(){
+  page = 'my';
+  render();
+}
+
+function goTeacher(){
+  page = 'teacher';
+  render();
+}
+
+function logout(){
   currentUser = null;
   page = 'login';
   render();
 }
 
-function resetData() {
+function resetData(){
   courses = [
     {id:1, name:'Morning Yoga', teacher:'Teacher A', time:'08:00-09:00', cap:10, booked:3},
     {id:2, name:'Yin Yoga', teacher:'Teacher B', time:'10:00-11:30', cap:8, booked:8},
@@ -94,13 +394,70 @@ function resetData() {
     {id:4, name:'Flow Yoga', teacher:'Teacher B', time:'16:00-17:00', cap:12, booked:2}
   ];
   bookings = [];
-  alert('Reset complete');
+  showToast('Reset complete');
   render();
 }
 
-// Initial render
+function showToast(msg, type){
+  type = type || 'success';
+  var toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  gsap.to(toast, {opacity:1, duration:0.3});
+  gsap.to(toast, {opacity:0, delay:2, onComplete:function(){ toast.remove(); }});
+}
+
+function animateLogin(){
+  gsap.to('.login-page', {opacity:1, y:0, duration:0.8, ease:'power2.out'});
+  gsap.to('.card', {opacity:1, y:0, duration:0.6, stagger:0.15, delay:0.3, ease:'power2.out'});
+}
+
+function animateMain(){
+  gsap.to('.header', {opacity:1, duration:0.5, ease:'power2.out'});
+  gsap.to('.course-card', {opacity:1, x:0, duration:0.5, stagger:0.1, delay:0.2, ease:'power2.out'});
+  gsap.to('.nav-btn', {opacity:1, y:0, duration:0.4, stagger:0.1, delay:0.5, ease:'power2.out'});
+  
+  document.querySelectorAll('.course-card').forEach(function(card){
+    card.addEventListener('mouseenter', function(){
+      gsap.to(card, {scale:1.02, duration:0.2});
+    });
+    card.addEventListener('mouseleave', function(){
+      gsap.to(card, {scale:1, duration:0.2});
+    });
+  });
+}
+
+function animateBooking(){
+  gsap.fromTo('.back-btn', {opacity:0}, {opacity:1, duration:0.4, delay:0.2});
+  gsap.fromTo('.card', {opacity:0, y:20}, {opacity:1, y:0, duration:0.5, delay:0.3, ease:'power2.out'});
+}
+
+function animateMy(){
+  gsap.fromTo('.back-btn', {opacity:0}, {opacity:1, duration:0.4});
+  gsap.fromTo('.header', {opacity:0}, {opacity:1, duration:0.5, delay:0.2});
+  gsap.fromTo('.card', {opacity:0, y:20}, {opacity:1, y:0, duration:0.5, stagger:0.1, delay:0.3, ease:'power2.out'});
+}
+
+function animateTeacher(){
+  gsap.fromTo('.back-btn', {opacity:0}, {opacity:1, duration:0.4});
+  gsap.fromTo('.header', {opacity:0}, {opacity:1, duration:0.5, delay:0.2});
+  gsap.fromTo('.card', {opacity:0, y:20}, {opacity:1, y:0, duration:0.5, delay:0.3, ease:'power2.out'});
+}
+
+document.querySelectorAll('.btn').forEach(function(btn){
+  btn.addEventListener('mouseenter', function(){
+    gsap.to(btn, {scale:1.02, duration:0.15});
+  });
+  btn.addEventListener('mouseleave', function(){
+    gsap.to(btn, {scale:1, duration:0.15});
+  });
+  btn.addEventListener('mousedown', function(){
+    gsap.to(btn, {scale:0.97, duration:0.1});
+  });
+});
+
 render();
-document.write('<p>JS executed OK</p>');
 </script>
 </body>
 </html>
