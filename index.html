@@ -633,51 +633,35 @@ function resetData(){
 
 function logout(){currentUser=null;page='login';render();}
 
-// =============================================
-// 禪風動畫 — 緩慢、和諧、留白、有序
-// =============================================
+// 通知
 function toast(msg,type){
   type=type||'success';
   var el=document.createElement('div');
-  el.style.cssText='position:fixed;top:24px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#c67b5c':'#5c4a3a')+';color:#fff;padding:10px 24px;border-radius:20px;font-size:14px;z-index:9999;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.12)';
+  el.style.cssText='position:fixed;top:22px;left:50%;transform:translateX(-50%);background:'+(type==='error'?'#c67b5c':'#4a3a2a')+';color:#fff;padding:10px 22px;border-radius:16px;font-size:14px;z-index:9999;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.1)';
   el.textContent=msg;
   document.body.appendChild(el);
-  gsap.fromTo(el,{opacity:0,y:-16,scale:0.95},{opacity:1,y:0,scale:1,duration:0.6,ease:'power2.out'});
-  gsap.to(el,{opacity:0,y:-10,delay:2.2,duration:0.5,ease:'power1.in',onComplete:function(){el.remove();}});
+  gsap.fromTo(el,{opacity:0,y:-14},{opacity:1,y:0,duration:0.4,ease:'power2.out'});
+  gsap.to(el,{opacity:0,y:-8,delay:2,duration:0.4,onComplete:function(){el.remove();}});
 }
 
-// 登入頁 — 緩慢如太極
 function animateLogin(){
-  var tl=gsap.timeline({defaults:{ease:'power1.out'}});
-  tl.from('.card',{opacity:0,y:24,scale:0.97,duration:0.7,stagger:0.2,delay:0.1})
-    .from('.btn-primary',{opacity:0,y:12,duration:0.5},'-=0.3');
+  gsap.from('.card',{opacity:0,y:20,duration:0.5,delay:0.1,ease:'power2.out'});
 }
 
-// 學生首頁 — 如流水般的課程展開
 function animateMain(){
-  var tl=gsap.timeline({defaults:{ease:'power1.out'}});
-  tl.from('.header',{opacity:0,y:-10,duration:0.5,delay:0.05})
-    .from('.weekday-tabs',{opacity:0,y:8,duration:0.5},'-=0.3')
-    .from('.course-card',{opacity:0,y:16,duration:0.5,stagger:{amount:0.4,from:'start'}},0.6)
-    .from('.card:last-child',{opacity:0,duration:0.4},'-=0.2');
+  gsap.from('.header',{opacity:0,duration:0.3,delay:0.05});
+  gsap.from('.weekday-tabs',{opacity:0,duration:0.3,delay:0.15});
+  gsap.from('.course-card',{opacity:0,y:10,duration:0.3,stagger:0.05,delay:0.25,ease:'power2.out'});
 }
 
-// 老師後台 — 有序如儒禮
 function animateTeacher(){
-  var tl=gsap.timeline({defaults:{ease:'power1.out'}});
-  tl.from('.header',{opacity:0,y:-8,duration:0.5,delay:0.05})
-    .from('.card',{opacity:0,y:14,duration:0.5,stagger:0.15},0.1)
-    .from('.weekday-tabs',{opacity:0,y:6,duration:0.45},0.2)
-    .from('.day-title',{opacity:0,x:-10,duration:0.4,stagger:0.08},0.5)
-    .from('.card:not(:first-child)',{opacity:0,y:12,duration:0.4,stagger:{amount:0.3,from:'start'}},0.65);
+  gsap.from('.header',{opacity:0,duration:0.3,delay:0.05});
+  gsap.from('.card',{opacity:0,y:12,duration:0.35,stagger:0.1,delay:0.15,ease:'power2.out'});
+  gsap.from('.weekday-tabs',{opacity:0,duration:0.25,delay:0.3});
 }
 
-// 課程詳情頁 — 柔和展開
 function animatePage(){
-  var tl=gsap.timeline({defaults:{ease:'power1.out'}});
-  tl.from('.back-btn',{opacity:0,x:-8,duration:0.4,delay:0.05})
-    .from('.header',{opacity:0,y:-6,duration:0.45},'-=0.2')
-    .from('.card',{opacity:0,y:12,duration:0.5,stagger:0.1},0.2);
+  gsap.from('.back-btn,.header,.card',{opacity:0,y:8,duration:0.3,stagger:0.1,delay:0.05,ease:'power2.out'});
 }
 
 // 啟動
