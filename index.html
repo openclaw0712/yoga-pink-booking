@@ -125,12 +125,23 @@ function restoreLocal(){
 }
 
 async function initData(){
-  // 立即從 localStorage 恢復，馬上顯示頁面
+  // 立即從 localStorage 恢復
   if(restoreLocal()){
     setOnlineStatus(false);
     render();
   }
-  // 背景同步雲端（5秒超時）
+  // 雙保險：5秒後自動顯示預設課程（防止網路慢一直轉圈）
+  setTimeout(function(){
+    var app=document.getElementById('app');
+    if(app && app.innerHTML.match(/連接雲端/)){
+      courses=defaultCourses;
+      users=[];bookings=[];waitlist=[];
+      setOnlineStatus(false);
+      ensureLocal();
+      render();
+    }
+  },5000);
+  // 背景同步雲端
   syncFromCloud().catch(function(e){});
 }
 
