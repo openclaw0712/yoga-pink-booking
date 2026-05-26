@@ -31,18 +31,24 @@ body{font-family:-apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft Jh
 .day-title:first-child{margin-top:0}
 .course-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;border-left:4px solid #8b6f5c;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s}
 .course-card:hover{transform:scale(1.01);box-shadow:0 4px 16px rgba(0,0,0,0.1)}
-.course-card.passed{border-left-color:#ccc;opacity:0.6}
 .course-card.full{border-left-color:#e88b8b}
+.capacity-bar{height:4px;background:#eee;border-radius:2px;margin-top:8px;overflow:hidden}
+.capacity-fill{height:100%;border-radius:2px;transition:width 0.3s}
+.cap-fill-green{background:#28a745}
+.cap-fill-yellow{background:#f59e0b}
+.cap-fill-red{background:#dc3545}
 .student-item{padding:8px 0;border-bottom:1px solid #eee;font-size:14px}
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
 .badge-ok{background:#d4edda;color:#155724}
 .badge-full{background:#f8d7da;color:#721c24}
 .badge-booked{background:#cce5ff;color:#004085}
+.badge-warning{background:#fff3cd;color:#856404}
 .section-title{font-size:14px;font-weight:700;color:#8b6f5c;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eee}
 .weekday-selector{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
 .weekday-btn{flex:1;min-width:40px;padding:10px 4px;text-align:center;background:#fff;border:2px solid #ddd;color:#888;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
 .weekday-btn.active{background:#8b6f5c;color:#fff;border-color:#8b6f5c}
 .weekday-btn span{display:block;font-size:16px;margin-bottom:2px}
+.info-text{font-size:13px;color:#888;margin-top:4px}
 </style>
 </head>
 <body>
@@ -50,19 +56,20 @@ body{font-family:-apple-system, BlinkMacSystemFont, 'PingFang TC', 'Microsoft Jh
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script>
 var weekdays=['週日','週一','週二','週三','週四','週五','週六'];
+var CANCEL_LIMIT_HOURS=24; // 課程開始前24小時內不可取消
 var defaultCourses=[
   {id:1,name:'晨間瑜伽',teacher:'小美',time:'08:00-09:00',cap:10,booked:3,status:'active',weekday:1},
   {id:2,name:'陰瑜伽',teacher:'阿偉',time:'10:00-11:30',cap:8,booked:8,status:'active',weekday:2},
   {id:3,name:'哈達瑜伽',teacher:'小美',time:'14:00-15:30',cap:10,booked:5,status:'active',weekday:3},
   {id:4,name:'流動瑜伽',teacher:'阿偉',time:'16:00-17:00',cap:12,booked:2,status:'active',weekday:4},
-  {id:5,name:'晚間冥想',teacher:'小美',time:'19:30-20:30',cap:15,booked:6,status:'active',weekday:1},
-  {id:6,name:'哈達瑜伽',teacher:'阿偉',time:'09:00-10:30',cap:10,booked:4,status:'active',weekday:5},
-  {id:7,name:'陰瑜伽',teacher:'小美',time:'14:00-15:30',cap:8,booked:7,status:'active',weekday:6}
+  {id:5,name:'晚間冥想',teacher:'小美',time:'19:30-20:30',cap:15,booked:6,status:'active',weekday:5},
+  {id:6,name:'哈達瑜伽',teacher:'阿偉',time:'09:00-10:30',cap:10,booked:4,status:'active',weekday:6},
+  {id:7,name:'陰瑜伽',teacher:'小美',time:'14:00-15:30',cap:8,booked:7,status:'active',weekday:0}
 ];
 
 var users=JSON.parse(localStorage.getItem('yoga_users')||'[]');
 var bookings=JSON.parse(localStorage.getItem('yoga_bookings')||'[]');
-var courses=JSON.parse(localStorage.getItem('yoga_courses'));
+var courses=JSON.parse(localStorage.getItem('yoga_courses')||'null');
 if(!courses){courses=JSON.parse(JSON.stringify(defaultCourses));localStorage.setItem('yoga_courses',JSON.stringify(courses));}
 
 var currentUser=null;
@@ -71,18 +78,47 @@ var selectedWeekday=new Date().getDay();
 
 function save(){localStorage.setItem('yoga_users',JSON.stringify(users));localStorage.setItem('yoga_bookings',JSON.stringify(bookings));localStorage.setItem('yoga_courses',JSON.stringify(courses));}
 
+// 取得下次上課日期
+function getNextClassDate(weekday,timeStr){
+  var now=new Date();
+  var daysUntil=(weekday-now.getDay()+7)%7;
+  if(daysUntil===0){
+    var parts=timeStr.split('-')[0].split(':');
+    var classHour=parseInt(parts[0]);
+    var classMin=parseInt(parts[1])||0;
+    var classDate=new Date(now.getFullYear(),now.getMonth(),now.getDate(),classHour,classMin);
+    if(classDate<=now)daysUntil=7;
+  }
+  var next=new Date(now);
+  next.setDate(now.getDate()+daysUntil);
+  return next;
+}
+
+// 檢查是否可以取消
+function canCancel(booking){
+  var c=getCourse(booking.courseId);
+  if(!c)return false;
+  var classDate=getNextClassDate(c.weekday,c.time);
+  var now=new Date();
+  var hoursLeft=(classDate-now)/(1000*60*60);
+  return hoursLeft>=CANCEL_LIMIT_HOURS;
+}
+
+// 格式化日期時間
+function formatDateTime(date){
+  return(date.getMonth()+1)+'/'+date.getDate()+' '+weekdays[date.getDay()]+' '+date.getHours()+':'+(date.getMinutes()<10?'0':'')+date.getMinutes();
+}
+
 function render(){var app=document.getElementById('app');if(page==='login'){app.innerHTML=getLoginHTML();animateLogin();}else if(page==='main'){app.innerHTML=getMainHTML();animateMain();}else if(page==='teacher'){app.innerHTML=getTeacherHTML();animateTeacher();}else if(page==='booking'){app.innerHTML=getBookingHTML();animatePage();}else if(page==='my'){app.innerHTML=getMyHTML();animatePage();}}
 
 function getLoginHTML(){return'<div class="logo">O</div><div class="title">瑜伽預約系統</div><div class="subtitle">預約您想要的課程</div><div class="card"><div class="tabs"><div class="tab active" onclick="switchTab(this,\'login\')">登入</div><div class="tab" onclick="switchTab(this,\'reg\')">註冊</div></div><div id="tab-login"><div class="input-group"><input type="tel" id="phone" placeholder="電話號碼"></div><div class="input-group"><input type="password" id="pw" placeholder="密碼"></div><div class="error" id="err"></div><button class="btn btn-primary" onclick="doLogin()">登入</button></div><div id="tab-reg" style="display:none"><div class="input-group"><input type="text" id="name" placeholder="姓名"></div><div class="input-group"><input type="tel" id="rphone" placeholder="電話"></div><div class="input-group"><input type="password" id="rpw" placeholder="密碼"></div><div class="error" id="rerr"></div><button class="btn btn-primary" onclick="doRegister()">註冊</button></div></div><div class="card"><div style="text-align:center;color:#888;font-size:14px;margin-bottom:10px">老師專區</div><div id="teacherForm" style="display:none"><div class="input-group"><input type="password" id="teacherPw" placeholder="請輸入老師密碼"></div><button class="btn btn-primary" style="background:#5c8b6f" onclick="verifyTeacher()">確認</button></div><button class="btn" id="teacherBtn" style="background:#5c8b6f;color:#fff" onclick="showTeacherForm()">老師登入</button></div>';}
 
 function getMainHTML(){
-  var today=new Date().getDay();
   var html='<div class="header"><h2>瑜伽預約</h2><a href="#" class="logout-btn" onclick="logout()">登出</a></div>';
   html+='<div class="weekday-selector">';
   for(var i=0;i<7;i++){html+='<div class="weekday-btn'+(selectedWeekday===i?' active':'')+'" onclick="selectWeekday('+i+')"><span>'+weekdays[i].substring(1)+'</span></div>';}
   html+='</div>';
   
-  // 顯示選中日期的全部課程
   var dayCourses=courses.filter(function(c){return c.weekday===selectedWeekday&&c.status==='active';});
   if(dayCourses.length===0){
     html+='<div class="card"><p style="text-align:center;color:#888">'+weekdays[selectedWeekday]+'沒有課程</p></div>';
@@ -90,10 +126,14 @@ function getMainHTML(){
     html+='<div class="day-title">'+weekdays[selectedWeekday]+'課程</div>';
     for(var i=0;i<dayCourses.length;i++){
       var c=dayCourses[i];
-      var st='badge-ok';var txt='可預約';
-      if(c.booked>=c.cap){st='badge-full';txt='額滿';}
-      if(hasBooked(c.id)){st='badge-booked';txt='已預約';}
-      html+='<div class="course-card'+(c.booked>=c.cap?' full':'')+'" onclick="goBooking('+c.id+')"><div style="font-weight:700;margin-bottom:4px">'+c.name+'</div><div style="color:#888;font-size:14px;margin-bottom:6px">'+c.teacher+' | '+c.time+'</div><span class="badge '+st+'">'+txt+' '+c.booked+'/'+c.cap+'</span></div>';
+      var pct=Math.round(c.booked/c.cap*100);
+      var capClass='cap-fill-green';
+      if(pct>=90)capClass='cap-fill-red';
+      else if(pct>=70)capClass='cap-fill-yellow';
+      var statusTxt='可預約';
+      if(c.booked>=c.cap)statusTxt='已額滿';
+      else if(pct>=80)statusTxt='名額緊張';
+      html+='<div class="course-card'+(c.booked>=c.cap?' full':'')+'" onclick="goBooking('+c.id+')"><div style="font-weight:700;margin-bottom:4px">'+c.name+'</div><div style="color:#888;font-size:14px;margin-bottom:6px">'+c.teacher+' | '+c.time+'</div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge '+(c.booked>=c.cap?'badge-full':'badge-ok')+'">'+statusTxt+'</span><span style="color:#888;font-size:13px">'+c.booked+'/'+c.cap+'人</span></div><div class="capacity-bar"><div class="capacity-fill '+capClass+'" style="width:'+pct+'%"></div></div></div>';
     }
   }
   
@@ -110,21 +150,29 @@ function getTeacherHTML(){
   html+='<div style="display:flex;gap:8px"><div class="input-group" style="flex:1"><input type="text" id="ctime" placeholder="時間如 09:00-10:00"></div><div class="input-group" style="flex:1"><input type="number" id="ccap" placeholder="名額" value="10"></div></div>';
   html+='<button class="btn btn-primary" onclick="addCourse()">新增課程</button></div>';
   
-  // 每週課程列表
   for(var d=0;d<7;d++){
     var dayCourses=courses.filter(function(c){return c.weekday===d;});
     if(dayCourses.length===0)continue;
     html+='<div class="day-title">'+weekdays[d]+'</div>';
     for(var i=0;i<dayCourses.length;i++){
       var c=dayCourses[i];
-      html+='<div class="course-card'+(c.status!=='active'?' passed':'')+'"><div style="font-weight:700;margin-bottom:4px">'+c.name+'<span style="color:#888;font-weight:400"> | '+c.time+'</span></div><div style="color:#888;font-size:13px;margin-bottom:6px">'+c.teacher+' | 報名：'+c.booked+'/'+c.cap+'</div><div style="display:flex;gap:6px">'+(c.status==='active'?'<button class="btn btn-danger btn-small" onclick="stopCourse('+c.id+')">停課</button>':'<button class="btn btn-secondary btn-small" onclick="restoreCourse('+c.id+')">復課</button>')+'<button class="btn btn-danger btn-small" onclick="deleteCourse('+c.id+')">刪除</button></div></div>';
+      var pct=Math.round(c.booked/c.cap*100);
+      var capClass='cap-fill-green';
+      if(pct>=90)capClass='cap-fill-red';
+      else if(pct>=70)capClass='cap-fill-yellow';
+      html+='<div class="course-card'+(c.status!=='active'?'" style="opacity:0.5"':'')+'"><div style="font-weight:700;margin-bottom:4px">'+c.name+'<span style="color:#888;font-weight:400"> | '+c.time+'</span></div><div style="color:#888;font-size:13px;margin-bottom:6px">'+c.teacher+' | '+c.booked+'/'+c.cap+'人 ('+pct+'%)</div><div class="capacity-bar"><div class="capacity-fill '+capClass+'" style="width:'+pct+'%"></div></div><div style="display:flex;gap:6px;margin-top:8px">'+(c.status==='active'?'<button class="btn btn-danger btn-small" onclick="stopCourse('+c.id+')">停課</button>':'<button class="btn btn-secondary btn-small" onclick="restoreCourse('+c.id+')">復課</button>')+'<button class="btn btn-danger btn-small" onclick="deleteCourse('+c.id+')">刪除</button></div></div>';
     }
   }
   
   var confirmed=bookings.filter(function(b){return b.status==='confirmed';});
   html+='<div class="card"><div class="section-title">已報名學員 ('+confirmed.length+'人)</div>';
   if(confirmed.length===0){html+='<div style="color:#888;text-align:center;padding:20px">尚無報名</div>';}
-  for(var i=0;i<confirmed.length;i++){var b=confirmed[i];html+='<div class="student-item"><b>'+b.name+'</b> | '+b.phone+'<br><span style="color:#888">'+b.courseName+' ('+weekdays[b.weekday]+' '+b.time+')</span></div>';}
+  for(var i=0;i<confirmed.length;i++){
+    var b=confirmed[i];
+    var c=getCourse(b.courseId);
+    var classDate=c?getNextClassDate(c.weekday,c.time):null;
+    html+='<div class="student-item"><b>'+b.name+'</b> | '+b.phone+'<br><span style="color:#888">'+(c?c.name+' ('+weekdays[c.weekday]+' '+c.time+')':'')+'</span></div>';
+  }
   html+='</div>';
   html+='<button class="btn btn-secondary" onclick="resetData()">恢復預設</button>';
   return html;
@@ -133,7 +181,38 @@ function getTeacherHTML(){
 function getBookingHTML(){
   var c=getCourse(window.bookId);
   if(!c)return'<p>找不到課程</p><button class="btn btn-secondary" onclick="goMy()">返回</button>';
-  return'<a href="#" class="back-btn" onclick="goMain()">- 返回</a><div class="card" style="margin-top:12px"><div style="font-weight:700;font-size:18px;margin-bottom:8px">'+c.name+'</div><div style="color:#888;margin-bottom:4px">'+c.teacher+'</div><div style="color:#888;margin-bottom:4px">'+weekdays[c.weekday]+' '+c.time+'</div><div style="margin-bottom:12px">名額：<b>'+c.booked+'/'+c.cap+'</b></div>'+(c.booked>=c.cap?'<div style="color:#c67b5c">已額滿</div>':hasBooked(c.id)?'<div style="color:#004085">您已預約過此課程</div>':'<button class="btn btn-primary" onclick="confirmBook('+c.id+')">確認預約</button>')+'</div>';
+  var classDate=getNextClassDate(c.weekday,c.time);
+  var spotsLeft=c.cap-c.booked;
+  var isBooked=hasBooked(c.id);
+  
+  var html='<a href="#" class="back-btn" onclick="goMain()">- 返回</a>';
+  html+='<div class="card" style="margin-top:12px">';
+  html+='<div style="font-weight:700;font-size:18px;margin-bottom:8px">'+c.name+'</div>';
+  html+='<div style="color:#888;margin-bottom:4px">'+c.teacher+'</div>';
+  html+='<div style="color:#888;margin-bottom:4px">'+weekdays[c.weekday]+' '+c.time+'</div>';
+  html+='<div style="color:#888;margin-bottom:12px">下次上課：'+formatDateTime(classDate)+'</div>';
+  html+='<div style="margin-bottom:12px">名額：<b>'+c.booked+'/'+c.cap+'</b>（'+spotsLeft+'個名額）</div>';
+  
+  if(c.booked>=c.cap){
+    html+='<div style="background:#f8d7da;color:#721c24;padding:12px;border-radius:8px;text-align:center">已額滿，無法報名</div>';
+  }else if(isBooked){
+    html+='<div style="background:#cce5ff;color:#004085;padding:12px;border-radius:8px;text-align:center;margin-bottom:8px">您已預約過此課程</div>';
+    var myBooking=getMyBookingByCourse(c.id);
+    if(myBooking){
+      if(canCancel(myBooking)){
+        html+='<button class="btn btn-danger" onclick="cancelBook('+myBooking.id+')">取消預約</button>';
+        html+='<div class="info-text" style="margin-top:8px;text-align:center">可在課程開始前'+CANCEL_LIMIT_HOURS+'小時內取消</div>';
+      }else{
+        var timeLeft=Math.round(((classDate-new Date())/(1000*60*60)))+'小時';
+        html+='<div style="background:#fff3cd;color:#856404;padding:12px;border-radius:8px;text-align:center">已超過取消期限（課程開始前'+CANCEL_LIMIT_HOURS+'小時），無法取消</div>';
+        html+='<div class="info-text" style="margin-top:8px;text-align:center">距離上課：'+timeLeft+'</div>';
+      }
+    }
+  }else{
+    html+='<button class="btn btn-primary" onclick="confirmBook('+c.id+')">確認預約</button>';
+  }
+  html+='</div>';
+  return html;
 }
 
 function getMyHTML(){
@@ -142,13 +221,30 @@ function getMyHTML(){
   if(my.length===0){html+='<div class="card"><p style="text-align:center;color:#888">尚無預約記錄</p></div>';}
   for(var i=0;i<my.length;i++){
     var b=my[i];
-    html+='<div class="card"><div style="font-weight:700;margin-bottom:4px">'+b.courseName+'</div><div style="color:#888;font-size:14px;margin-bottom:4px">'+weekdays[b.weekday]+' '+b.time+'</div><div style="color:#888;font-size:14px;margin-bottom:8px">'+b.teacher+'</div>'+(b.status==='confirmed'?'<button class="btn btn-danger btn-small" onclick="cancelBook('+b.id+')">取消預約</button>':'<span style="color:#c67b5c;font-size:14px">已取消</span>')+'</div>';
+    var c=getCourse(b.courseId);
+    var classDate=c?getNextClassDate(c.weekday,c.time):null;
+    var canC=canCancel(b);
+    html+='<div class="card"><div style="font-weight:700;margin-bottom:4px">'+b.courseName+'</div>';
+    html+='<div style="color:#888;font-size:14px;margin-bottom:4px">'+(c?weekdays[c.weekday]+' '+c.time:'')+'</div>';
+    if(c)html+='<div style="color:#888;font-size:13px;margin-bottom:8px">下次上課：'+formatDateTime(classDate)+'</div>';
+    if(b.status==='confirmed'){
+      if(canC){
+        html+='<button class="btn btn-danger btn-small" onclick="cancelBook('+b.id+')">取消預約</button>';
+        html+='<div class="info-text" style="margin-top:4px">可在課程前'+CANCEL_LIMIT_HOURS+'小時內取消</div>';
+      }else{
+        html+='<div style="background:#fff3cd;color:#856404;padding:8px;border-radius:6px;font-size:13px;text-align:center">已超過取消期限，無法取消</div>';
+      }
+    }else{
+      html+='<div style="color:#c67b5c;font-size:14px">已取消</div>';
+    }
+    html+='</div>';
   }
   return html;
 }
 
 function getCourse(id){for(var i=0;i<courses.length;i++)if(courses[i].id===id)return courses[i];return null;}
 function hasBooked(cid){for(var i=0;i<bookings.length;i++)if(bookings[i].courseId===cid&&bookings[i].phone===currentUser.phone&&bookings[i].status==='confirmed')return true;return false;}
+function getMyBookingByCourse(cid){for(var i=0;i<bookings.length;i++)if(bookings[i].courseId===cid&&bookings[i].phone===currentUser.phone&&bookings[i].status==='confirmed')return bookings[i];return null;}
 function getMyBookings(){var r=[];for(var i=0;i<bookings.length;i++)if(bookings[i].phone===currentUser.phone)r.push(bookings[i]);return r;}
 
 function selectWeekday(d){selectedWeekday=d;render();}
@@ -169,22 +265,33 @@ function confirmBook(id){
   if(!c||c.booked>=c.cap){toast('已額滿','error');return;}
   if(hasBooked(id)){toast('已預約過','error');return;}
   c.booked++;
-  bookings.push({id:Date.now(),phone:currentUser.phone,name:currentUser.name,courseId:id,courseName:c.name,teacher:c.teacher,time:c.time,weekday:c.weekday,status:'confirmed'});
+  var classDate=getNextClassDate(c.weekday,c.time);
+  bookings.push({id:Date.now(),phone:currentUser.phone,name:currentUser.name,courseId:id,courseName:c.name,teacher:c.teacher,time:c.time,weekday:c.weekday,bookDate:new Date().toISOString(),classDate:classDate.toISOString(),status:'confirmed'});
   save();
-  toast('預約成功');
+  toast('預約成功！'+formatDateTime(classDate));
   goMain();
 }
+
 function cancelBook(id){
   for(var i=0;i<bookings.length;i++){
     if(bookings[i].id===id){
-      bookings[i].status='cancelled';
-      var c=getCourse(bookings[i].courseId);
-      if(c)c.booked=Math.max(0,c.booked-1);
+      var b=bookings[i];
+      var c=getCourse(b.courseId);
+      if(c){
+        var classDate=getNextClassDate(c.weekday,c.time);
+        var hoursLeft=(classDate-new Date())/(1000*60*60);
+        if(hoursLeft<CANCEL_LIMIT_HOURS){
+          toast('已超過取消期限（課程前'+CANCEL_LIMIT_HOURS+'小時）','error');
+          return;
+        }
+        c.booked=Math.max(0,c.booked-1);
+      }
+      b.status='cancelled';
       break;
     }
   }
   save();
-  toast('已取消');
+  toast('已取消預約');
   goMy();
 }
 
